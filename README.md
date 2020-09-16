@@ -11,10 +11,10 @@ A utility server with various features suitable for mobile apps.
 ```sql
 create table mobile_app
 (
-	id int auto_increment primary key,
-	name varchar(255) null,
-	display_name varchar(255) null,
-	sign_private_key varchar(255) null
+    id int auto_increment primary key,
+    name varchar(255) null,
+    display_name varchar(255) null,
+    sign_private_key varchar(255) null
 );
 ```
 
@@ -23,12 +23,12 @@ create table mobile_app
 ```sql
 create table mobile_ssl_pinning
 (
-	id int auto_increment primary key,
-	name varchar(255) not null,
-	fingerprint varchar(255) not null,
-	expires int null,
-	signature varchar(255) not null,
-	app_id int not null
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    fingerprint varchar(255) not null,
+    expires int null,
+    signature varchar(255) not null,
+    app_id int not null
 );
 ```
 
