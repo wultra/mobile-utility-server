@@ -32,6 +32,8 @@ create table mobile_ssl_pinning
 );
 ```
 
+#### Sequence `hibernate_sequence`
+
 ```sql
 create sequence hibernate_sequence minvalue 1 maxvalue 9999999999999 cache 20;
 ```
