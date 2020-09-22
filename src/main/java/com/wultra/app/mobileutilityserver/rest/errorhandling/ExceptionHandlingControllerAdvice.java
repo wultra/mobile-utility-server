@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.controlleradvice;
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 import com.wultra.app.mobileutilityserver.rest.model.response.ErrorResponse;
 import org.slf4j.Logger;
@@ -48,4 +48,15 @@ public class ExceptionHandlingControllerAdvice {
         logger.error("Unknown error happened. ID: {}", id, ex);
         return new ErrorResponse(code, message, id);
     }
+
+    @ExceptionHandler(PublicKeyNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorResponse handlePublicKeyNotFoundException(PublicKeyNotFoundException ex) {
+        String code = "PUBLIC_KEY_NOT_FOUND";
+        String message = "Public key for the provided app name was not found.";
+        String id = UUID.randomUUID().toString();
+        logger.warn("Public key for the provided app name: {} was not found. ID: {}", ex.getAppName(), id);
+        return new ErrorResponse(code, message, id);
+    }
+
 }

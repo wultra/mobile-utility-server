@@ -42,7 +42,6 @@ public class SslPinningFingerprintConverter {
         destination.setName(source.getName());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
-        destination.setSignature(source.getSignature());
         return destination;
     }
 

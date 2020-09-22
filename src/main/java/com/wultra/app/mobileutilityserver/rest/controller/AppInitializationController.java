@@ -17,8 +17,11 @@
  */
 package com.wultra.app.mobileutilityserver.rest.controller;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
+import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppDAO;
 import com.wultra.app.mobileutilityserver.rest.service.SslPinningDAO;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
@@ -43,10 +46,12 @@ import java.util.List;
 public class AppInitializationController {
 
     private final SslPinningDAO sslPinningDAO;
+    private final MobileAppDAO mobileAppDAO;
 
     @Autowired
-    public AppInitializationController(SslPinningDAO sslPinningDAO) {
+    public AppInitializationController(SslPinningDAO sslPinningDAO, MobileAppDAO mobileAppDAO) {
         this.sslPinningDAO = sslPinningDAO;
+        this.mobileAppDAO = mobileAppDAO;
     }
 
     @GetMapping
@@ -58,14 +63,22 @@ public class AppInitializationController {
                     schema = @Schema(type = "string")
             )
     })
-    public AppInitResponse appInitResponse(
-            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) {
+    public AppInitResponse appInit(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) {
         final AppInitResponse response = new AppInitResponse();
 
         final List<SslPinningFingerprint> fingerprints = sslPinningDAO.findSslPinningFingerprintsByAppName(appName);
         response.getFingerprints().addAll(fingerprints);
 
         return response;
+    }
+
+    @GetMapping("public-key")
+    public PublicKeyResponse publicKeys(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) throws PublicKeyNotFoundException {
+        final String publicKey = mobileAppDAO.publicKey(appName);
+        if (publicKey == null) {
+            throw new PublicKeyNotFoundException(appName);
+        }
+        return new PublicKeyResponse(publicKey);
     }
 
 }

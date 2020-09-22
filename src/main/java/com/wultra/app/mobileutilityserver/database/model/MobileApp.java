@@ -43,6 +43,9 @@ public class MobileApp {
     @Column(name = "sign_private_key")
     private String signingPrivateKey;
 
+    @Column(name = "sign_public_key")
+    private String signingPublicKey;
+
     public MobileApp() {
     }
 
@@ -76,5 +79,13 @@ public class MobileApp {
 
     public void setSigningPrivateKey(String signingPrivateKey) {
         this.signingPrivateKey = signingPrivateKey;
+    }
+
+    public String getSigningPublicKey() {
+        return signingPublicKey;
+    }
+
+    public void setSigningPublicKey(String signingPublicKey) {
+        this.signingPublicKey = signingPublicKey;
     }
 }
