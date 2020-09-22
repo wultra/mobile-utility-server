@@ -66,7 +66,7 @@ public class AppInitializationController {
     })
     public AppInitResponse appInit(
             @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName,
-            @RequestHeader(HttpHeaders.REQUEST_CHALLENGE) String challengeHeader
+            @RequestHeader(value = HttpHeaders.REQUEST_CHALLENGE, required = false) String challengeHeader
     ) throws InvalidChallengeHeaderException {
         // Validate HTTP headers
         if (!HttpHeaders.validChallengeHeader(challengeHeader)) {
