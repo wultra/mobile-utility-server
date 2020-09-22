@@ -59,4 +59,13 @@ public class ExceptionHandlingControllerAdvice {
         return new ErrorResponse(code, message, id);
     }
 
+    @ExceptionHandler(InvalidChallengeHeaderException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public @ResponseBody ErrorResponse handleInvalidChallengeHeaderException(InvalidChallengeHeaderException ex) {
+        String code = "INSUFFICIENT_CHALLENGE";
+        String message = "Request does not contain sufficiently strong challenge header, 16B is required at least.";
+        String id = UUID.randomUUID().toString();
+        logger.error("Request does not contain sufficiently strong challenge header, 16B is required at least. ID: {}", id);
+        return new ErrorResponse(code, message, id);
+    }
 }

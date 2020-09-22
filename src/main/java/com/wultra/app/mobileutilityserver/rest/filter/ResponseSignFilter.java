@@ -50,7 +50,6 @@ import java.security.spec.InvalidKeySpecException;
 @Component
 public class ResponseSignFilter extends OncePerRequestFilter {
 
-    private static final int MIN_CHALLENGE_LENGTH = 16;
     private final MobileAppDAO mobileAppService;
     private final KeyConvertor keyConvertor;
     private final SignatureUtils signatureUtils;
@@ -67,10 +66,7 @@ public class ResponseSignFilter extends OncePerRequestFilter {
         final ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
         chain.doFilter(request, responseWrapper);
         String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
-        if (requestChallenge != null
-                && !requestChallenge.isEmpty()
-                && !requestChallenge.isBlank()
-                && requestChallenge.length() >= MIN_CHALLENGE_LENGTH) {
+        if (HttpHeaders.validChallengeHeader(requestChallenge)) {
             try {
 
                 // Prepare the signature base data

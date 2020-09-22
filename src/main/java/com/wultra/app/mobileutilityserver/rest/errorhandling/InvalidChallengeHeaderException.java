@@ -15,25 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.http;
+
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Class with constants for HTTP request / response headers.
+ * Exception thrown in the case challenge header is not present or is not sufficiently complex.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public class HttpHeaders {
-
-    public static final int MIN_CHALLENGE_HEADER_LENGTH = 16;
-
-    public static final String REQUEST_CHALLENGE = "X-Cert-Pinning-Challenge";
-    public static final String RESPONSE_SIGNATURE = "X-Cert-Pinning-Signature";
-
-    public static boolean validChallengeHeader(String challengeHeader) {
-        return challengeHeader != null
-                && !challengeHeader.isEmpty()
-                && !challengeHeader.isBlank()
-                && challengeHeader.length() >= HttpHeaders.MIN_CHALLENGE_HEADER_LENGTH;
-    }
-
+public class InvalidChallengeHeaderException extends Exception {
 }

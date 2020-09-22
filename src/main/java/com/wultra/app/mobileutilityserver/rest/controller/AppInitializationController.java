@@ -17,6 +17,7 @@
  */
 package com.wultra.app.mobileutilityserver.rest.controller;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHeaderException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
@@ -63,12 +64,21 @@ public class AppInitializationController {
                     schema = @Schema(type = "string")
             )
     })
-    public AppInitResponse appInit(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) {
-        final AppInitResponse response = new AppInitResponse();
+    public AppInitResponse appInit(
+            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName,
+            @RequestHeader(HttpHeaders.REQUEST_CHALLENGE) String challengeHeader
+    ) throws InvalidChallengeHeaderException {
+        // Validate HTTP headers
+        if (!HttpHeaders.validChallengeHeader(challengeHeader)) {
+            throw new InvalidChallengeHeaderException();
+        }
 
+        // Find the fingerprints
         final List<SslPinningFingerprint> fingerprints = sslPinningDAO.findSslPinningFingerprintsByAppName(appName);
-        response.getFingerprints().addAll(fingerprints);
 
+        // Return the response
+        final AppInitResponse response = new AppInitResponse();
+        response.getFingerprints().addAll(fingerprints);
         return response;
     }
 
