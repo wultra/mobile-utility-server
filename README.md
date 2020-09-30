@@ -14,7 +14,8 @@ create table mobile_app
     id int primary key,
     name varchar(255) null,
     display_name varchar(255) null,
-    sign_private_key varchar(255) null
+    sign_private_key varchar(255) null,
+    sign_public_key varchar(255) null
 );
 ```
 
@@ -27,7 +28,6 @@ create table mobile_ssl_pinning
     name varchar(255) not null,
     fingerprint varchar(255) not null,
     expires int null,
-    signature varchar(255) not null,
     app_id int not null
 );
 ```

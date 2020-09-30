@@ -16,30 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.database.repo;
-
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
-import org.springframework.data.repository.CrudRepository;
+package com.wultra.app.mobileutilityserver.rest.model.response;
 
 /**
- * Repository class for accessing the mobile application metadata in the database.
+ * Response object with a public key related to provided application.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
+public class PublicKeyResponse {
 
-    /**
-     * Checks if application by the application name exists.
-     * @param name App name.
-     * @return True in case the app exists, false otherwise.
-     */
-    boolean existsByName(String name);
+    public PublicKeyResponse(String publicKey) {
+        this.publicKey = publicKey;
+    }
 
-    /**
-     * Find the first application by the application name.
-     * @param name App name.
-     * @return Entity representing an application.
-     */
-    MobileApp findFirstByName(String name);
+    private String publicKey;
 
+    public String getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
 }

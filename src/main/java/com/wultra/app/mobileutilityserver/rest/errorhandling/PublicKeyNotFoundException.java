@@ -16,30 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.database.repo;
-
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
-import org.springframework.data.repository.CrudRepository;
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Repository class for accessing the mobile application metadata in the database.
+ * Exception representing the situation when an expected public key was not found.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
+public class PublicKeyNotFoundException extends Exception {
 
-    /**
-     * Checks if application by the application name exists.
-     * @param name App name.
-     * @return True in case the app exists, false otherwise.
-     */
-    boolean existsByName(String name);
+    private final String appName;
 
-    /**
-     * Find the first application by the application name.
-     * @param name App name.
-     * @return Entity representing an application.
-     */
-    MobileApp findFirstByName(String name);
+    public PublicKeyNotFoundException(String appName) {
+        this.appName = appName;
+    }
 
+    public String getAppName() {
+        return appName;
+    }
 }

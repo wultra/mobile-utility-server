@@ -43,9 +43,6 @@ public class SslPinningFingerprintDbEntity {
     @Column(name = "expires")
     private Long expires;
 
-    @Column(name = "signature")
-    private String signature;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_id")
     private MobileApp app;
@@ -83,14 +80,6 @@ public class SslPinningFingerprintDbEntity {
 
     public void setExpires(Long expires) {
         this.expires = expires;
-    }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
     }
 
     public MobileApp getApp() {

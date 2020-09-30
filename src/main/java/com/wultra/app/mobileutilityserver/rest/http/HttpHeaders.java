@@ -24,7 +24,16 @@ package com.wultra.app.mobileutilityserver.rest.http;
  */
 public class HttpHeaders {
 
+    public static final int MIN_CHALLENGE_HEADER_LENGTH = 16;
+
     public static final String REQUEST_CHALLENGE = "X-Cert-Pinning-Challenge";
     public static final String RESPONSE_SIGNATURE = "X-Cert-Pinning-Signature";
+
+    public static boolean validChallengeHeader(String challengeHeader) {
+        return challengeHeader != null
+                && !challengeHeader.isEmpty()
+                && !challengeHeader.isBlank()
+                && challengeHeader.length() >= HttpHeaders.MIN_CHALLENGE_HEADER_LENGTH;
+    }
 
 }

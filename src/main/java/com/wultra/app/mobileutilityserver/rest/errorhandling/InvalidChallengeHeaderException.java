@@ -16,30 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.database.repo;
-
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
-import org.springframework.data.repository.CrudRepository;
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Repository class for accessing the mobile application metadata in the database.
+ * Exception thrown in the case challenge header is not present or is not sufficiently complex.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
-
-    /**
-     * Checks if application by the application name exists.
-     * @param name App name.
-     * @return True in case the app exists, false otherwise.
-     */
-    boolean existsByName(String name);
-
-    /**
-     * Find the first application by the application name.
-     * @param name App name.
-     * @return Entity representing an application.
-     */
-    MobileApp findFirstByName(String name);
-
+public class InvalidChallengeHeaderException extends Exception {
 }

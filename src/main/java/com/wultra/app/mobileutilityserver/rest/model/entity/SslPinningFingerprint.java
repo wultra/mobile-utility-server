@@ -29,7 +29,6 @@ public class SslPinningFingerprint {
     private String name;
     private String fingerprint;
     private long expires;
-    private String signature;
 
     public String getName() {
         return name;
@@ -54,12 +53,5 @@ public class SslPinningFingerprint {
     public void setExpires(long expires) {
         this.expires = expires;
     }
-
-    public String getSignature() {
-        return signature;
-    }
-
-    public void setSignature(String signature) {
-        this.signature = signature;
-    }
+    
 }

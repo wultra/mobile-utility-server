@@ -17,8 +17,13 @@
  */
 package com.wultra.app.mobileutilityserver.rest.controller;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHeaderException;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
+import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppDAO;
 import com.wultra.app.mobileutilityserver.rest.service.SslPinningDAO;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
@@ -43,10 +48,12 @@ import java.util.List;
 public class AppInitializationController {
 
     private final SslPinningDAO sslPinningDAO;
+    private final MobileAppDAO mobileAppDAO;
 
     @Autowired
-    public AppInitializationController(SslPinningDAO sslPinningDAO) {
+    public AppInitializationController(SslPinningDAO sslPinningDAO, MobileAppDAO mobileAppDAO) {
         this.sslPinningDAO = sslPinningDAO;
+        this.mobileAppDAO = mobileAppDAO;
     }
 
     @GetMapping
@@ -58,14 +65,38 @@ public class AppInitializationController {
                     schema = @Schema(type = "string")
             )
     })
-    public AppInitResponse appInitResponse(
-            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) {
-        final AppInitResponse response = new AppInitResponse();
+    public AppInitResponse appInit(
+            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName,
+            @RequestHeader(value = HttpHeaders.REQUEST_CHALLENGE, required = false) String challengeHeader
+    ) throws InvalidChallengeHeaderException, AppNotFoundException {
 
+        // Validate HTTP headers
+        if (!HttpHeaders.validChallengeHeader(challengeHeader)) {
+            throw new InvalidChallengeHeaderException();
+        }
+
+        // Check if an app exists
+        final boolean appExists = mobileAppDAO.appExists(appName);
+        if (!appExists) {
+            throw new AppNotFoundException(appName);
+        }
+
+        // Find the fingerprints
         final List<SslPinningFingerprint> fingerprints = sslPinningDAO.findSslPinningFingerprintsByAppName(appName);
-        response.getFingerprints().addAll(fingerprints);
 
+        // Return the response
+        final AppInitResponse response = new AppInitResponse();
+        response.getFingerprints().addAll(fingerprints);
         return response;
+    }
+
+    @GetMapping("public-key")
+    public PublicKeyResponse publicKeys(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) throws PublicKeyNotFoundException {
+        final String publicKey = mobileAppDAO.publicKey(appName);
+        if (publicKey == null) {
+            throw new PublicKeyNotFoundException(appName);
+        }
+        return new PublicKeyResponse(publicKey);
     }
 
 }

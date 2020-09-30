@@ -16,30 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.database.repo;
-
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
-import org.springframework.data.repository.CrudRepository;
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Repository class for accessing the mobile application metadata in the database.
+ * Exception in case an app is not found in the database.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
+public class AppNotFoundException extends Exception {
+
+    private final String appName;
+
+    public AppNotFoundException(String appName) {
+        this.appName = appName;
+    }
 
     /**
-     * Checks if application by the application name exists.
-     * @param name App name.
-     * @return True in case the app exists, false otherwise.
+     * Get the app name.
+     * @return App name.
      */
-    boolean existsByName(String name);
-
-    /**
-     * Find the first application by the application name.
-     * @param name App name.
-     * @return Entity representing an application.
-     */
-    MobileApp findFirstByName(String name);
-
+    public String getAppName() {
+        return appName;
+    }
 }

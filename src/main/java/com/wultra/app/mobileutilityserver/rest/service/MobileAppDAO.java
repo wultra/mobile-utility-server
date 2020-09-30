@@ -38,6 +38,15 @@ public class MobileAppDAO {
     }
 
     /**
+     * Checks if an app with a provided name exists.
+     * @param appName App name.
+     * @return True in case the app with given name exists, false otherwise.
+     */
+    public boolean appExists(String appName) {
+        return repo.existsByName(appName);
+    }
+
+    /**
      * Return a private key (Base64 encoded value) of an app with provided app name.
      *
      * @param appName App name.
@@ -50,6 +59,21 @@ public class MobileAppDAO {
             return null;
         }
         return mobileApp.getSigningPrivateKey();
+    }
+
+    /**
+     * Return a private key (Base64 encoded value) of an app with provided app name.
+     *
+     * @param appName App name.
+     * @return Private key encoded as Base64 representation of the embedded big integer, or null
+     * if app with provided name does not exist.
+     */
+    public String publicKey(String appName) {
+        final MobileApp mobileApp = repo.findFirstByName(appName);
+        if (mobileApp == null) {
+            return null;
+        }
+        return mobileApp.getSigningPublicKey();
     }
 
 }
