@@ -38,6 +38,15 @@ public class MobileAppDAO {
     }
 
     /**
+     * Checks if an app with a provided name exists.
+     * @param appName App name.
+     * @return True in case the app with given name exists, false otherwise.
+     */
+    public boolean appExists(String appName) {
+        return repo.existsByName(appName);
+    }
+
+    /**
      * Return a private key (Base64 encoded value) of an app with provided app name.
      *
      * @param appName App name.

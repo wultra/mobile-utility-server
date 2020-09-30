@@ -59,6 +59,16 @@ public class ExceptionHandlingControllerAdvice {
         return new ErrorResponse(code, message, id);
     }
 
+    @ExceptionHandler(AppNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorResponse handleAppNotFoundException(AppNotFoundException ex) {
+        String code = "APP_NOT_FOUND";
+        String message = "App with a provided ID was not found.";
+        String id = UUID.randomUUID().toString();
+        logger.warn("Application for a provided app name: {} was not found. ID: {}", ex.getAppName(), id);
+        return new ErrorResponse(code, message, id);
+    }
+
     @ExceptionHandler(InvalidChallengeHeaderException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public @ResponseBody ErrorResponse handleInvalidChallengeHeaderException(InvalidChallengeHeaderException ex) {

@@ -17,6 +17,7 @@
  */
 package com.wultra.app.mobileutilityserver.rest.controller;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHeaderException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
@@ -67,10 +68,17 @@ public class AppInitializationController {
     public AppInitResponse appInit(
             @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName,
             @RequestHeader(value = HttpHeaders.REQUEST_CHALLENGE, required = false) String challengeHeader
-    ) throws InvalidChallengeHeaderException {
+    ) throws InvalidChallengeHeaderException, AppNotFoundException {
+
         // Validate HTTP headers
         if (!HttpHeaders.validChallengeHeader(challengeHeader)) {
             throw new InvalidChallengeHeaderException();
+        }
+
+        // Check if an app exists
+        final boolean appExists = mobileAppDAO.appExists(appName);
+        if (!appExists) {
+            throw new AppNotFoundException(appName);
         }
 
         // Find the fingerprints
