@@ -38,7 +38,7 @@ create table mobile_ssl_pinning
 create sequence hibernate_sequence minvalue 1 maxvalue 9999999999999 cache 20;
 ```
 
-### Configuration
+## Configuration
 
 Use the following properties to define database connectivity:
 
@@ -49,11 +49,11 @@ spring.datasource.password=${JDBC_DATABASE_PASSWORD}
 spring.datasource.driverClassName=org.postgresql.Driver
 ```
 
-### Deployment
+## Deployment
 
 Deploy the app to any application container, such as Apache Tomcat.
 
-### API Documentation
+## API Documentation
 
 Application publishes a Swagger UI documentation at the `/swagger-ui.html` path. 
 
