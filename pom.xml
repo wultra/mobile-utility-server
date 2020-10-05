@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.wultra.app</groupId>
     <artifactId>mobile-utility-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
     <name>Mobile Utility Server</name>
     <description>Utility server with various features suitable for mobile apps</description>
