@@ -31,8 +31,7 @@ public class HttpHeaders {
 
     public static boolean validChallengeHeader(String challengeHeader) {
         return challengeHeader != null
-                && !challengeHeader.isEmpty()
-                && !challengeHeader.isBlank()
+                && !challengeHeader.trim().isEmpty()
                 && challengeHeader.length() >= HttpHeaders.MIN_CHALLENGE_HEADER_LENGTH;
     }
 
