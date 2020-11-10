@@ -1,6 +1,6 @@
 # Configuration
 
-While working with Mobile Utility Server, you need to perform several administrative tasks regularly, in order to keep the content up-to-date.
+Several administrative tasks should be performed regularly while working with Mobile Utility Server to keep the published content up-to-date.
 
 ## Adding New Certificate Fingerprint
 

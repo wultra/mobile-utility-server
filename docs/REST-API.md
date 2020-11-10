@@ -21,7 +21,7 @@ REST API returns errors in a unified format:
 }
 ```
 
-| attribute | Descriotion |
+| attribute | Description |
 |---|---|
 | `id` | Unique ID of an error, for correlation in logs. |
 | `code` | Unique code of an error, represents the error type. |
