@@ -7,6 +7,8 @@ Currently, the feature set is relatively narrow:
 - Time synchronization
 - Dynamic SSL Pinning
 
+You can read the full documentation in the [`/docs` folder](./docs/Readme.md).
+
 # License
 
 Mobile Utility Server is licensed using GNU AGPLv3 license. Please consult us at [hello@wultra.com](mailto:hello@wultra.com) for the software use.
