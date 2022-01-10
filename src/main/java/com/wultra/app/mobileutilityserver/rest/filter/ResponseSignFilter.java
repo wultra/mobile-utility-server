@@ -20,7 +20,7 @@ package com.wultra.app.mobileutilityserver.rest.filter;
 import com.google.common.io.BaseEncoding;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDAO;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppDao;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
@@ -50,12 +50,12 @@ import java.security.spec.InvalidKeySpecException;
 @Component
 public class ResponseSignFilter extends OncePerRequestFilter {
 
-    private final MobileAppDAO mobileAppService;
+    private final MobileAppDao mobileAppService;
     private final KeyConvertor keyConvertor;
     private final SignatureUtils signatureUtils;
 
     @Autowired
-    public ResponseSignFilter(MobileAppDAO mobileAppService, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
+    public ResponseSignFilter(MobileAppDao mobileAppService, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
         this.mobileAppService = mobileAppService;
         this.keyConvertor = keyConvertor;
         this.signatureUtils = signatureUtils;
