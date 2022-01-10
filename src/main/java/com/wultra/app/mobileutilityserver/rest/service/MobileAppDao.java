@@ -28,12 +28,12 @@ import org.springframework.stereotype.Service;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
-public class MobileAppDAO {
+public class MobileAppDao {
 
     private final MobileAppRepository repo;
 
     @Autowired
-    public MobileAppDAO(MobileAppRepository repo) {
+    public MobileAppDao(MobileAppRepository repo) {
         this.repo = repo;
     }
 

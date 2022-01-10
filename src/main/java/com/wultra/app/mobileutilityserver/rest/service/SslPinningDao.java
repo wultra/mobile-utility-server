@@ -34,13 +34,13 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
-public class SslPinningDAO {
+public class SslPinningDao {
 
     private final SslPinningFingerprintRepository repo;
     private final SslPinningFingerprintConverter converter;
 
     @Autowired
-    public SslPinningDAO(SslPinningFingerprintRepository repo, SslPinningFingerprintConverter converter) {
+    public SslPinningDao(SslPinningFingerprintRepository repo, SslPinningFingerprintConverter converter) {
         this.repo = repo;
         this.converter = converter;
     }

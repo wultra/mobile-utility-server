@@ -23,8 +23,8 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundEx
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDAO;
-import com.wultra.app.mobileutilityserver.rest.service.SslPinningDAO;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppDao;
+import com.wultra.app.mobileutilityserver.rest.service.SslPinningDao;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,11 +47,11 @@ import java.util.List;
 @Tag(name = "App Initialization Controller")
 public class AppInitializationController {
 
-    private final SslPinningDAO sslPinningDAO;
-    private final MobileAppDAO mobileAppDAO;
+    private final SslPinningDao sslPinningDAO;
+    private final MobileAppDao mobileAppDAO;
 
     @Autowired
-    public AppInitializationController(SslPinningDAO sslPinningDAO, MobileAppDAO mobileAppDAO) {
+    public AppInitializationController(SslPinningDao sslPinningDAO, MobileAppDao mobileAppDAO) {
         this.sslPinningDAO = sslPinningDAO;
         this.mobileAppDAO = mobileAppDAO;
     }
