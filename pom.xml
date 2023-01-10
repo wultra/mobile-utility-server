@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.12</version>
+        <version>2.6.14</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -64,6 +64,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <powerauth-crypto.version>1.4.0</powerauth-crypto.version>
     </properties>
 
     <dependencies>
@@ -103,22 +104,22 @@
         <!-- Crypto provider dependency -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.70</version>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.72</version>
         </dependency>
 
         <!-- PowerAuth Dependencies -->
         <dependency>
             <groupId>io.getlime.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
-            <version>1.4.0-SNAPSHOT</version>
+            <version>${powerauth-crypto.version}</version>
         </dependency>
 
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.11</version>
+            <version>1.6.14</version>
         </dependency>
 
         <!-- Test Dependencies -->
