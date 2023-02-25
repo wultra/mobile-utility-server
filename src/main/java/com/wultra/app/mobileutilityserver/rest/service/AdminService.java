@@ -172,7 +172,7 @@ public class AdminService {
             }
         }
 
-        MobileDomainEntity domainEntity = mobileDomainRepository.findFirstByDomainAndAppName(domain, mobileApp.getName());
+        MobileDomainEntity domainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(mobileApp.getName(), domain);
         if (domainEntity == null) {
             domainEntity = new MobileDomainEntity();
             domainEntity.setApp(mobileApp);
@@ -239,8 +239,16 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteFingerprint(String domain, String fingerprint) {
-        sslPinningFingerprintRepository.deleteAllByDomainAndFingerprint(domain, fingerprint);
+    public void deleteFingerprint(String appName, String domain, String fingerprint) {
+        final MobileDomainEntity mobileDomainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(appName, domain);
+        final List<SslPinningFingerprintDbEntity> fingerprints = mobileDomainEntity.getFingerprints();
+        for (SslPinningFingerprintDbEntity fingerprintDb: fingerprints) {
+            if (fingerprintDb.getFingerprint().equalsIgnoreCase(fingerprint)) {
+                fingerprints.remove(fingerprintDb);
+                mobileDomainRepository.save(mobileDomainEntity);
+                return;
+            }
+        }
     }
 
     @Transactional

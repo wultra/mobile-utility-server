@@ -19,6 +19,7 @@
 package com.wultra.app.mobileutilityserver.database.repo;
 
 import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -44,9 +45,6 @@ public interface SslPinningFingerprintRepository extends CrudRepository<SslPinni
 
     @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.app.name = :appName AND s.domain.domain = :domain")
     List<SslPinningFingerprintDbEntity> findFirstByAppNameAndDomain(@Param("appName") String appName, @Param("domain") String domain);
-
-    @Query("DELETE FROM SslPinningFingerprintDbEntity s WHERE s.domain.domain = :domain AND s.fingerprint = :fingerprint")
-    void deleteAllByDomainAndFingerprint(@Param("domain") String domain, @Param("fingerprint")  String fingerprint);
 
     void deleteAllByExpiresBefore(Long expires);
 

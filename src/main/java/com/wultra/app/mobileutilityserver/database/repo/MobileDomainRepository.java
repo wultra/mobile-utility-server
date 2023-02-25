@@ -32,10 +32,10 @@ public interface MobileDomainRepository extends CrudRepository<MobileDomainEntit
 
     /**
      * Find first domain by domain name.
-     * @param domain Domain name.
      * @param appName App name.
+     * @param domain Domain name.
      * @return Entity by domain name.
      */
-    MobileDomainEntity findFirstByDomainAndAppName(String domain, String appName);
+    MobileDomainEntity findFirstByAppNameAndDomain(String appName, String domain);
 
 }

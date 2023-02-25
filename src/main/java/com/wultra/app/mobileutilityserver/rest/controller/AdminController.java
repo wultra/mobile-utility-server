@@ -88,8 +88,8 @@ public class AdminController {
     }
 
     @DeleteMapping("apps/fingerprints")
-    public Response deleteFingerprint(@RequestParam("domain") String domain, @RequestParam("fingerprint") String fingerprint) {
-        adminService.deleteFingerprint(domain, fingerprint);
+    public Response deleteFingerprint(@RequestParam("appName") String appName, @RequestParam("domain") String domain, @RequestParam("fingerprint") String fingerprint) {
+        adminService.deleteFingerprint(appName, domain, fingerprint);
         return new Response();
     }
 
