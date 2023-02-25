@@ -21,6 +21,7 @@ package com.wultra.app.mobileutilityserver.database.model;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class MobileApp {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<MobileDomainEntity> domains;
+    private List<MobileDomainEntity> domains = new ArrayList<>();
 
     /**
      * Get ID.

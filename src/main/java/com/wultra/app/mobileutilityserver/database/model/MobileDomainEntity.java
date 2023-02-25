@@ -21,6 +21,7 @@ package com.wultra.app.mobileutilityserver.database.model;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class MobileDomainEntity {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<SslPinningFingerprintDbEntity> fingerprints;
+    private List<SslPinningFingerprintDbEntity> fingerprints = new ArrayList<>();
 
     /**
      * Get ID.

@@ -161,7 +161,7 @@ public class AdminService {
             throw new AppNotFoundException(appName);
         }
 
-        final List<SslPinningFingerprintDbEntity> fingerprintEntityOptional = sslPinningFingerprintRepository.findFirstByDomain(domain);
+        final List<SslPinningFingerprintDbEntity> fingerprintEntityOptional = sslPinningFingerprintRepository.findFirstByAppNameAndDomain(appName, domain);
         if (!fingerprintEntityOptional.isEmpty()) {
             for (SslPinningFingerprintDbEntity f : fingerprintEntityOptional) {
                 if (fingerprint.equalsIgnoreCase(f.getFingerprint())) {

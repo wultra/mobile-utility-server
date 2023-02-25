@@ -42,8 +42,8 @@ public interface SslPinningFingerprintRepository extends CrudRepository<SslPinni
     @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.app.name = :appName")
     List<SslPinningFingerprintDbEntity> findAllByAppName(@Param("appName") String appName);
 
-    @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.domain = :domain")
-    List<SslPinningFingerprintDbEntity> findFirstByDomain(@Param("domain") String domain);
+    @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.app.name = :appName AND s.domain.domain = :domain")
+    List<SslPinningFingerprintDbEntity> findFirstByAppNameAndDomain(@Param("appName") String appName, @Param("domain") String domain);
 
     @Query("DELETE FROM SslPinningFingerprintDbEntity s WHERE s.domain.domain = :domain AND s.fingerprint = :fingerprint")
     void deleteAllByDomainAndFingerprint(@Param("domain") String domain, @Param("fingerprint")  String fingerprint);
