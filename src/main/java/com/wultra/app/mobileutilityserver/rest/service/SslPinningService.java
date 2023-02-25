@@ -25,6 +25,7 @@ import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprin
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +35,13 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
-public class SslPinningDao {
+public class SslPinningService {
 
     private final SslPinningFingerprintRepository repo;
     private final SslPinningFingerprintConverter converter;
 
     @Autowired
-    public SslPinningDao(SslPinningFingerprintRepository repo, SslPinningFingerprintConverter converter) {
+    public SslPinningService(SslPinningFingerprintRepository repo, SslPinningFingerprintConverter converter) {
         this.repo = repo;
         this.converter = converter;
     }
@@ -52,6 +53,7 @@ public class SslPinningDao {
      * @param appName App name for which to return fingerprints.
      * @return Collection with SSL pinning fingerprints, possibly empty.
      */
+    @Transactional
     public List<SslPinningFingerprint> findSslPinningFingerprintsByAppName(String appName) {
         final List<SslPinningFingerprintDbEntity> fingerprints = repo.findAllByAppName(appName);
         List<SslPinningFingerprint> result = new ArrayList<>();

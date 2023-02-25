@@ -46,45 +46,82 @@ public class MobileApp {
     @Column(name = "sign_public_key")
     private String signingPublicKey;
 
-    public MobileApp() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    /**
+     * Get ID.
+     * @return ID.
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Set ID.
+     * @param id ID.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Get mobile app name.
+     * @return App name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set mobile app name.
+     * @param name App name.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get mobile app display name.
+     * @return App display name.
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Set mobile app display name.
+     * @param displayName App display name.
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
+    /**
+     * Get app signing private key.
+     * @return Signing private key.
+     */
     public String getSigningPrivateKey() {
         return signingPrivateKey;
     }
 
+    /**
+     * Set app signing private key.
+     * @param signingPrivateKey Signing private key.
+     */
     public void setSigningPrivateKey(String signingPrivateKey) {
         this.signingPrivateKey = signingPrivateKey;
     }
 
+    /**
+     * Get app signing public key.
+     * @return Signing public key.
+     */
     public String getSigningPublicKey() {
         return signingPublicKey;
     }
 
+    /**
+     * Set app signing public key.
+     * @param signingPublicKey Signing public key.
+     */
     public void setSigningPublicKey(String signingPublicKey) {
         this.signingPublicKey = signingPublicKey;
     }

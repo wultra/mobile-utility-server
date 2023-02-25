@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2020  Wultra s.r.o.
+ * Copyright (C) 2023  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,22 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.model.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Object representing an error response.
+ * Exception for situations where application related issues occur.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-@Data
-@AllArgsConstructor
-public class ErrorResponse {
+public class AppException extends Exception {
 
-    private String code;
-    private String message;
-    private String id;
+    /**
+     * Constructor with a message.
+     *
+     * @param message Message.
+     */
+    public AppException(String message) {
+        super(message);
+    }
 
+    /**
+     * Constructor with message and cause.
+     *
+     * @param message Message.
+     * @param cause Cause.
+     */
+    public AppException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

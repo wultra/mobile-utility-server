@@ -22,11 +22,11 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHea
 import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDao;
-import com.wultra.app.mobileutilityserver.rest.service.SslPinningDao;
-import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.app.mobileutilityserver.rest.service.SslPinningService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,13 +47,13 @@ import java.util.List;
 @Tag(name = "App Initialization Controller")
 public class AppInitializationController {
 
-    private final SslPinningDao sslPinningDAO;
-    private final MobileAppDao mobileAppDAO;
+    private final SslPinningService sslPinningService;
+    private final MobileAppService mobileAppService;
 
     @Autowired
-    public AppInitializationController(SslPinningDao sslPinningDAO, MobileAppDao mobileAppDAO) {
-        this.sslPinningDAO = sslPinningDAO;
-        this.mobileAppDAO = mobileAppDAO;
+    public AppInitializationController(SslPinningService sslPinningService, MobileAppService mobileAppService) {
+        this.sslPinningService = sslPinningService;
+        this.mobileAppService = mobileAppService;
     }
 
     @GetMapping
@@ -76,13 +76,13 @@ public class AppInitializationController {
         }
 
         // Check if an app exists
-        final boolean appExists = mobileAppDAO.appExists(appName);
+        final boolean appExists = mobileAppService.appExists(appName);
         if (!appExists) {
             throw new AppNotFoundException(appName);
         }
 
         // Find the fingerprints
-        final List<SslPinningFingerprint> fingerprints = sslPinningDAO.findSslPinningFingerprintsByAppName(appName);
+        final List<SslPinningFingerprint> fingerprints = sslPinningService.findSslPinningFingerprintsByAppName(appName);
 
         // Return the response
         final AppInitResponse response = new AppInitResponse();
@@ -92,7 +92,7 @@ public class AppInitializationController {
 
     @GetMapping("public-key")
     public PublicKeyResponse publicKeys(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) throws PublicKeyNotFoundException {
-        final String publicKey = mobileAppDAO.publicKey(appName);
+        final String publicKey = mobileAppService.publicKey(appName);
         if (publicKey == null) {
             throw new PublicKeyNotFoundException(appName);
         }

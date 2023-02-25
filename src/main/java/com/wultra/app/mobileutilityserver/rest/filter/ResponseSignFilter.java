@@ -17,14 +17,12 @@
  */
 package com.wultra.app.mobileutilityserver.rest.filter;
 
-import com.google.common.io.BaseEncoding;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDao;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.app.mobileutilityserver.util.CryptoUtils;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
-import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
-import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -39,7 +37,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -50,15 +47,14 @@ import java.security.spec.InvalidKeySpecException;
 @Component
 public class ResponseSignFilter extends OncePerRequestFilter {
 
-    private final MobileAppDao mobileAppService;
-    private final KeyConvertor keyConvertor;
-    private final SignatureUtils signatureUtils;
+    private final MobileAppService mobileAppService;
+
+    private final CryptoUtils cryptoUtils;
 
     @Autowired
-    public ResponseSignFilter(MobileAppDao mobileAppService, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
+    public ResponseSignFilter(MobileAppService mobileAppService, CryptoUtils cryptoUtils) {
         this.mobileAppService = mobileAppService;
-        this.keyConvertor = keyConvertor;
-        this.signatureUtils = signatureUtils;
+        this.cryptoUtils = cryptoUtils;
     }
 
     @Override
@@ -84,14 +80,11 @@ public class ResponseSignFilter extends OncePerRequestFilter {
                 final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);
                 final String privateKeyBase64 = mobileAppService.privateKey(appName);
                 if (privateKeyBase64 != null) {
-                    // Convert the private key
-                    final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(BaseEncoding.base64().decode(privateKeyBase64));
-
                     // Compute the signature
-                    final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey);
+                    final String ecdsaSignature = cryptoUtils.computeECDSASignature(signatureBase, privateKeyBase64);
 
                     // Set the request header
-                    response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, BaseEncoding.base64().encode(ecdsaSignature));
+                    response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, ecdsaSignature);
                 }
             } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
                 throw new IOException(ex);

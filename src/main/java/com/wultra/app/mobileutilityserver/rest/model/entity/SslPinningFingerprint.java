@@ -17,6 +17,8 @@
  */
 package com.wultra.app.mobileutilityserver.rest.model.entity;
 
+import lombok.Data;
+
 /**
  * A REST API model class representing a fingerprint of an SSL certificate. Each certificate fingerprint
  * is related to some domain ("name") and has set expiration timestamp, which is usually the same as the
@@ -24,34 +26,11 @@ package com.wultra.app.mobileutilityserver.rest.model.entity;
  *
  * @author Petr Dvorak, petr@wultra.com
  */
+@Data
 public class SslPinningFingerprint {
 
     private String name;
     private String fingerprint;
     private long expires;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
-    }
-
-    public long getExpires() {
-        return expires;
-    }
-
-    public void setExpires(long expires) {
-        this.expires = expires;
-    }
     
 }

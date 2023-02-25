@@ -59,6 +59,16 @@ public class ExceptionHandlingControllerAdvice {
         return new ErrorResponse(code, message, id);
     }
 
+    @ExceptionHandler(AppException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorResponse handleAppException(AppException ex) {
+        String code = "APP_EXCEPTION";
+        String message = ex.getMessage();
+        String id = UUID.randomUUID().toString();
+        logger.warn("Problem occurred while working with applications: {}, id: {}", ex.getMessage(), id);
+        return new ErrorResponse(code, message, id);
+    }
+
     @ExceptionHandler(AppNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleAppNotFoundException(AppNotFoundException ex) {

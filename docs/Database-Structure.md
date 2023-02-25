@@ -6,7 +6,7 @@ The database structure is extremely simple, we provide an example in PostgreSQL 
 
 The following image captures the overview of the tables in the schema:
 
-<img src="./img/mobile_app.png" width="320" alt="Mobile Utility Server DB Schema"/>
+<img src="./img/mobile_app.png" width="544" alt="Mobile Utility Server DB Schema"/>
 
 ## PostgreSQL Schema Scripts
 

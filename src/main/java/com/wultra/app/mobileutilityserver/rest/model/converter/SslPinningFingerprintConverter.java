@@ -19,6 +19,7 @@ package com.wultra.app.mobileutilityserver.rest.model.converter;
 
 import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,8 +39,24 @@ public class SslPinningFingerprintConverter {
         if (source == null) {
             return null;
         }
-        SslPinningFingerprint destination = new SslPinningFingerprint();
-        destination.setName(source.getName());
+        final SslPinningFingerprint destination = new SslPinningFingerprint();
+        destination.setName(source.getDomain().getDomain());
+        destination.setFingerprint(source.getFingerprint());
+        destination.setExpires(source.getExpires());
+        return destination;
+    }
+
+    /**
+     * Convert a database representation of a fingerprint to REST API representation used in admin.
+     * @param source SSL fingerprint model in DB.
+     * @return SSL fingerprint model in admin REST API.
+     */
+    public FingerprintDetailResponse convertFingerprintDetailResponse(SslPinningFingerprintDbEntity source) {
+        if (source == null) {
+            return null;
+        }
+        final FingerprintDetailResponse destination = new FingerprintDetailResponse();
+        destination.setName(source.getDomain().getDomain());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
         return destination;

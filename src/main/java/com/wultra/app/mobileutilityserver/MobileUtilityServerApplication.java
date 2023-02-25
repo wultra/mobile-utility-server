@@ -17,16 +17,19 @@
  */
 package com.wultra.app.mobileutilityserver;
 
+import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
 import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.security.Security;
 
 @SpringBootApplication
+@EnableScheduling
 public class MobileUtilityServerApplication {
 
     static {
@@ -36,6 +39,11 @@ public class MobileUtilityServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MobileUtilityServerApplication.class, args);
+    }
+
+    @Bean
+    public KeyGenerator keyGenerator() {
+        return new KeyGenerator();
     }
 
     @Bean

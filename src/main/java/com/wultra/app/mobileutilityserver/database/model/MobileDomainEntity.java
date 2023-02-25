@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2020  Wultra s.r.o.
+ * Copyright (C) 2023  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,28 +21,25 @@ package com.wultra.app.mobileutilityserver.database.model;
 import javax.persistence.*;
 
 /**
- * Entity representing an SSL pinning fingerprint.
+ * Entity representing an internet domain.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "mobile_ssl_pinning")
-public class SslPinningFingerprintDbEntity {
+@Table(name = "mobile_domain")
+public class MobileDomainEntity {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "fingerprint")
-    private String fingerprint;
-
-    @Column(name = "expires")
-    private Long expires;
+    @Column(name = "domain")
+    private String domain;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mobile_domain_id")
-    private MobileDomainEntity domain;
+    @JoinColumn(name = "app_id")
+    private MobileApp app;
 
     /**
      * Get ID.
@@ -61,50 +58,34 @@ public class SslPinningFingerprintDbEntity {
     }
 
     /**
-     * Get domain certificate fingerprint.
-     * @return Certificate fingerprint.
+     * Get domain common name.
+     * @return Domain common name.
      */
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    /**
-     * Set domain certificate fingerprint.
-     * @param fingerprint Certificate fingerprint.
-     */
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
-    }
-
-    /**
-     * Get expiration timestamp.
-     * @return Expiration timestamp.
-     */
-    public Long getExpires() {
-        return expires;
-    }
-
-    /**
-     * Set expiration timestamp.
-     * @param expires Expiration timestamp.
-     */
-    public void setExpires(Long expires) {
-        this.expires = expires;
-    }
-
-    /**
-     * Get associated domain.
-     * @return Domain.
-     */
-    public MobileDomainEntity getDomain() {
+    public String getDomain() {
         return domain;
     }
 
     /**
-     * Set associated domain.
-     * @param domain Domain.
+     * Set domain common name.
+     * @param domain Common name.
      */
-    public void setDomain(MobileDomainEntity domain) {
+    public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    /**
+     * Get related mobile application.
+     * @return Mobile application.
+     */
+    public MobileApp getApp() {
+        return app;
+    }
+
+    /**
+     * Set related mobile application.
+     * @param app Mobile application.
+     */
+    public void setApp(MobileApp app) {
+        this.app = app;
     }
 }
