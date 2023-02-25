@@ -16,27 +16,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.request;
+package com.wultra.app.mobileutilityserver.rest.model.errors;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-
 /**
- * Request for creating a new application.
+ * Entity class representing a violation of constraints.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class CreateApplicationRequest {
+public class Violation {
 
-    @Pattern(regexp = "^[a-zA-Z0-9-_.][a-zA-Z0-9-_.]{1,255}$")
-    @Schema(type = "string", example = "mobile-app")
-    private String name;
-
-    @NotBlank
-    private String displayName;
+    private final String fieldName;
+    private final Object invalidValue;
+    private final String hint;
 
 }

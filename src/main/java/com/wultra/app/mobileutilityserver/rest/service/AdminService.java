@@ -28,11 +28,13 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.SslPinningFingerprintConverter;
+import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintAutoRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
 import com.wultra.app.mobileutilityserver.util.CryptoUtils;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -129,6 +131,25 @@ public class AdminService {
     }
 
     @Transactional
+    public ApplicationListResponse applicationList() {
+        final Iterable<MobileApp> mobileApps = mobileAppRepository.findAll();
+        final ApplicationListResponse response = new ApplicationListResponse();
+        for (MobileApp mobileApp: mobileApps) {
+            final MobileApplication app = new MobileApplication();
+            app.setName(mobileApp.getName());
+            app.setDisplayName(mobileApp.getDisplayName());
+            response.getApplications().add(app);
+        }
+        return response;
+    }
+
+    @Transactional
+    public ApplicationDetailResponse applicationDetail(String name) {
+        final MobileApp mobileApp = mobileAppRepository.findFirstByName(name);
+        return mobileAppConverter.convertMobileApp(mobileApp);
+    }
+
+    @Transactional
     public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintRequest request) throws AppNotFoundException {
         final String appName = request.getAppName();
         final String domain = request.getDomain();
@@ -194,7 +215,7 @@ public class AdminService {
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintAutoRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, AppException, CertificateEncodingException {
+    public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintAutoRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
         final String domain = request.getDomain();
         final String appName = request.getAppName();
 
@@ -241,8 +262,7 @@ public class AdminService {
                 request.setAppName(domain.getApp().getName());
                 request.setDomain(domain.getDomain());
                 createApplicationFingerprint(request);
-            } catch (AppNotFoundException | AppException | CertificateEncodingException | IOException |
-                     NoSuchAlgorithmException e) {
+            } catch (AppNotFoundException | CertificateEncodingException | IOException | NoSuchAlgorithmException e) {
                 logger.error("Exception occurred when refreshing fingerprint: {}", e.getMessage());
                 logger.debug("Exception details:", e);
             }

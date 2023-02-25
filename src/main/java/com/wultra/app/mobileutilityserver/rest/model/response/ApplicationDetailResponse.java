@@ -18,7 +18,11 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
+import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Response with application details.
@@ -31,5 +35,7 @@ public class ApplicationDetailResponse {
     private String name;
     private String displayName;
     private String publicKey;
+
+    private final List<Domain> domains = new ArrayList<>();
 
 }

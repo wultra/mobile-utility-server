@@ -61,20 +61,20 @@ public class ResponseSignFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         final ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
         chain.doFilter(request, responseWrapper);
-        String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
+        final String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
         if (HttpHeaders.validChallengeHeader(requestChallenge)) {
             try {
 
                 // Prepare the signature base data
-                byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
-                byte[] rb = responseWrapper.getContentAsByteArray();
+                final byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
+                final byte[] rb = responseWrapper.getContentAsByteArray();
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream( );
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream( );
                 baos.write(cb);
                 baos.write('&');
                 baos.write(rb);
 
-                byte[] signatureBase = baos.toByteArray();
+                final byte[] signatureBase = baos.toByteArray();
 
                 // Fetch the app private key, check if such app exists
                 final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);

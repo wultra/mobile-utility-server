@@ -33,6 +33,6 @@ import java.util.List;
 public class AppInitResponse {
 
     private long timestamp = Instant.now().getEpochSecond();
-    private List<SslPinningFingerprint> fingerprints = new ArrayList<>();;
+    private List<SslPinningFingerprint> fingerprints = new ArrayList<>();
 
 }

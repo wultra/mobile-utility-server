@@ -18,7 +18,10 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
+import lombok.ToString;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Entity representing an internet domain.
@@ -40,6 +43,10 @@ public class MobileDomainEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_id")
     private MobileApp app;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<SslPinningFingerprintDbEntity> fingerprints;
 
     /**
      * Get ID.
@@ -87,5 +94,9 @@ public class MobileDomainEntity {
      */
     public void setApp(MobileApp app) {
         this.app = app;
+    }
+
+    public List<SslPinningFingerprintDbEntity> getFingerprints() {
+        return fingerprints;
     }
 }

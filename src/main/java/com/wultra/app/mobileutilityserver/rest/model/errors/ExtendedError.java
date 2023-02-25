@@ -16,27 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.request;
+package com.wultra.app.mobileutilityserver.rest.model.errors;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.getlime.core.rest.model.base.entity.Error;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Request for creating a new application.
+ * Error response that contains a list of multiple error causes.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class CreateApplicationRequest {
+@EqualsAndHashCode(callSuper = true)
+public class ExtendedError extends Error {
 
-    @Pattern(regexp = "^[a-zA-Z0-9-_.][a-zA-Z0-9-_.]{1,255}$")
-    @Schema(type = "string", example = "mobile-app")
-    private String name;
+    private final List<Violation> violations = new ArrayList<>();
 
-    @NotBlank
-    private String displayName;
-
+    public ExtendedError(String code, String message) {
+        super(code, message);
+    }
 }

@@ -16,27 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.request;
+package com.wultra.app.mobileutilityserver.rest.model.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Request for creating a new application.
+ * Model class representing domain.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class CreateApplicationRequest {
+public class Domain {
 
-    @Pattern(regexp = "^[a-zA-Z0-9-_.][a-zA-Z0-9-_.]{1,255}$")
-    @Schema(type = "string", example = "mobile-app")
     private String name;
-
-    @NotBlank
-    private String displayName;
+    private final List<SslPinningFingerprint> fingerprints = new ArrayList<>();
 
 }

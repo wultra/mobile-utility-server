@@ -20,15 +20,21 @@ package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
 public class CreateApplicationFingerprintRequest {
 
+    @NotBlank
     private String appName;
+    @NotBlank
     private String domain;
+    @NotBlank
     private String fingerprint;
+    @NotBlank
     private Long expires;
 
 }

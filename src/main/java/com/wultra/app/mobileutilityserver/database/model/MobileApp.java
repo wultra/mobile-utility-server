@@ -18,7 +18,10 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
+import lombok.ToString;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Entity representing a mobile app.
@@ -45,6 +48,10 @@ public class MobileApp {
 
     @Column(name = "sign_public_key")
     private String signingPublicKey;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<MobileDomainEntity> domains;
 
     /**
      * Get ID.
@@ -124,5 +131,21 @@ public class MobileApp {
      */
     public void setSigningPublicKey(String signingPublicKey) {
         this.signingPublicKey = signingPublicKey;
+    }
+
+    /**
+     * Get the list of domains.
+     * @return Domains.
+     */
+    public List<MobileDomainEntity> getDomains() {
+        return domains;
+    }
+
+    /**
+     * Set the list of domains.
+     * @param domains Domains.
+     */
+    public void setDomains(List<MobileDomainEntity> domains) {
+        this.domains = domains;
     }
 }

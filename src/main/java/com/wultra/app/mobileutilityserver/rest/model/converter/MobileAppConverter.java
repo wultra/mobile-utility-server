@@ -19,6 +19,10 @@
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
 import com.wultra.app.mobileutilityserver.database.model.MobileApp;
+import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
+import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
+import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
+import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +47,27 @@ public class MobileAppConverter {
         destination.setName(source.getName());
         destination.setDisplayName(source.getDisplayName());
         destination.setPublicKey(source.getSigningPublicKey());
+        for (MobileDomainEntity mobileDomainEntity : source.getDomains()) {
+            final Domain domain = convertDomain(mobileDomainEntity);
+            destination.getDomains().add(domain);
+        }
         return destination;
     }
+
+    public Domain convertDomain(MobileDomainEntity source) {
+        if (source == null) {
+            return null;
+        }
+        final Domain destination = new Domain();
+        destination.setName(source.getDomain());
+        for (SslPinningFingerprintDbEntity fingerprint : source.getFingerprints()) {
+            final SslPinningFingerprint sslPinningFingerprint = new SslPinningFingerprint();
+            sslPinningFingerprint.setName(fingerprint.getDomain().getDomain());
+            sslPinningFingerprint.setFingerprint(fingerprint.getFingerprint());
+            sslPinningFingerprint.setExpires(fingerprint.getExpires());
+            destination.getFingerprints().add(sslPinningFingerprint);
+        }
+        return destination;
+    }
+
 }
