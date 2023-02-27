@@ -21,6 +21,8 @@ package com.wultra.app.mobileutilityserver.rest.model.response;
 import lombok.Data;
 
 /**
+ * Response for the fingerprint detail.
+ *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data

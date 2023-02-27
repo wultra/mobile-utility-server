@@ -24,6 +24,8 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 
 /**
+ * Request for creating fingerprint by directly providing the fingerprint data.
+ *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data

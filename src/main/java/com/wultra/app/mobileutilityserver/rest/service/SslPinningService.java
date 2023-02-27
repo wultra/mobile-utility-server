@@ -56,7 +56,7 @@ public class SslPinningService {
     @Transactional
     public List<SslPinningFingerprint> findSslPinningFingerprintsByAppName(String appName) {
         final List<SslPinningFingerprintDbEntity> fingerprints = repo.findAllByAppName(appName);
-        List<SslPinningFingerprint> result = new ArrayList<>();
+        final List<SslPinningFingerprint> result = new ArrayList<>();
         for (SslPinningFingerprintDbEntity f: fingerprints) {
             final SslPinningFingerprint fingerprint = converter.convertFrom(f);
             if (fingerprint != null) {
