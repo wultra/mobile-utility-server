@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Database Configuration - JDBC -->
+    <Parameter name="spring.datasource.url" value="${MOBILE_UTILITY_SERVER_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/powerauth}"/>
+    <Parameter name="spring.datasource.username" value="${MOBILE_UTILITY_SERVER_DATASOURCE_USERNAME:powerauth}"/>
+    <Parameter name="spring.datasource.password" value="${MOBILE_UTILITY_SERVER_DATASOURCE_PASSWORD:}"/>
+    <Parameter name="spring.datasource.driver-class-name" value="${MOBILE_UTILITY_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}"/>
+    <Parameter name="spring.jpa.hibernate.ddl-auto" value="${MOBILE_UTILITY_SERVER_JPA_DDL_AUTO:none}"/>
+
+    <!-- Configuration of Database Charset -->
+    <Parameter name="spring.jpa.properties.hibernate.connection.CharSet" value="${MOBILE_UTILITY_SERVER_JPA_CHARSET:utf8mb4}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.characterEncoding" value="${MOBILE_UTILITY_SERVER_JPA_CHARACTER_ENCODING:utf8}"/>
+    <Parameter name="spring.jpa.properties.hibernate.connection.useUnicode" value="${MOBILE_UTILITY_SERVER_JPA_USE_UNICODE:true}"/>
+
+    <!-- Additional JPA Configuration -->
+    <Parameter name="spring.jpa.database-platform" value="${MOBILE_UTILITY_SERVER_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQL10Dialect}"/>
+    <Parameter name="spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
+
+    <!-- Database Configuration - JNDI -->
+    <Parameter name="spring.datasource.jndi-name" value="${MOBILE_UTILITY_SERVER_DATASOURCE_JNDI_NAME:false}"/>
+
+</Context>
