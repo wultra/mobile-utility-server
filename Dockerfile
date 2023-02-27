@@ -148,7 +148,7 @@ RUN sed -i -e 's/<Engine name=\"Catalina\"/<Engine name=\"Catalina\" startStopTh
   && sed -i -e 's/tomcat.util.scan.StandardJarScanFilter.jarsToSkip=\\/tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*,\\/g' /usr/local/tomcat/conf/catalina.properties
 
 # Add valve for proxy with SSL termination
-RUN sed -i -e 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto"\/><\/Host>/' /usr/local/tomcat/conf/server.xml
+RUN sed -i -e 's/<\/Host>/<Valve className="org.apache.catalina.valves.RemoteIpValve" remoteIpHeader="X-Forwarded-For" protocolHeader="X-Forwarded-Proto" portHeader="X-Forwarded-Port"\/><\/Host>/' /usr/local/tomcat/conf/server.xml
 
 # Copy libraries
 COPY deploy/lib/postgresql*.jar $TOMCAT_HOME/lib/

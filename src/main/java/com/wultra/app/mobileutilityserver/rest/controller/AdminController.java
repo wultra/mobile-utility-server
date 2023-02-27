@@ -20,9 +20,9 @@ package com.wultra.app.mobileutilityserver.rest.controller;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintDirectRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
