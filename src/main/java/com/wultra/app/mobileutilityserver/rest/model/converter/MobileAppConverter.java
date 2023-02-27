@@ -24,6 +24,7 @@ import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDb
 import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
 import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +34,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MobileAppConverter {
+
+    private final SslPinningFingerprintConverter fingerprintConverter;
+
+    @Autowired
+    public MobileAppConverter(SslPinningFingerprintConverter fingerprintConverter) {
+        this.fingerprintConverter = fingerprintConverter;
+    }
 
     /**
      * Convert mobile app model to application detail response.
@@ -61,10 +69,7 @@ public class MobileAppConverter {
         final Domain destination = new Domain();
         destination.setName(source.getDomain());
         for (SslPinningFingerprintDbEntity fingerprint : source.getFingerprints()) {
-            final SslPinningFingerprint sslPinningFingerprint = new SslPinningFingerprint();
-            sslPinningFingerprint.setName(fingerprint.getDomain().getDomain());
-            sslPinningFingerprint.setFingerprint(fingerprint.getFingerprint());
-            sslPinningFingerprint.setExpires(fingerprint.getExpires());
+            final SslPinningFingerprint sslPinningFingerprint = fingerprintConverter.convertFrom(fingerprint);
             destination.getFingerprints().add(sslPinningFingerprint);
         }
         return destination;

@@ -29,12 +29,6 @@ import javax.validation.constraints.NotBlank;
 public class CreateApplicationFingerprintRequest {
 
     @NotBlank
-    private String appName;
-    @NotBlank
     private String domain;
-    @NotBlank
-    private String fingerprint;
-    @NotBlank
-    private Long expires;
 
 }

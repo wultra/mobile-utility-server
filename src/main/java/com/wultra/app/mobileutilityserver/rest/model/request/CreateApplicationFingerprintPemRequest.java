@@ -19,6 +19,7 @@
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 
@@ -26,12 +27,9 @@ import javax.validation.constraints.NotBlank;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class CreateApplicationFingerprintPemRequest {
+@EqualsAndHashCode(callSuper = true)
+public class CreateApplicationFingerprintPemRequest extends CreateApplicationFingerprintRequest {
 
-    @NotBlank
-    private String appName;
-    @NotBlank
-    private String domain;
     @NotBlank
     private String pem;
 

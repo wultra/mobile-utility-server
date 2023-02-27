@@ -38,4 +38,10 @@ public interface MobileDomainRepository extends CrudRepository<MobileDomainEntit
      */
     MobileDomainEntity findFirstByAppNameAndDomain(String appName, String domain);
 
+    /**
+     * Delete domains by domain name.
+     * @param appName App name.
+     * @param domain Domain name.
+     */
+    void deleteByAppNameAndDomain(String appName, String domain);
 }

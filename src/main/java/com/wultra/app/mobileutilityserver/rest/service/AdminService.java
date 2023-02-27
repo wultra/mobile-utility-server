@@ -29,9 +29,9 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundExceptio
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.SslPinningFingerprintConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintAutoRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintDirectRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
@@ -150,8 +150,7 @@ public class AdminService {
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintRequest request) throws AppNotFoundException {
-        final String appName = request.getAppName();
+    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintDirectRequest request) throws AppNotFoundException {
         final String domain = request.getDomain();
         final String fingerprint = request.getFingerprint();
         final Long expires = request.getExpires();
@@ -193,9 +192,8 @@ public class AdminService {
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintPemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
+    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintPemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
 
-        final String appName = request.getAppName();
         final String domain = request.getDomain();
         final String pem = request.getPem();
 
@@ -205,19 +203,17 @@ public class AdminService {
         final X509CertificateHolder x509Cert = (X509CertificateHolder) pemInfo;
         final long notAfter = x509Cert.getNotAfter().getTime() / 1000;
 
-        final CreateApplicationFingerprintRequest innerRequest = new CreateApplicationFingerprintRequest();
-        innerRequest.setAppName(appName);
+        final CreateApplicationFingerprintDirectRequest innerRequest = new CreateApplicationFingerprintDirectRequest();
         innerRequest.setDomain(domain);
         innerRequest.setFingerprint(cryptoUtils.computeSHA256Signature(pem.getBytes(StandardCharsets.UTF_8)));
         innerRequest.setExpires(notAfter);
 
-        return this.createApplicationFingerprint(innerRequest);
+        return this.createApplicationFingerprint(appName, innerRequest);
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(CreateApplicationFingerprintAutoRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
+    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
         final String domain = request.getDomain();
-        final String appName = request.getAppName();
 
         final SSLSocketFactory factory = HttpsURLConnection.getDefaultSSLSocketFactory();
         final SSLSocket socket = (SSLSocket) factory.createSocket(domain, 443);
@@ -230,11 +226,10 @@ public class AdminService {
         logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
         final CreateApplicationFingerprintPemRequest innerRequest = new CreateApplicationFingerprintPemRequest();
-        innerRequest.setAppName(appName);
         innerRequest.setDomain(domain);
         innerRequest.setPem(certPem);
 
-        return this.createApplicationFingerprint(innerRequest);
+        return this.createApplicationFingerprint(appName, innerRequest);
 
     }
 
@@ -252,6 +247,11 @@ public class AdminService {
     }
 
     @Transactional
+    public void deleteDomain(String appName, String domain) {
+        mobileDomainRepository.deleteByAppNameAndDomain(appName, domain);
+    }
+
+    @Transactional
     public void deleteExpiredFingerprints() {
         sslPinningFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
     }
@@ -266,10 +266,9 @@ public class AdminService {
         final Iterable<MobileDomainEntity> domainEntities = mobileDomainRepository.findAll();
         for (MobileDomainEntity domain : domainEntities) {
             try {
-                final CreateApplicationFingerprintAutoRequest request = new CreateApplicationFingerprintAutoRequest();
-                request.setAppName(domain.getApp().getName());
+                final CreateApplicationFingerprintRequest request = new CreateApplicationFingerprintRequest();
                 request.setDomain(domain.getDomain());
-                createApplicationFingerprint(request);
+                createApplicationFingerprint(domain.getApp().getName(), request);
             } catch (AppNotFoundException | CertificateEncodingException | IOException | NoSuchAlgorithmException e) {
                 logger.error("Exception occurred when refreshing fingerprint: {}", e.getMessage());
                 logger.debug("Exception details:", e);

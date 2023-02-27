@@ -32,7 +32,7 @@ import javax.validation.constraints.Pattern;
 @Data
 public class CreateApplicationRequest {
 
-    @Pattern(regexp = "^[a-zA-Z0-9-_.][a-zA-Z0-9-_.]{1,255}$")
+    @Pattern(regexp = "^[a-zA-Z0-9][a-zA-Z0-9-_]{1,254}$", message = "The name must be only in uppercase or lowercase letters, numbers and '-' or '_' characters")
     @Schema(type = "string", example = "mobile-app")
     private String name;
 
