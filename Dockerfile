@@ -17,13 +17,13 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 # LIQUIBASE_ prefix must not be used, because this is only supported in PRO version
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.9.1 \
+    LB_VERSION=4.18.0 \
     NGINX_VERSION=1.23.3 \
-    NJS_VERSION=0.7.9 \
+    NJS_VERSION=0.7.10 \
     PKG_RELEASE=1~jammy \
     TOMCAT_HOME=/usr/local/tomcat \
     TOMCAT_MAJOR=9 \
-    TOMCAT_VERSION=9.0.70 \
+    TOMCAT_VERSION=9.0.72 \
     TZ=UTC
 
 ENV PATH=$PATH:$LB_HOME:$TOMCAT_HOME/bin
@@ -35,7 +35,7 @@ RUN apt-get -y update  \
 
 # Install tomcat
 RUN curl -jkSL -o /tmp/apache-tomcat.tar.gz http://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
-    && [ "9b57b332f4cfb2c4b9250b95924314507ebafec44f732e755be96d35e1a50d98ca3ea11a8c62e0c6fde2541d31a981f5ca792ea9931b2551b81b495932474726  /tmp/apache-tomcat.tar.gz" = "$(sha512sum /tmp/apache-tomcat.tar.gz)" ] \
+    && [ "43c8fb109d130035d57e0e942f90ff9447ee0f71d9f1ab816f2ad9dd8b73c14f1457dbd26d50e31e09101b0629543f595a661a11ef0b43b16934e40052f18f4a  /tmp/apache-tomcat.tar.gz" = "$(sha512sum /tmp/apache-tomcat.tar.gz)" ] \
     && gunzip /tmp/apache-tomcat.tar.gz \
     && tar -C /opt -xf /tmp/apache-tomcat.tar \
     && ln -s /opt/apache-tomcat-$TOMCAT_VERSION $TOMCAT_HOME
@@ -165,7 +165,7 @@ COPY --from=build /workspace/target/*.war \
 # This setup was inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
 RUN set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "b7d2afbd0b6a3443f3eeb8050785eeabee3a76a12473014dc2788dce56b23a8d  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && [ "6113f652d06a71556d6ed4a8bb371ab2d843010cb0365379e83df8b4564a6a76  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" \
