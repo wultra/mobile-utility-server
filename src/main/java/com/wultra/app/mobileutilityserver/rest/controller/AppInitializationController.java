@@ -22,11 +22,11 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHea
 import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.service.CertificateFingerprintService;
 import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
-import com.wultra.app.mobileutilityserver.rest.service.SslPinningService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,12 +47,12 @@ import java.util.List;
 @Tag(name = "App Initialization Controller")
 public class AppInitializationController {
 
-    private final SslPinningService sslPinningService;
+    private final CertificateFingerprintService certificateFingerprintService;
     private final MobileAppService mobileAppService;
 
     @Autowired
-    public AppInitializationController(SslPinningService sslPinningService, MobileAppService mobileAppService) {
-        this.sslPinningService = sslPinningService;
+    public AppInitializationController(CertificateFingerprintService certificateFingerprintService, MobileAppService mobileAppService) {
+        this.certificateFingerprintService = certificateFingerprintService;
         this.mobileAppService = mobileAppService;
     }
 
@@ -82,7 +82,7 @@ public class AppInitializationController {
         }
 
         // Find the fingerprints
-        final List<SslPinningFingerprint> fingerprints = sslPinningService.findSslPinningFingerprintsByAppName(appName);
+        final List<NamedCertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(appName);
 
         // Return the response
         final AppInitResponse response = new AppInitResponse();

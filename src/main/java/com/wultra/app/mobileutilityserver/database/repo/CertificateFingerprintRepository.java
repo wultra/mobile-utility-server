@@ -18,8 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.database.repo;
 
-import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
-import org.springframework.data.jpa.repository.Modifying;
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -33,18 +32,18 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Repository
-public interface SslPinningFingerprintRepository extends CrudRepository<SslPinningFingerprintDbEntity, Long> {
+public interface CertificateFingerprintRepository extends CrudRepository<CertificateFingerprintEntity, Long> {
 
     /**
      * Get the collection of SSL pinning fingerprints for a given app.
      * @param appName App name.
      * @return List of SSL pinning fingerprints.
      */
-    @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.app.name = :appName")
-    List<SslPinningFingerprintDbEntity> findAllByAppName(@Param("appName") String appName);
+    @Query("SELECT s FROM CertificateFingerprintEntity s WHERE s.domain.app.name = :appName")
+    List<CertificateFingerprintEntity> findAllByAppName(@Param("appName") String appName);
 
-    @Query("SELECT s FROM SslPinningFingerprintDbEntity s WHERE s.domain.app.name = :appName AND s.domain.domain = :domain")
-    List<SslPinningFingerprintDbEntity> findFirstByAppNameAndDomain(@Param("appName") String appName, @Param("domain") String domain);
+    @Query("SELECT s FROM CertificateFingerprintEntity s WHERE s.domain.app.name = :appName AND s.domain.domain = :domain")
+    List<CertificateFingerprintEntity> findFirstByAppNameAndDomain(@Param("appName") String appName, @Param("domain") String domain);
 
     void deleteAllByExpiresBefore(Long expires);
 

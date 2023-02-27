@@ -44,11 +44,11 @@ public class MobileDomainEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_id")
-    private MobileApp app;
+    private MobileAppEntity app;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval=true)
-    private List<SslPinningFingerprintDbEntity> fingerprints = new ArrayList<>();
+    private final List<CertificateFingerprintEntity> fingerprints = new ArrayList<>();
 
     /**
      * Get ID.
@@ -86,7 +86,7 @@ public class MobileDomainEntity {
      * Get related mobile application.
      * @return Mobile application.
      */
-    public MobileApp getApp() {
+    public MobileAppEntity getApp() {
         return app;
     }
 
@@ -94,11 +94,11 @@ public class MobileDomainEntity {
      * Set related mobile application.
      * @param app Mobile application.
      */
-    public void setApp(MobileApp app) {
+    public void setApp(MobileAppEntity app) {
         this.app = app;
     }
 
-    public List<SslPinningFingerprintDbEntity> getFingerprints() {
+    public List<CertificateFingerprintEntity> getFingerprints() {
         return fingerprints;
     }
 }

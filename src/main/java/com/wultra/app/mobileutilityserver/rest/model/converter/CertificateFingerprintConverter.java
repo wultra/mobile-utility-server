@@ -17,8 +17,9 @@
  */
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
-import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
 import org.springframework.stereotype.Component;
 
@@ -28,18 +29,33 @@ import org.springframework.stereotype.Component;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Component
-public class SslPinningFingerprintConverter {
+public class CertificateFingerprintConverter {
 
     /**
      * Convert a database representation of a fingerprint to REST API representation.
      * @param source SSL fingerprint model in DB.
      * @return SSL fingerprint model in REST API.
      */
-    public SslPinningFingerprint convertFrom(SslPinningFingerprintDbEntity source) {
+    public CertificateFingerprint convertFrom(CertificateFingerprintEntity source) {
         if (source == null) {
             return null;
         }
-        final SslPinningFingerprint destination = new SslPinningFingerprint();
+        final CertificateFingerprint destination = new CertificateFingerprint();
+        destination.setFingerprint(source.getFingerprint());
+        destination.setExpires(source.getExpires());
+        return destination;
+    }
+
+    /**
+     * Convert a database representation of a fingerprint to REST API representation with named fingerprint.
+     * @param source SSL fingerprint model in DB.
+     * @return SSL fingerprint model in REST API.
+     */
+    public NamedCertificateFingerprint convertNamedCertificateFrom(CertificateFingerprintEntity source) {
+        if (source == null) {
+            return null;
+        }
+        final NamedCertificateFingerprint destination = new NamedCertificateFingerprint();
         destination.setName(source.getDomain().getDomain());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
@@ -51,7 +67,7 @@ public class SslPinningFingerprintConverter {
      * @param source SSL fingerprint model in DB.
      * @return SSL fingerprint model in admin REST API.
      */
-    public FingerprintDetailResponse convertFingerprintDetailResponse(SslPinningFingerprintDbEntity source) {
+    public FingerprintDetailResponse convertFingerprintDetailResponse(CertificateFingerprintEntity source) {
         if (source == null) {
             return null;
         }

@@ -27,7 +27,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "ssl_mobile_fingerprint")
-public class SslPinningFingerprintDbEntity {
+public class CertificateFingerprintEntity {
 
     @Id
     @Column(name = "id")

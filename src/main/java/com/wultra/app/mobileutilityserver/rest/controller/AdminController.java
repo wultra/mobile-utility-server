@@ -78,7 +78,7 @@ public class AdminController {
     }
 
     @PostMapping("apps/{name}/fingerprints/auto")
-    public FingerprintDetailResponse createApplicationFingerprintAuto(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationFingerprintRequest request) throws AppException, AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException {
+    public FingerprintDetailResponse createApplicationFingerprintAuto(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationFingerprintRequest request) throws AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException {
         return adminService.createApplicationFingerprint(name, request);
     }
 

@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "ssl_mobile_app")
-public class MobileApp {
+public class MobileAppEntity {
 
     @Id
     @Column(name = "id")

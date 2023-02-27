@@ -18,11 +18,11 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
 import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,10 +35,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MobileAppConverter {
 
-    private final SslPinningFingerprintConverter fingerprintConverter;
+    private final CertificateFingerprintConverter fingerprintConverter;
 
     @Autowired
-    public MobileAppConverter(SslPinningFingerprintConverter fingerprintConverter) {
+    public MobileAppConverter(CertificateFingerprintConverter fingerprintConverter) {
         this.fingerprintConverter = fingerprintConverter;
     }
 
@@ -47,7 +47,7 @@ public class MobileAppConverter {
      * @param source Mobile app DB model.
      * @return Mobile app REST response.
      */
-    public ApplicationDetailResponse convertMobileApp(MobileApp source) {
+    public ApplicationDetailResponse convertMobileApp(MobileAppEntity source) {
         if (source == null) {
             return null;
         }
@@ -68,9 +68,9 @@ public class MobileAppConverter {
         }
         final Domain destination = new Domain();
         destination.setName(source.getDomain());
-        for (SslPinningFingerprintDbEntity fingerprint : source.getFingerprints()) {
-            final SslPinningFingerprint sslPinningFingerprint = fingerprintConverter.convertFrom(fingerprint);
-            destination.getFingerprints().add(sslPinningFingerprint);
+        for (CertificateFingerprintEntity fingerprint : source.getFingerprints()) {
+            final CertificateFingerprint certificateFingerprint = fingerprintConverter.convertFrom(fingerprint);
+            destination.getFingerprints().add(certificateFingerprint);
         }
         return destination;
     }

@@ -18,16 +18,16 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
-import com.wultra.app.mobileutilityserver.database.repo.SslPinningFingerprintRepository;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
-import com.wultra.app.mobileutilityserver.rest.model.converter.SslPinningFingerprintConverter;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateFingerprintConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
@@ -70,22 +70,22 @@ import java.util.List;
 public class AdminService {
 
     private final MobileAppRepository mobileAppRepository;
-    private final SslPinningFingerprintRepository sslPinningFingerprintRepository;
+    private final CertificateFingerprintRepository certificateFingerprintRepository;
     private final MobileDomainRepository mobileDomainRepository;
 
-    private final SslPinningFingerprintConverter fingerprintConverter;
+    private final CertificateFingerprintConverter fingerprintConverter;
     private final MobileAppConverter mobileAppConverter;
 
     private final CryptoUtils cryptoUtils;
 
     @Autowired
     public AdminService(MobileAppRepository mobileAppRepository,
-                        SslPinningFingerprintRepository sslPinningFingerprintRepository,
+                        CertificateFingerprintRepository certificateFingerprintRepository,
                         MobileDomainRepository mobileDomainRepository,
-                        SslPinningFingerprintConverter fingerprintConverter,
+                        CertificateFingerprintConverter fingerprintConverter,
                         MobileAppConverter mobileAppConverter, CryptoUtils cryptoUtils) {
         this.mobileAppRepository = mobileAppRepository;
-        this.sslPinningFingerprintRepository = sslPinningFingerprintRepository;
+        this.certificateFingerprintRepository = certificateFingerprintRepository;
         this.mobileDomainRepository = mobileDomainRepository;
         this.fingerprintConverter = fingerprintConverter;
         this.mobileAppConverter = mobileAppConverter;
@@ -116,15 +116,15 @@ public class AdminService {
             final String publicKeyString = cryptoUtils.convertPublicKeyToBase64(keyPair.getPublic());
 
             // Prepare and store the entity
-            final MobileApp mobileApp = new MobileApp();
-            mobileApp.setName(name);
-            mobileApp.setDisplayName(displayName);
-            mobileApp.setSigningPrivateKey(privateKeyString);
-            mobileApp.setSigningPublicKey(publicKeyString);
+            final MobileAppEntity mobileAppEntity = new MobileAppEntity();
+            mobileAppEntity.setName(name);
+            mobileAppEntity.setDisplayName(displayName);
+            mobileAppEntity.setSigningPrivateKey(privateKeyString);
+            mobileAppEntity.setSigningPublicKey(publicKeyString);
 
-            final MobileApp savedMobileApp = mobileAppRepository.save(mobileApp);
+            final MobileAppEntity savedMobileAppEntity = mobileAppRepository.save(mobileAppEntity);
 
-            return mobileAppConverter.convertMobileApp(savedMobileApp);
+            return mobileAppConverter.convertMobileApp(savedMobileAppEntity);
         } catch (CryptoProviderException e) {
             throw new AppException("Error while generating cryptographic keys", e);
         }
@@ -132,12 +132,12 @@ public class AdminService {
 
     @Transactional
     public ApplicationListResponse applicationList() {
-        final Iterable<MobileApp> mobileApps = mobileAppRepository.findAll();
+        final Iterable<MobileAppEntity> mobileApps = mobileAppRepository.findAll();
         final ApplicationListResponse response = new ApplicationListResponse();
-        for (MobileApp mobileApp: mobileApps) {
+        for (MobileAppEntity mobileAppEntity : mobileApps) {
             final MobileApplication app = new MobileApplication();
-            app.setName(mobileApp.getName());
-            app.setDisplayName(mobileApp.getDisplayName());
+            app.setName(mobileAppEntity.getName());
+            app.setDisplayName(mobileAppEntity.getDisplayName());
             response.getApplications().add(app);
         }
         return response;
@@ -145,8 +145,8 @@ public class AdminService {
 
     @Transactional
     public ApplicationDetailResponse applicationDetail(String name) {
-        final MobileApp mobileApp = mobileAppRepository.findFirstByName(name);
-        return mobileAppConverter.convertMobileApp(mobileApp);
+        final MobileAppEntity mobileAppEntity = mobileAppRepository.findFirstByName(name);
+        return mobileAppConverter.convertMobileApp(mobileAppEntity);
     }
 
     @Transactional
@@ -155,14 +155,14 @@ public class AdminService {
         final String fingerprint = request.getFingerprint();
         final Long expires = request.getExpires();
 
-        final MobileApp mobileApp = mobileAppRepository.findFirstByName(appName);
-        if (mobileApp == null) {
+        final MobileAppEntity mobileAppEntity = mobileAppRepository.findFirstByName(appName);
+        if (mobileAppEntity == null) {
             throw new AppNotFoundException(appName);
         }
 
-        final List<SslPinningFingerprintDbEntity> fingerprintEntityOptional = sslPinningFingerprintRepository.findFirstByAppNameAndDomain(appName, domain);
+        final List<CertificateFingerprintEntity> fingerprintEntityOptional = certificateFingerprintRepository.findFirstByAppNameAndDomain(appName, domain);
         if (!fingerprintEntityOptional.isEmpty()) {
-            for (SslPinningFingerprintDbEntity f : fingerprintEntityOptional) {
+            for (CertificateFingerprintEntity f : fingerprintEntityOptional) {
                 if (fingerprint.equalsIgnoreCase(f.getFingerprint())) {
                     final FingerprintDetailResponse response = fingerprintConverter.convertFingerprintDetailResponse(f);
                     logger.info("Fingerprint up-to-date: {}", response);
@@ -171,20 +171,20 @@ public class AdminService {
             }
         }
 
-        MobileDomainEntity domainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(mobileApp.getName(), domain);
+        MobileDomainEntity domainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(mobileAppEntity.getName(), domain);
         if (domainEntity == null) {
             domainEntity = new MobileDomainEntity();
-            domainEntity.setApp(mobileApp);
+            domainEntity.setApp(mobileAppEntity);
             domainEntity.setDomain(domain);
             domainEntity = mobileDomainRepository.save(domainEntity);
         }
 
-        final SslPinningFingerprintDbEntity fingerprintEntity = new SslPinningFingerprintDbEntity();
+        final CertificateFingerprintEntity fingerprintEntity = new CertificateFingerprintEntity();
         fingerprintEntity.setDomain(domainEntity);
         fingerprintEntity.setFingerprint(fingerprint);
         fingerprintEntity.setExpires(expires);
 
-        final SslPinningFingerprintDbEntity savedFingerprintEntity = sslPinningFingerprintRepository.save(fingerprintEntity);
+        final CertificateFingerprintEntity savedFingerprintEntity = certificateFingerprintRepository.save(fingerprintEntity);
 
         final FingerprintDetailResponse response = fingerprintConverter.convertFingerprintDetailResponse(savedFingerprintEntity);
         logger.info("Fingerprint refreshed: {}", response);
@@ -236,8 +236,11 @@ public class AdminService {
     @Transactional
     public void deleteFingerprint(String appName, String domain, String fingerprint) {
         final MobileDomainEntity mobileDomainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(appName, domain);
-        final List<SslPinningFingerprintDbEntity> fingerprints = mobileDomainEntity.getFingerprints();
-        for (SslPinningFingerprintDbEntity fingerprintDb: fingerprints) {
+        if (mobileDomainEntity == null) {
+            return;
+        }
+        final List<CertificateFingerprintEntity> fingerprints = mobileDomainEntity.getFingerprints();
+        for (CertificateFingerprintEntity fingerprintDb: fingerprints) {
             if (fingerprintDb.getFingerprint().equalsIgnoreCase(fingerprint)) {
                 fingerprints.remove(fingerprintDb);
                 mobileDomainRepository.save(mobileDomainEntity);
@@ -253,14 +256,14 @@ public class AdminService {
 
     @Transactional
     public void deleteExpiredFingerprints() {
-        sslPinningFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
+        certificateFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
     }
 
     @Scheduled(fixedRateString = "${mobile-utility-server.scheduling.update}")
     @Transactional
     public void refreshFingerprints() {
         // Delete expired fingerprints
-        sslPinningFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
+        certificateFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
 
         // Update fingerprints for domains
         final Iterable<MobileDomainEntity> domainEntities = mobileDomainRepository.findAll();

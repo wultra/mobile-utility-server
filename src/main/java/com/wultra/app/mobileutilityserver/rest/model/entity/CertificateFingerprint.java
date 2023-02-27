@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2023  Wultra s.r.o.
+ * Copyright (C) 2020  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.wultra.app.mobileutilityserver.rest.model.entity;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Model class representing domain.
+ * A REST API model class representing a fingerprint of an SSL certificate. Each certificate fingerprint
+ * is related to some domain ("name") and has set expiration timestamp, which is usually the same as the
+ * certificate expiration. The fingerprints are signed using ECDSA signature.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class Domain {
-
-    private String name;
-    private final List<CertificateFingerprint> fingerprints = new ArrayList<>();
-
+public class CertificateFingerprint {
+    private String fingerprint;
+    private long expires;
+    
 }
