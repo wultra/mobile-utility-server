@@ -19,11 +19,13 @@
 --
 --  Drop all tables.
 --
-DROP TABLE IF EXISTS mobile_app CASCADE;
-DROP TABLE IF EXISTS mobile_domain CASCADE;
-DROP TABLE IF EXISTS mobile_ssl_pinning CASCADE;
+DROP TABLE IF EXISTS ssl_mobile_app CASCADE;
+DROP TABLE IF EXISTS ssl_mobile_domain CASCADE;
+DROP TABLE IF EXISTS ssl_mobile_fingerprint CASCADE;
 
 --
 --  Drop all sequences.
 --
-DROP SEQUENCE IF EXISTS hibernate_sequence;
+DROP SEQUENCE IF EXISTS ssl_mobile_app_seq;
+DROP SEQUENCE IF EXISTS ssl_mobile_domain_seq;
+DROP SEQUENCE IF EXISTS ssl_mobile_fingerprint_seq;

@@ -30,12 +30,13 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "mobile_app")
+@Table(name = "ssl_mobile_app")
 public class MobileApp {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "ssl_mobile_app", sequenceName = "ssl_mobile_app_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ssl_mobile_app")
     private Long id;
 
     @Column(name = "name")

@@ -16,9 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-create sequence hibernate_sequence maxvalue 9999999999999 cache 20;
+create sequence ssl_mobile_app_seq maxvalue 9999999999999 cache 20;
+create sequence ssl_mobile_domain_seq maxvalue 9999999999999 cache 20;
+create sequence ssl_mobile_fingerprint_seq maxvalue 9999999999999 cache 20;
 
-create table mobile_app (
+create table ssl_mobile_app (
     id                  integer not null primary key,
     name                varchar(255),
     display_name        varchar(255),
@@ -26,17 +28,16 @@ create table mobile_app (
     sign_public_key     varchar(255)
 );
 
-create table mobile_domain (
+create table ssl_mobile_domain (
     id                  integer not null primary key,
     app_id integer      not null,
     domain varchar(255) not null
 );
 
-create table mobile_ssl_pinning
-(
+create table ssl_mobile_fingerprint (
     id                  integer not null primary key,
     fingerprint         varchar(255) not null,
     expires             integer,
     mobile_domain_id    integer not null
-        constraint mobile_ssl_pinning_app_fk references mobile_domain on update cascade on delete cascade
+        constraint mobile_ssl_pinning_app_fk references ssl_mobile_domain on update cascade on delete cascade
 );

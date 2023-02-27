@@ -26,12 +26,13 @@ import javax.persistence.*;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "mobile_ssl_pinning")
+@Table(name = "ssl_mobile_fingerprint")
 public class SslPinningFingerprintDbEntity {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "ssl_mobile_fingerprint", sequenceName = "ssl_mobile_fingerprint_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ssl_mobile_fingerprint")
     private Long id;
 
     @Column(name = "fingerprint")
