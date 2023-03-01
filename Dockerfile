@@ -40,8 +40,6 @@ RUN set -x \
     && apt-get -y purge --auto-remove \
     && rm -rf /tmp/* /var/cache/apt/*
 
-COPY deploy/lib/postgresql*.jar $LB_HOME/lib/
-
 # Liquibase - changesets
 RUN rm -rf $LB_HOME/data
 COPY docs/db/changelog $LB_HOME/db/changelog

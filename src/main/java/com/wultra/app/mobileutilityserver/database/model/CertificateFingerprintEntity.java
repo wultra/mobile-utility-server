@@ -18,7 +18,11 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import javax.persistence.*;
+
 
 /**
  * Entity representing an SSL pinning fingerprint.
@@ -31,8 +35,16 @@ public class CertificateFingerprintEntity {
 
     @Id
     @Column(name = "id")
-    @SequenceGenerator(name = "ssl_mobile_fingerprint", sequenceName = "ssl_mobile_fingerprint_seq")
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "ssl_mobile_fingerprint")
+    @GenericGenerator(
+            name = "ssl_mobile_fingerprint",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "ssl_mobile_fingerprint_seq"),
+                    @Parameter(name = "initial_value", value = "1"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
+    @GeneratedValue(generator = "ssl_mobile_fingerprint")
     private Long id;
 
     @Column(name = "fingerprint")

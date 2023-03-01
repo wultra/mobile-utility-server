@@ -51,7 +51,7 @@ public class OpenApiConfiguration {
 
     @Bean
     public GroupedOpenApi defaultApiGroup() {
-        final String[] packages = { "com.wultra.app.mobileutilityserver.rest.controller" };
+        final String[] packages = { "com.wultra.app.mobileutilityserver.rest.controller.api" };
         return GroupedOpenApi.builder()
                 .group("mobile-utility-server")
                 .packagesToScan(packages)
