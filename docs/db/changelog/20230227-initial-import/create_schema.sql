@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-create sequence ssl_mobile_app_seq maxvalue 9999999999999 cache 20;
-create sequence ssl_mobile_domain_seq maxvalue 9999999999999 cache 20;
-create sequence ssl_mobile_fingerprint_seq maxvalue 9999999999999 cache 20;
+create sequence if not exists ssl_mobile_app_seq maxvalue 9999999999999 cache 20;
+create sequence if not exists ssl_mobile_domain_seq maxvalue 9999999999999 cache 20;
+create sequence if not exists ssl_mobile_fingerprint_seq maxvalue 9999999999999 cache 20;
 
-create table ssl_mobile_app (
+create table if not exists ssl_mobile_app (
     id                  integer not null primary key,
     name                varchar(255),
     display_name        varchar(255),
@@ -28,13 +28,13 @@ create table ssl_mobile_app (
     sign_public_key     varchar(255)
 );
 
-create table ssl_mobile_domain (
+create table if not exists ssl_mobile_domain (
     id                  integer not null primary key,
     app_id integer      not null,
     domain varchar(255) not null
 );
 
-create table ssl_mobile_fingerprint (
+create table if not exists ssl_mobile_fingerprint (
     id                  integer not null primary key,
     fingerprint         varchar(255) not null,
     expires             integer,
