@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <changeSet id="20230227-initial-import" author="Petr Dvorak" dbms="postgresql" logicalFilePath="20230227-initial-import/init.xml">
+    <changeSet id="mobile-utility-server-20230227-initial-import" author="Petr Dvorak" dbms="postgresql" logicalFilePath="20230227-initial-import/init.xml">
         <sqlFile path="create_schema.sql" relativeToChangelogFile="true" splitStatements="false"/>
         <rollback>
             <sqlFile path="delete_schema.sql" relativeToChangelogFile="true" splitStatements="false"/>
