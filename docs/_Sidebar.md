@@ -6,4 +6,4 @@
 
 [Configuration](./Configuration.md)
 
-[RESTful API](./REST-API.md)
+[Public RESTful API](./Public-REST-API.md)

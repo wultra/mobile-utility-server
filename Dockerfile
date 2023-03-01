@@ -57,7 +57,7 @@ STOPSIGNAL SIGQUIT
 RUN groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 USER powerauth
 
-# Define entry point with mandatory commands (liquibase, nginx)
+# Define entry point with mandatory commands (liquibase)
 COPY deploy/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 

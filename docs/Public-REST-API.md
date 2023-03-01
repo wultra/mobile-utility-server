@@ -1,4 +1,4 @@
-# Mobile Utility Server API
+# Public RESTful API
 
 Mobile Utility Server publishes comprehensive RESTful API with all endpoints required by a mobile app:
 
@@ -15,17 +15,15 @@ REST API returns errors in a unified format:
 
 ```json
 {
-    "id": "${ERROR_ID}",
     "code": "${ERROR_CODE}",
     "message": "${ERROR_MESSAGE}"
 }
 ```
 
-| attribute | Description |
-|---|---|
-| `id` | Unique ID of an error, for correlation in logs. |
-| `code` | Unique code of an error, represents the error type. |
-| `message` | Description of an error with additional details. |
+| attribute | Description                                         |
+|-----------|-----------------------------------------------------|
+| `code`    | Unique code of an error, represents the error type. |
+| `message` | Description of an error with additional details.    |
 
 ## Published Resources
 
@@ -35,9 +33,9 @@ Method to obtain the public key for a provided application ID. You should obtain
 
 #### Request `GET /app/init/public-key?appName=${name}`
 
-| Query Param | Description |
-|---|---|
-| `appName` | Name of the application. |
+| Query Param   | Description              |
+|---------------|--------------------------|
+| `appName`     | Name of the application. |
 
 #### Response
 
@@ -53,9 +51,9 @@ In the case of a success.
 }
 ```
 
-| Response Attribute | Description |
-|---|---|
-| `publicKey` | The signature public key for a given application. |
+| Response Attribute | Description                                       |
+|--------------------|---------------------------------------------------|
+| `publicKey`        | The signature public key for a given application. |
 
 ##### 400 Bad Request
 
@@ -75,7 +73,6 @@ In case application with given name is not found.
 
 ```json
 {
-  "id": "717e1111-1111-1111-1111-1111c53fe0da",
   "code": "PUBLIC_KEY_NOT_FOUND",
   "message": "Public key for the provided app name was not found."
 }
@@ -91,9 +88,9 @@ Method to obtain the fingerprints of the certificates that are pinned in the app
 |---|---|
 | `X-Cert-Pinning-Challenge` | Random challenge that is included in the response signature calculation. It must be at least 16 bytes long. |
 
-| Query Param | Description |
-|---|---|
-| `appName` | Name of the application. |
+| Query Param  | Description              |
+|--------------|--------------------------|
+| `appName`    | Name of the application. |
 
 #### Response
 
@@ -121,17 +118,17 @@ In the case of a successful call.
 }
 ```
 
-| Header | Description |
-|---|---|
+| Header                     | Description                                                                                                                                                                                                     |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `X-Cert-Pinning-Signature` | Base64 value of an encoded response signature. The signature contains the response challenge as well as full response data, and it must be validated on the client side before the client accepts the response. |
 
-| Response Attribute | Description |
-|---|---|
-| `timestamp` | The current timestamp on the server side. |
-| `fingerprints` | Array with the TLS/SSL certificate signatures. |
-| `fingerprints.name` | Name of the domain, for example, `test1.wultra.com`. |
-| `fingerprints.fingerprint` | The value of the certificate/public key fingerprint. |
-| `fingerprints.expires` | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration. |
+| Response Attribute         | Description                                                                       |
+|----------------------------|-----------------------------------------------------------------------------------|
+| `timestamp`                | The current timestamp on the server side.                                         |
+| `fingerprints`             | Array with the TLS/SSL certificate signatures.                                    |
+| `fingerprints.name`        | Name of the domain, for example, `test1.wultra.com`.                              |
+| `fingerprints.fingerprint` | The value of the certificate/public key fingerprint.                              |
+| `fingerprints.expires`     | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration. |
 
 ##### 400 Bad Request
 

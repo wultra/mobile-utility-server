@@ -7,7 +7,7 @@
 - [Deployment](./Deployment.md)
 - [Database Structure](./Database-Structure.md)
 - [Configuration](./Configuration.md)
-- [RESTful API](./REST-API.md)
+- [Public RESTful API](./Public-REST-API.md)
 <!-- end -->
 
 The Mobile Utility Server by [Wultra](https://wultra.com) is a utility server with various features required by the typical mobile apps.

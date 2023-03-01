@@ -16,28 +16,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-create sequence if not exists ssl_mobile_app_seq maxvalue 9999999999999 cache 20;
-create sequence if not exists ssl_mobile_domain_seq maxvalue 9999999999999 cache 20;
-create sequence if not exists ssl_mobile_fingerprint_seq maxvalue 9999999999999 cache 20;
+CREATE SEQUENCE IF NOT EXISTS ssl_mobile_app_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS ssl_mobile_domain_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS ssl_mobile_fingerprint_seq MAXVALUE 9999999999999 CACHE 20;
 
-create table if not exists ssl_mobile_app (
-    id                  integer not null primary key,
-    name                varchar(255),
-    display_name        varchar(255),
-    sign_private_key    varchar(255),
-    sign_public_key     varchar(255)
+CREATE TABLE IF NOT EXISTS ssl_mobile_app (
+    id                  INTEGER PRIMARY KEY,
+    name                VARCHAR(255) NOT NULL,
+    display_name        VARCHAR(255) NOT NULL,
+    sign_private_key    VARCHAR(255) NOT NULL,
+    sign_public_key     VARCHAR(255) NOT NULL
 );
 
-create table if not exists ssl_mobile_domain (
-    id                  integer not null primary key,
-    app_id integer      not null,
-    domain varchar(255) not null
+CREATE TABLE IF NOT EXISTS ssl_mobile_domain (
+    id                  INTEGER PRIMARY KEY,
+    app_id              INTEGER NOT NULL
+        CONSTRAINT ssl_mobile_domain_fk
+            REFERENCES ssl_mobile_app ON UPDATE CASCADE ON DELETE CASCADE,
+    domain              VARCHAR(255) NOT NULL
 );
 
-create table if not exists ssl_mobile_fingerprint (
-    id                  integer not null primary key,
-    fingerprint         varchar(255) not null,
-    expires             integer,
-    mobile_domain_id    integer not null
-        constraint mobile_ssl_pinning_app_fk references ssl_mobile_domain on update cascade on delete cascade
+CREATE TABLE IF NOT EXISTS ssl_mobile_fingerprint (
+    id                  INTEGER PRIMARY KEY,
+    fingerprint         VARCHAR(255) NOT NULL,
+    expires             INTEGER NOT NULL,
+    mobile_domain_id    INTEGER NOT NULL
+        CONSTRAINT mobile_ssl_pinning_app_fk
+            REFERENCES ssl_mobile_domain ON UPDATE CASCADE ON DELETE CASCADE
 );
