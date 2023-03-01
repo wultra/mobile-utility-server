@@ -178,7 +178,7 @@ COPY deploy/lib/postgresql*.jar $LB_HOME/lib/
 
 # Liquibase - changesets
 RUN rm -rf $LB_HOME/data
-COPY deploy/liquibase/data $LB_HOME/data
+COPY docs/liquibase/data $LB_HOME/data
 
 # Docker configuration
 EXPOSE 8000
