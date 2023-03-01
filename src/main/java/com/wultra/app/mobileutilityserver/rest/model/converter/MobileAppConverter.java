@@ -18,11 +18,11 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
-import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

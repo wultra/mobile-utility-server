@@ -6,7 +6,7 @@ COPY pom.xml .
 COPY lombok.config .
 COPY src src
 
-RUN mvn clean package -DskipTests
+RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Docker Image for Runtime
 FROM ibm-semeru-runtimes:open-17.0.5_8-jre

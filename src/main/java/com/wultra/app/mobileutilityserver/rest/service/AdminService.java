@@ -18,20 +18,20 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
-import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateFingerprintConverter;
+import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintDirectRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.openssl.PEMParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -257,26 +256,6 @@ public class AdminService {
     @Transactional
     public void deleteExpiredFingerprints() {
         certificateFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
-    }
-
-    @Scheduled(fixedRateString = "${mobile-utility-server.scheduling.update}")
-    @Transactional
-    public void refreshFingerprints() {
-        // Delete expired fingerprints
-        certificateFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
-
-        // Update fingerprints for domains
-        final Iterable<MobileDomainEntity> domainEntities = mobileDomainRepository.findAll();
-        for (MobileDomainEntity domain : domainEntities) {
-            try {
-                final CreateApplicationFingerprintRequest request = new CreateApplicationFingerprintRequest();
-                request.setDomain(domain.getDomain());
-                createApplicationFingerprint(domain.getApp().getName(), request);
-            } catch (AppNotFoundException | CertificateEncodingException | IOException | NoSuchAlgorithmException e) {
-                logger.error("Exception occurred when refreshing fingerprint: {}", e.getMessage());
-                logger.debug("Exception details:", e);
-            }
-        }
     }
 
 }
