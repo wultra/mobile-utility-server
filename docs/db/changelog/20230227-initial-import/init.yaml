@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: mobile-utility-server-20230227-initial-import
+      author: Petr Dvorak
+      dbms: postgresql
+      logicalFilePath: 20230227-initial-import/init.yaml
+      changes:
+        - sqlFile:
+            path: create_schema.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+      rollback:
+        - sqlFile:
+            path: delete_schema.sql
+            relativeToChangelogFile: true
+            splitStatements: false
