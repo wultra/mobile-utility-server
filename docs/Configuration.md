@@ -45,7 +45,7 @@ You can push PEM file to our systems. You can typically obtain a PEM format from
 openssl s_client -connect google.com:443 -servername google.com  2>/dev/null </dev/null |  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
 ```
 
-Call the following service to import the certificate (notice the `\n` symbols in the certificate string:
+Call the following service to import the certificate (notice the `\n` symbols in the certificate string):
 
 ```sh
 curl --request POST \
