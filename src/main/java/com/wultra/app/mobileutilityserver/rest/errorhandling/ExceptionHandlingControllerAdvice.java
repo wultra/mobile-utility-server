@@ -56,6 +56,7 @@ public class ExceptionHandlingControllerAdvice {
         final String code = "UNKNOWN_ERROR";
         final String message = "An error occurred when processing the request.";
         logger.error("Unknown error happened: {}", ex.getMessage());
+        logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -65,6 +66,7 @@ public class ExceptionHandlingControllerAdvice {
         final String code = "PUBLIC_KEY_NOT_FOUND";
         final String message = "Public key for the provided app name was not found.";
         logger.warn("Public key for the provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
+        logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -74,6 +76,7 @@ public class ExceptionHandlingControllerAdvice {
         final String code = "APP_EXCEPTION";
         final String message = ex.getMessage();
         logger.warn("Problem occurred while working with applications: {}", ex.getMessage());
+        logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -83,6 +86,7 @@ public class ExceptionHandlingControllerAdvice {
         final String code = "APP_NOT_FOUND";
         final String message = "App with a provided ID was not found.";
         logger.warn("Application for a provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
+        logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -92,7 +96,7 @@ public class ExceptionHandlingControllerAdvice {
         final String code = "INSUFFICIENT_CHALLENGE";
         final String message = "Request does not contain sufficiently strong challenge header, 16B is required at least.";
         logger.error("Request does not contain sufficiently strong challenge header, 16B is required at least: {}", ex.getMessage());
-        logger.debug("Exception details: ", ex);
+        logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
 

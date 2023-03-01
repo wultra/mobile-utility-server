@@ -61,6 +61,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+        //TODO: Replace by DB backed user details
         final InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(User.withUsername("admin")
                 .password(passwordEncoder.encode("admin"))
