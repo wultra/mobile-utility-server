@@ -78,16 +78,17 @@ public class SecurityConfig {
      * @return Delegating password encoder.
      */
     @Bean
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "java:S5344"})
     public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
         if (!List.of(supportedHashAlgorithms).contains(algorithm)) {
             throw new NoSuchAlgorithmException(String.format("Unsupported algorithm specified: %s, must be one of: %s.", algorithm, Arrays.toString(supportedHashAlgorithms)));
         }
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder(bcryptCycles);
         final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder("SHA-256");
-        final Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put("bcrypt", bcrypt);
-        encoders.put("SHA-256", sha256);
+        final Map<String, PasswordEncoder> encoders = Map.of(
+                "bcrypt", bcrypt,
+                "SHA-256", sha256
+        );
         final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(algorithm, encoders);
         passwordEncoder.setDefaultPasswordEncoderForMatches(bcrypt); // try using bcrypt as default, for backward compatibility
         return passwordEncoder;
