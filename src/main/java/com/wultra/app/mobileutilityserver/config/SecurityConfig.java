@@ -104,9 +104,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .authorizeRequests()
+            .authorizeRequests(authorize -> authorize
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll()
+                .anyRequest().permitAll())
             .and()
                 .httpBasic()
             .and()
