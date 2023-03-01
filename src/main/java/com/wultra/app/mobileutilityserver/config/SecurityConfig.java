@@ -35,7 +35,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +106,6 @@ public class SecurityConfig {
             .authorizeRequests(authorize -> authorize
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll())
-            .and()
                 .httpBasic()
             .and()
                 .sessionManagement()
