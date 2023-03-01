@@ -4,13 +4,23 @@ You can easily deploy the application WAR to any application container, such as 
 
 ## Configuration Properties
 
-Use the following properties or environment variables to define database connectivity properties:
+Use properties or environment variables to define database connectivity properties.
+
+### Minimal Configuration
+
+To configure the JDBC connectivity, use the following properties or environment variables:
 
 ```
-# Database Configuration - PostgreSQL
 spring.datasource.url=${MOBILE_UTILITY_SERVER_DATASOURCE_URL:jdbc:postgresql://host.docker.internal:5432/powerauth}
 spring.datasource.username=${MOBILE_UTILITY_SERVER_DATASOURCE_USERNAME:powerauth}
 spring.datasource.password=${MOBILE_UTILITY_SERVER_DATASOURCE_PASSWORD:}
+```
+
+### Additional Configuration Options
+
+You can customize other frequent database properties using the following properties or environment variables:
+
+```
 spring.datasource.driverClassName=${MOBILE_UTILITY_SERVER_DATASOURCE_DRIVER:org.postgresql.Driver}
 spring.jpa.properties.hibernate.connection.CharSet=${MOBILE_UTILITY_SERVER_JPA_CHARSET:utf8mb4}
 spring.jpa.properties.hibernate.connection.characterEncoding=${MOBILE_UTILITY_SERVER_JPA_CHARACTER_ENCODING:utf8}
@@ -19,6 +29,8 @@ spring.jpa.database-platform=${MOBILE_UTILITY_SERVER_JPA_DATABASE_PLATFORM:org.h
 spring.datasource.jndi-name=${MOBILE_UTILITY_SERVER_DATASOURCE_JNDI_NAME:false}
 spring.jpa.hibernate.ddl-auto=${MOBILE_UTILITY_SERVER_JPA_DDL_AUTO:none}
 ```
+
+The application also supports any Spring Boot configuration properties.
 
 ## Running in Docker
 
