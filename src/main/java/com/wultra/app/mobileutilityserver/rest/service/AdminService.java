@@ -36,7 +36,6 @@ import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRe
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
-import com.wultra.app.mobileutilityserver.util.CryptoUtils;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -75,20 +74,20 @@ public class AdminService {
     private final CertificateFingerprintConverter fingerprintConverter;
     private final MobileAppConverter mobileAppConverter;
 
-    private final CryptoUtils cryptoUtils;
+    private final CryptographicOperationsService cryptographicOperationsService;
 
     @Autowired
     public AdminService(MobileAppRepository mobileAppRepository,
                         CertificateFingerprintRepository certificateFingerprintRepository,
                         MobileDomainRepository mobileDomainRepository,
                         CertificateFingerprintConverter fingerprintConverter,
-                        MobileAppConverter mobileAppConverter, CryptoUtils cryptoUtils) {
+                        MobileAppConverter mobileAppConverter, CryptographicOperationsService cryptographicOperationsService) {
         this.mobileAppRepository = mobileAppRepository;
         this.certificateFingerprintRepository = certificateFingerprintRepository;
         this.mobileDomainRepository = mobileDomainRepository;
         this.fingerprintConverter = fingerprintConverter;
         this.mobileAppConverter = mobileAppConverter;
-        this.cryptoUtils = cryptoUtils;
+        this.cryptographicOperationsService = cryptographicOperationsService;
     }
 
     /**
@@ -110,9 +109,9 @@ public class AdminService {
             }
 
             // Prepare signing keypair data
-            final KeyPair keyPair = cryptoUtils.generateKeyPair();
-            final String privateKeyString = cryptoUtils.convertPrivateKeyToBase64(keyPair.getPrivate());
-            final String publicKeyString = cryptoUtils.convertPublicKeyToBase64(keyPair.getPublic());
+            final KeyPair keyPair = cryptographicOperationsService.generateKeyPair();
+            final String privateKeyString = cryptographicOperationsService.convertPrivateKeyToBase64(keyPair.getPrivate());
+            final String publicKeyString = cryptographicOperationsService.convertPublicKeyToBase64(keyPair.getPublic());
 
             // Prepare and store the entity
             final MobileAppEntity mobileAppEntity = new MobileAppEntity();
@@ -204,7 +203,7 @@ public class AdminService {
 
         final CreateApplicationFingerprintDirectRequest innerRequest = new CreateApplicationFingerprintDirectRequest();
         innerRequest.setDomain(domain);
-        innerRequest.setFingerprint(cryptoUtils.computeSHA256Signature(pem.getBytes(StandardCharsets.UTF_8)));
+        innerRequest.setFingerprint(cryptographicOperationsService.computeSHA256Signature(pem.getBytes(StandardCharsets.UTF_8)));
         innerRequest.setExpires(notAfter);
 
         return this.createApplicationFingerprint(appName, innerRequest);
@@ -221,7 +220,7 @@ public class AdminService {
         final X509Certificate cert = (X509Certificate) certs[0];
         socket.close();
 
-        final String certPem = cryptoUtils.certificateToPem(cert);
+        final String certPem = cryptographicOperationsService.certificateToPem(cert);
         logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
         final CreateApplicationFingerprintPemRequest innerRequest = new CreateApplicationFingerprintPemRequest();

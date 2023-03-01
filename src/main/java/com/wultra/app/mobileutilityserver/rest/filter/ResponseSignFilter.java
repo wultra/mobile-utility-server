@@ -20,7 +20,7 @@ package com.wultra.app.mobileutilityserver.rest.filter;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
-import com.wultra.app.mobileutilityserver.util.CryptoUtils;
+import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +49,12 @@ public class ResponseSignFilter extends OncePerRequestFilter {
 
     private final MobileAppService mobileAppService;
 
-    private final CryptoUtils cryptoUtils;
+    private final CryptographicOperationsService cryptographicOperationsService;
 
     @Autowired
-    public ResponseSignFilter(MobileAppService mobileAppService, CryptoUtils cryptoUtils) {
+    public ResponseSignFilter(MobileAppService mobileAppService, CryptographicOperationsService cryptographicOperationsService) {
         this.mobileAppService = mobileAppService;
-        this.cryptoUtils = cryptoUtils;
+        this.cryptographicOperationsService = cryptographicOperationsService;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ResponseSignFilter extends OncePerRequestFilter {
                 final String privateKeyBase64 = mobileAppService.privateKey(appName);
                 if (privateKeyBase64 != null) {
                     // Compute the signature
-                    final String ecdsaSignature = cryptoUtils.computeECDSASignature(signatureBase, privateKeyBase64);
+                    final String ecdsaSignature = cryptographicOperationsService.computeECDSASignature(signatureBase, privateKeyBase64);
 
                     // Set the request header
                     response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, ecdsaSignature);

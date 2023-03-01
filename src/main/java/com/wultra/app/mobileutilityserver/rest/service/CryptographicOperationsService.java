@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.util;
+package com.wultra.app.mobileutilityserver.rest.service;
 
 import com.google.common.io.BaseEncoding;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
@@ -25,7 +25,7 @@ import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoExc
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
 import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.*;
 import java.security.cert.CertificateEncodingException;
@@ -33,12 +33,12 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 
 /**
- * Various cryptographic helper utils
+ * Service with various cryptographic helper utils.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-@Component
-public class CryptoUtils {
+@Service
+public class CryptographicOperationsService {
 
     private final KeyGenerator keyGenerator;
     private final KeyConvertor keyConvertor;
@@ -47,7 +47,7 @@ public class CryptoUtils {
     private final BaseEncoding base64 = BaseEncoding.base64();
 
     @Autowired
-    public CryptoUtils(KeyGenerator keyGenerator, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
+    public CryptographicOperationsService(KeyGenerator keyGenerator, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
         this.keyGenerator = keyGenerator;
         this.keyConvertor = keyConvertor;
         this.signatureUtils = signatureUtils;
