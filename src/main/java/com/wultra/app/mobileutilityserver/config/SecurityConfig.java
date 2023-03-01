@@ -77,7 +77,7 @@ public class SecurityConfig {
      * @return Delegating password encoder.
      */
     @Bean
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "java:S5344"})
     public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
         if (!List.of(supportedHashAlgorithms).contains(algorithm)) {
             throw new NoSuchAlgorithmException(String.format("Unsupported algorithm specified: %s, must be one of: %s.", algorithm, Arrays.toString(supportedHashAlgorithms)));
