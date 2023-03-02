@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: 20230227-initial-import/init.yaml
-      relativeToChangelogFile: true

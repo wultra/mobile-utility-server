@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="mobile-utility-server-20230227-initial-import" author="Petr Dvorak" dbms="postgresql" logicalFilePath="20230227-initial-import/init.xml">
+        <sqlFile path="create_schema.sql" relativeToChangelogFile="true" splitStatements="false"/>
+        <rollback>
+            <sqlFile path="delete_schema.sql" relativeToChangelogFile="true" splitStatements="false"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
