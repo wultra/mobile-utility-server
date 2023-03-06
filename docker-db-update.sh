@@ -16,16 +16,4 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Build the application and copy the files in /target folder
-docker build --platform linux/arm64 -f deploy/dockerfile/builder/Dockerfile . -t mobile-utility-server-builder
-
-rm -rf ./target
-containerId=$(docker create mobile-utility-server-builder)
-docker cp "$containerId":/workspace/target/ .
-docker rm "$containerId"
-
-# Build the image that upgrades database schema with Liquibase
-docker build --platform linux/arm64 -f deploy/dockerfile/database/Dockerfile . -t mobile-utility-server-database
-
-# Build the actual runtime image that runs the application
-docker build --platform linux/arm64 -f deploy/dockerfile/runtime/Dockerfile . -t mobile-utility-server
+docker run --env-file deploy/env.list.tmp --rm --name=mobile-utility-server-database mobile-utility-server-database
