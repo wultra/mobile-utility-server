@@ -1,6 +1,3 @@
-# Docker Image for Build
-FROM mobile-utility-server-builder AS build
-
 # Docker Image for Runtime
 FROM ibm-semeru-runtimes:open-17.0.5_8-jre
 
@@ -10,7 +7,7 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 # LIQUIBASE_ prefix must not be used, because this is only supported in PRO version
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.18.0 \
+    LB_VERSION=4.19.0 \
     TZ=UTC
 
 ENV PATH=$PATH:$LB_HOME
@@ -22,7 +19,7 @@ RUN apt-get -y update  \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "6113f652d06a71556d6ed4a8bb371ab2d843010cb0365379e83df8b4564a6a76  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && [ "2ec24cacf1dc6794cde139de9778854839ee1d3fa9c134fefa92157401e57134  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
@@ -41,7 +38,7 @@ COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
 COPY deploy/conf/application.properties /application.properties
-COPY deploy/images/mobile-utility-server.war /mobile-utility-server.war
+COPY target/mobile-utility-server.war /mobile-utility-server.war
 
 # Docker configuration
 EXPOSE 8000

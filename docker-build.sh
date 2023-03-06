@@ -16,12 +16,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-
 docker build --platform linux/arm64 -f deploy/dockerfile/builder/Dockerfile . -t mobile-utility-server-builder
 
+rm -rf ./target
 containerId=$(docker create mobile-utility-server-builder)
-docker cp "$containerId":/workspace/target/mobile-utility-server-${VERSION}.war deploy/images/mobile-utility-server.war
+docker cp "$containerId":/workspace/target/ .
 docker rm "$containerId"
 
 docker build --platform linux/arm64 -f deploy/dockerfile/runtime/Dockerfile . -t mobile-utility-server
