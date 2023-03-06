@@ -29,8 +29,6 @@ RUN apt-get -y update  \
     && rm -rf /tmp/* /var/cache/apt/* \
 # Remove default Liquibase data
     && rm -rf $LB_HOME/data \
-# Prepare app folder
-    && mkdir /app \
 # Add PowerAuth User
     && groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 
