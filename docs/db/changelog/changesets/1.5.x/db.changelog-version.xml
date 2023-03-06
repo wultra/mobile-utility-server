@@ -23,7 +23,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 				   					   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <!-- 2023 -->
+    <!-- 1.5.x -->
     <include file="20230227-initial-import.xml" relativeToChangelogFile="true" />
     <include file="20230306-add-user-schema.xml" relativeToChangelogFile="true" />
 

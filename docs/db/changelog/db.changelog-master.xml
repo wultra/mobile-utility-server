@@ -24,6 +24,6 @@
 				   					   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
     <!-- 2023 -->
-    <include file="changesets/1.5.x/db.versions.xml" relativeToChangelogFile="true" />
+    <include file="changesets/1.5.x/db.changelog-version.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
