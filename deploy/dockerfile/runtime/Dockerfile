@@ -29,9 +29,10 @@ RUN apt-get -y update  \
     && rm -rf /tmp/* /var/cache/apt/* \
 # Remove default Liquibase data
     && rm -rf $LB_HOME/data \
-# Add PowerAuth User
+# Add PowerAuth user
     && groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 
+# Copy new Liquibase data
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
@@ -42,6 +43,7 @@ COPY target/mobile-utility-server.war /mobile-utility-server.war
 EXPOSE 8000
 STOPSIGNAL SIGQUIT
 
+# Set non-root PowerAuth user
 USER powerauth
 
 # Define entry point with mandatory commands (liquibase)
