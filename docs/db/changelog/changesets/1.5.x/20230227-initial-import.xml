@@ -24,7 +24,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-app-sequence" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-app-sequence" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="ssl_mobile_app_seq"/>
@@ -37,7 +37,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-domain-sequence" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-domain-sequence" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="ssl_mobile_domain_seq"/>
@@ -50,7 +50,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-fingerprint-sequence" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-fingerprint-sequence" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="ssl_mobile_fingerprint_seq"/>
@@ -63,7 +63,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-app-table" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-app-table" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ssl_mobile_app"/>
@@ -92,7 +92,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-domain-table" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-domain-table" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ssl_mobile_domain"/>
@@ -115,7 +115,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="mobile-utility-server-20230227-ssl-mobile-fingerprint-table" author="Petr Dvorak" dbms="postgresql" logicalFilePath="1.5.x/20230227-initial-import.xml">
+    <changeSet id="mobile-utility-server-20230227-ssl-mobile-fingerprint-table" author="Petr Dvorak" logicalFilePath="1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ssl_mobile_fingerprint"/>
