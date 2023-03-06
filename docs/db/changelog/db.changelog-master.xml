@@ -23,7 +23,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 				   					   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <!-- 2023.05 -->
+    <!-- Root changelog -->
     <include file="changesets/mobile-utility-server/db.changelog-module.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
