@@ -18,7 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.database.repo;
 
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -26,7 +26,7 @@ import org.springframework.data.repository.CrudRepository;
  *
  * @author Petr Dvorak, petr@wultra.com
  */
-public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
+public interface MobileAppRepository extends CrudRepository<MobileAppEntity, Long> {
 
     /**
      * Checks if application by the application name exists.
@@ -40,6 +40,6 @@ public interface MobileAppRepository extends CrudRepository<MobileApp, Long> {
      * @param name App name.
      * @return Entity representing an application.
      */
-    MobileApp findFirstByName(String name);
+    MobileAppEntity findFirstByName(String name);
 
 }

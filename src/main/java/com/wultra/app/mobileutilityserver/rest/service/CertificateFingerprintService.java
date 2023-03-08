@@ -18,13 +18,14 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.SslPinningFingerprintDbEntity;
-import com.wultra.app.mobileutilityserver.database.repo.SslPinningFingerprintRepository;
-import com.wultra.app.mobileutilityserver.rest.model.converter.SslPinningFingerprintConverter;
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateFingerprintConverter;
+import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,13 +35,13 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
-public class SslPinningDao {
+public class CertificateFingerprintService {
 
-    private final SslPinningFingerprintRepository repo;
-    private final SslPinningFingerprintConverter converter;
+    private final CertificateFingerprintRepository repo;
+    private final CertificateFingerprintConverter converter;
 
     @Autowired
-    public SslPinningDao(SslPinningFingerprintRepository repo, SslPinningFingerprintConverter converter) {
+    public CertificateFingerprintService(CertificateFingerprintRepository repo, CertificateFingerprintConverter converter) {
         this.repo = repo;
         this.converter = converter;
     }
@@ -52,11 +53,12 @@ public class SslPinningDao {
      * @param appName App name for which to return fingerprints.
      * @return Collection with SSL pinning fingerprints, possibly empty.
      */
-    public List<SslPinningFingerprint> findSslPinningFingerprintsByAppName(String appName) {
-        final List<SslPinningFingerprintDbEntity> fingerprints = repo.findAllByAppName(appName);
-        List<SslPinningFingerprint> result = new ArrayList<>();
-        for (SslPinningFingerprintDbEntity f: fingerprints) {
-            final SslPinningFingerprint fingerprint = converter.convertFrom(f);
+    @Transactional
+    public List<NamedCertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
+        final List<CertificateFingerprintEntity> fingerprints = repo.findAllByAppName(appName);
+        final List<NamedCertificateFingerprint> result = new ArrayList<>();
+        for (CertificateFingerprintEntity f: fingerprints) {
+            final NamedCertificateFingerprint fingerprint = converter.convertNamedCertificateFrom(f);
             if (fingerprint != null) {
                 result.add(fingerprint);
             }

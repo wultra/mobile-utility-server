@@ -17,7 +17,7 @@
  */
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.MobileApp;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +28,12 @@ import org.springframework.stereotype.Service;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
-public class MobileAppDao {
+public class MobileAppService {
 
     private final MobileAppRepository repo;
 
     @Autowired
-    public MobileAppDao(MobileAppRepository repo) {
+    public MobileAppService(MobileAppRepository repo) {
         this.repo = repo;
     }
 
@@ -54,11 +54,11 @@ public class MobileAppDao {
      * if app with provided name does not exist.
      */
     public String privateKey(String appName) {
-        final MobileApp mobileApp = repo.findFirstByName(appName);
-        if (mobileApp == null) {
+        final MobileAppEntity mobileAppEntity = repo.findFirstByName(appName);
+        if (mobileAppEntity == null) {
             return null;
         }
-        return mobileApp.getSigningPrivateKey();
+        return mobileAppEntity.getSigningPrivateKey();
     }
 
     /**
@@ -69,11 +69,11 @@ public class MobileAppDao {
      * if app with provided name does not exist.
      */
     public String publicKey(String appName) {
-        final MobileApp mobileApp = repo.findFirstByName(appName);
-        if (mobileApp == null) {
+        final MobileAppEntity mobileAppEntity = repo.findFirstByName(appName);
+        if (mobileAppEntity == null) {
             return null;
         }
-        return mobileApp.getSigningPublicKey();
+        return mobileAppEntity.getSigningPublicKey();
     }
 
 }

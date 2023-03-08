@@ -18,24 +18,18 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * Response object with a public key related to provided application.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
+@Data
+@AllArgsConstructor
 public class PublicKeyResponse {
-
-    public PublicKeyResponse(String publicKey) {
-        this.publicKey = publicKey;
-    }
 
     private String publicKey;
 
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
-    }
 }

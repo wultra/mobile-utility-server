@@ -17,7 +17,8 @@
  */
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import lombok.Data;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,20 +29,10 @@ import java.util.List;
  *
  * @author Petr Dvorak, petr@wultra.com
  */
+@Data
 public class AppInitResponse {
 
-    private final long timestamp = Instant.now().getEpochSecond();
-    private final List<SslPinningFingerprint> fingerprints;
+    private long timestamp = Instant.now().getEpochSecond();
+    private List<CertificateFingerprint> fingerprints = new ArrayList<>();
 
-    public AppInitResponse() {
-        this.fingerprints = new ArrayList<>();
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public List<SslPinningFingerprint> getFingerprints() {
-        return fingerprints;
-    }
 }

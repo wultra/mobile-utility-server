@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2020  Wultra s.r.o.
+ * Copyright (C) 2023  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.controller;
+package com.wultra.app.mobileutilityserver.rest.controller.api;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.InvalidChallengeHeaderException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDao;
-import com.wultra.app.mobileutilityserver.rest.service.SslPinningDao;
+import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
-import com.wultra.app.mobileutilityserver.rest.model.entity.SslPinningFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.service.CertificateFingerprintService;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,13 +47,13 @@ import java.util.List;
 @Tag(name = "App Initialization Controller")
 public class AppInitializationController {
 
-    private final SslPinningDao sslPinningDAO;
-    private final MobileAppDao mobileAppDAO;
+    private final CertificateFingerprintService certificateFingerprintService;
+    private final MobileAppService mobileAppService;
 
     @Autowired
-    public AppInitializationController(SslPinningDao sslPinningDAO, MobileAppDao mobileAppDAO) {
-        this.sslPinningDAO = sslPinningDAO;
-        this.mobileAppDAO = mobileAppDAO;
+    public AppInitializationController(CertificateFingerprintService certificateFingerprintService, MobileAppService mobileAppService) {
+        this.certificateFingerprintService = certificateFingerprintService;
+        this.mobileAppService = mobileAppService;
     }
 
     @GetMapping
@@ -76,13 +76,13 @@ public class AppInitializationController {
         }
 
         // Check if an app exists
-        final boolean appExists = mobileAppDAO.appExists(appName);
+        final boolean appExists = mobileAppService.appExists(appName);
         if (!appExists) {
             throw new AppNotFoundException(appName);
         }
 
         // Find the fingerprints
-        final List<SslPinningFingerprint> fingerprints = sslPinningDAO.findSslPinningFingerprintsByAppName(appName);
+        final List<NamedCertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(appName);
 
         // Return the response
         final AppInitResponse response = new AppInitResponse();
@@ -92,7 +92,7 @@ public class AppInitializationController {
 
     @GetMapping("public-key")
     public PublicKeyResponse publicKeys(@RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName) throws PublicKeyNotFoundException {
-        final String publicKey = mobileAppDAO.publicKey(appName);
+        final String publicKey = mobileAppService.publicKey(appName);
         if (publicKey == null) {
             throw new PublicKeyNotFoundException(appName);
         }

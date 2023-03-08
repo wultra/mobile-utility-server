@@ -17,6 +17,7 @@
  */
 package com.wultra.app.mobileutilityserver;
 
+import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
 import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -36,6 +37,11 @@ public class MobileUtilityServerApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MobileUtilityServerApplication.class, args);
+    }
+
+    @Bean
+    public KeyGenerator keyGenerator() {
+        return new KeyGenerator();
     }
 
     @Bean
