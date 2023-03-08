@@ -90,6 +90,31 @@ CREATE TABLE ssl_mobile_fingerprint (
 | `mobile_domain_id`  | `INTEGER`      | Reference to related application domain in the `ssl_mobile_domain` table. |
 <!-- end -->
 
+<!-- begin database table ssl_user -->
+### Administration User
+
+Table with users for basic HTTP authentication.
+
+#### Schema
+
+```sql
+CREATE TABLE ssl_user (
+    id INTEGER PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    enabled BOOLEAN NOT NULL
+);
+```
+
+#### Columns
+
+| Column             | Type           | Description                                                                 |
+|--------------------|----------------|-----------------------------------------------------------------------------|
+| `id`               | `INTEGER`      | Primary key for the table, automatically incremented value.                 |
+| `username`         | `VARCHAR(255)` | Username of the user.                                                       |
+| `password`         | `VARCHAR(255)` | Password of the user (bcrypt by default, or `{SHA-256} prefix for SHA-256). |
+| `enabled`          | `BOOLEAN`      | Indication if the user is enabled or not.                                   |
+<!-- end -->
 
 <!-- begin database table ssl_user_authority -->
 ### Administrative User Authorities
@@ -160,6 +185,8 @@ The tables are relatively small and as a result, do not require indexes. To marg
 <!-- begin database index ssl_mobile_fingerprint -->
 ### Foreign Index for SSL Fingerprint Lookup
 
+Foreign index for mapping the fingerprint to domain. 
+
 #### Schema
 ```sql
 ALTER TABLE ssl_mobile_fingerprint
@@ -171,6 +198,8 @@ ALTER TABLE ssl_mobile_fingerprint
 <!-- begin database index ssl_mobile_domain -->
 ### Foreign Index for Domain Lookup
 
+Foreign index to map the domain to mobile app.
+
 #### Schema
 ```sql
 ALTER TABLE ssl_mobile_domain
@@ -181,6 +210,8 @@ ALTER TABLE ssl_mobile_domain
 
 <!-- begin database index ssl_user_authority -->
 ### Foreign Index for User Authority Lookup
+
+Foreign index to map the user authority to the user.
 
 #### Schema
 ```sql
