@@ -16,7 +16,7 @@ Contains information related to various mobile apps.
 
 ```sql
 CREATE TABLE mobile_app (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     display_name VARCHAR(255) NOT NULL,
     sign_private_key VARCHAR(255) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE mobile_app (
 
 | Column             | Type           | Description                                                                                                                                      |
 |--------------------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`               | `INT`          | Primary key for the table, automatically incremented value.                                                                                      |
+| `id`               | `INTEGER`      | Primary key for the table, automatically incremented value.                                                                                      |
 | `name`             | `VARCHAR(255)` | Name of the application, a machine readable value, such as `wlt-demo-app`.                                                                       |
 | `display_name`     | `VARCHAR(255)` | Display name of the application, a human readable value, such as `Wultra Demo App`.                                                              |
 | `sign_private_key` | `VARCHAR(255)` | Base64-encoded private key associated with the application. It is used for signing the data on the server side.                                  |
@@ -38,16 +38,16 @@ Contains information related to pinned domains.
 
 ```sql
 CREATE TABLE ssl_mobile_domain (
-    id INT PRIMARY KEY,
-    app_id INT NOT NULL,
+    id INTEGER PRIMARY KEY,
+    app_id INTEGER NOT NULL,
     domain VARCHAR(255) NOT NULL
 );
 ```
 
 | Column             | Type           | Description                                                 |
 |--------------------|----------------|-------------------------------------------------------------|
-| `id`               | `INT`          | Primary key for the table, automatically incremented value. |
-| `app_id`           | `INT`          | Reference to related mobile app entity.                     |
+| `id`               | `INTEGER`      | Primary key for the table, automatically incremented value. |
+| `app_id`           | `INTEGER`      | Reference to related mobile app entity.                     |
 | `domain`           | `VARCHAR(255)` | Host name of the domain, such as `mobile.wultra.com`.       |
 
 ### Table: `ssl_mobile_fingerprint`
@@ -56,19 +56,19 @@ Table with TLS/SSL certificate fingerprints that should be pinned in the mobile 
 
 ```sql
 CREATE TABLE ssl_mobile_fingerprint (
-    id INT PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     fingerprint VARCHAR(255) NOT NULL,
-    expires INT NOT NULL,
-    mobile_domain_id INT NOT NULL
+    expires INTEGER NOT NULL,
+    mobile_domain_id INTEGER NOT NULL
 );
 ```
 
 | Column              | Type           | Description                                                               |
 |---------------------|----------------|---------------------------------------------------------------------------|
-| `id`                | `INT`          | Primary key for the table, automatically incremented value.               |
+| `id`                | `INTEGER`      | Primary key for the table, automatically incremented value.               |
 | `fingerprint`       | `VARCHAR(255)` | Value of the certificate fingerprint.                                     |
-| `expires`           | `INT`          | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
-| `mobile_domain_id`  | `INT`          | Reference to related application domain in the `ssl_mobile_domain` table. |
+| `expires`           | `INTEGER`      | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
+| `mobile_domain_id`  | `INTEGER`      | Reference to related application domain in the `ssl_mobile_domain` table. |
 
 ### Sequence `hibernate_sequence`
 

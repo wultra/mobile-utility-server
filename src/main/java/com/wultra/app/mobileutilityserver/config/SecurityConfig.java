@@ -24,15 +24,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
@@ -59,13 +59,15 @@ public class SecurityConfig {
     private final String[] supportedHashAlgorithms = { "SHA-256", "bcrypt" };
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        //TODO: Replace by DB backed user details
-        final InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("admin")
-                .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .build());
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        final JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
+        manager.setUsersByUsernameQuery(
+                "SELECT username, password, enabled FROM ssl_user where username = ?"
+        );
+        manager.setAuthoritiesByUsernameQuery(
+                "SELECT u.username, a.authority FROM ssl_user_authority a, ssl_user u "
+                        + " WHERE u.username = ? AND u.id = a.user_id"
+        );
         return manager;
     }
 
@@ -89,7 +91,7 @@ public class SecurityConfig {
                 "SHA-256", sha256
         );
         final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(algorithm, encoders);
-        passwordEncoder.setDefaultPasswordEncoderForMatches(bcrypt); // try using bcrypt as default, for backward compatibility
+        passwordEncoder.setDefaultPasswordEncoderForMatches(bcrypt); // try using bcrypt as default
         return passwordEncoder;
     }
 
