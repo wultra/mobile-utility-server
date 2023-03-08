@@ -17,45 +17,46 @@
  */
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
-import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
-import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.entity.FullCertificateInfo;
+import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
 import org.springframework.stereotype.Component;
 
 /**
- * Converter class for SSL pinning fingerprint entity conversion.
+ * Converter class for SSL certificate entity conversion.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Component
-public class CertificateFingerprintConverter {
+public class CertificateConverter {
 
     /**
-     * Convert a database representation of a fingerprint to REST API representation.
-     * @param source SSL fingerprint model in DB.
+     * Convert a database representation of a certificate to Admin REST API representation.
+     * @param source SSL certificate model in DB.
+     * @return SSL certificate model in REST API.
+     */
+    public FullCertificateInfo convertFrom(CertificateEntity source) {
+        if (source == null) {
+            return null;
+        }
+        final FullCertificateInfo destination = new FullCertificateInfo();
+        destination.setPem(source.getPem());
+        destination.setFingerprint(source.getFingerprint());
+        destination.setExpires(source.getExpires());
+        return destination;
+    }
+
+    /**
+     * Convert a database representation of a certificate to REST API representation with named fingerprint.
+     * @param source SSL certificate model in DB.
      * @return SSL fingerprint model in REST API.
      */
-    public CertificateFingerprint convertFrom(CertificateFingerprintEntity source) {
+    public CertificateFingerprint convertNamedCertificateFrom(CertificateEntity source) {
         if (source == null) {
             return null;
         }
         final CertificateFingerprint destination = new CertificateFingerprint();
-        destination.setFingerprint(source.getFingerprint());
-        destination.setExpires(source.getExpires());
-        return destination;
-    }
-
-    /**
-     * Convert a database representation of a fingerprint to REST API representation with named fingerprint.
-     * @param source SSL fingerprint model in DB.
-     * @return SSL fingerprint model in REST API.
-     */
-    public NamedCertificateFingerprint convertNamedCertificateFrom(CertificateFingerprintEntity source) {
-        if (source == null) {
-            return null;
-        }
-        final NamedCertificateFingerprint destination = new NamedCertificateFingerprint();
         destination.setName(source.getDomain().getDomain());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
@@ -63,16 +64,17 @@ public class CertificateFingerprintConverter {
     }
 
     /**
-     * Convert a database representation of a fingerprint to REST API representation used in admin.
-     * @param source SSL fingerprint model in DB.
-     * @return SSL fingerprint model in admin REST API.
+     * Convert a database representation of a certificate to REST API representation used in admin.
+     * @param source SSL certificate model in DB.
+     * @return SSL certificate model in admin REST API.
      */
-    public FingerprintDetailResponse convertFingerprintDetailResponse(CertificateFingerprintEntity source) {
+    public CertificateDetailResponse convertCertificateDetailResponse(CertificateEntity source) {
         if (source == null) {
             return null;
         }
-        final FingerprintDetailResponse destination = new FingerprintDetailResponse();
+        final CertificateDetailResponse destination = new CertificateDetailResponse();
         destination.setName(source.getDomain().getDomain());
+        destination.setPem(source.getPem());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
         return destination;

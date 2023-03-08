@@ -17,11 +17,11 @@ curl --request POST \
 }'
 ```
 
-## Adding New Certificate Fingerprint
+## Adding New Certificate
 
-Whenever your TLS/SSL certificate is about to expire, you need to add a new replacement fingerprint into the database.
+Whenever your TLS/SSL certificate is about to expire, you need to add a new replacement certificate and associated fingerprint into the database.
 
-There are several ways to add a new fingerprint.
+There are several ways to add a new certificate.
 
 ### Fetching Certificate Based on Domain
 
@@ -29,7 +29,7 @@ You can let our systems do the heavy lifting and fetch the SSL certificate autom
 
 ```sh
 curl --request POST \
-  --url http://localhost:8080/admin/apps/mobile-app/fingerprints/auto \
+  --url http://localhost:8080/admin/apps/mobile-app/certificates/auto \
   --header 'Authorization: Basic YWRtaW46YWRtaW4=' \
   --header 'Content-Type: application/json' \
   --data '{
@@ -49,7 +49,7 @@ Call the following service to import the certificate (notice the `\n` symbols in
 
 ```sh
 curl --request POST \
-  --url http://localhost:8080/admin/apps/mobile-app/fingerprints/pem \
+  --url http://localhost:8080/admin/apps/mobile-app/certificates/pem \
   --header 'Authorization: Basic YWRtaW46YWRtaW4=' \
   --header 'Content-Type: application/json' \
   --data '{

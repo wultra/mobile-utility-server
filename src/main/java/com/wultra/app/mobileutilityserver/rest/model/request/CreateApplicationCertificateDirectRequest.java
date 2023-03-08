@@ -16,20 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.response;
+package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotBlank;
 
 /**
- * Response for the fingerprint detail.
+ * Request for creating certificate by directly providing the certificate data.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class FingerprintDetailResponse {
-
-    private String name;
+@EqualsAndHashCode(callSuper = true)
+public class CreateApplicationCertificateDirectRequest extends CreateApplicationCertificatePemRequest {
+    @NotBlank
     private String fingerprint;
-    private long expires;
+    @NotBlank
+    private Long expires;
 
 }

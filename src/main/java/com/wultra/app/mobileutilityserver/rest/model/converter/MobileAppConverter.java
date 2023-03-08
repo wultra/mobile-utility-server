@@ -18,11 +18,11 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.converter;
 
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
+import com.wultra.app.mobileutilityserver.rest.model.entity.FullCertificateInfo;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,11 +35,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class MobileAppConverter {
 
-    private final CertificateFingerprintConverter fingerprintConverter;
+    private final CertificateConverter certificateConverter;
 
     @Autowired
-    public MobileAppConverter(CertificateFingerprintConverter fingerprintConverter) {
-        this.fingerprintConverter = fingerprintConverter;
+    public MobileAppConverter(CertificateConverter certificateConverter) {
+        this.certificateConverter = certificateConverter;
     }
 
     /**
@@ -68,9 +68,9 @@ public class MobileAppConverter {
         }
         final Domain destination = new Domain();
         destination.setName(source.getDomain());
-        for (CertificateFingerprintEntity fingerprint : source.getFingerprints()) {
-            final CertificateFingerprint certificateFingerprint = fingerprintConverter.convertFrom(fingerprint);
-            destination.getFingerprints().add(certificateFingerprint);
+        for (CertificateEntity certificateEntity : source.getCertificates()) {
+            final FullCertificateInfo certificateInfo = certificateConverter.convertFrom(certificateEntity);
+            destination.getCertificates().add(certificateInfo);
         }
         return destination;
     }
