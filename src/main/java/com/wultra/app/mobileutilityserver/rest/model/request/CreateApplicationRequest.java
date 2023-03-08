@@ -37,6 +37,7 @@ public class CreateApplicationRequest {
     private String name;
 
     @NotBlank
+    @Schema(type = "string", example = "Mobile App")
     private String displayName;
 
 }

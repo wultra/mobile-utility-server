@@ -38,7 +38,7 @@ CREATE TABLE mobile_app (
 | `display_name`     | `VARCHAR(255)` | Display name of the application, a human readable value, such as `Wultra Demo App`.                                                              |
 | `sign_private_key` | `VARCHAR(255)` | Base64-encoded private key associated with the application. It is used for signing the data on the server side.                                  |
 | `sign_public_key`  | `VARCHAR(255)` | Base64-encoded public key associated with the application. It is used by the client applications when verifying data signed on the server side.  |
-<-- end -->
+<!-- end -->
 
 <!-- begin database table ssl_mobile_domain -->
 ### Mobile App Domains
