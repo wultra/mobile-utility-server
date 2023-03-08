@@ -90,31 +90,6 @@ CREATE TABLE ssl_mobile_fingerprint (
 | `mobile_domain_id`  | `INTEGER`      | Reference to related application domain in the `ssl_mobile_domain` table. |
 <!-- end -->
 
-<!-- begin database table ssl_user -->
-### Administration User
-
-Table with users for basic HTTP authentication
-
-#### Schema
-
-```sql
-CREATE TABLE ssl_user (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    enabled BOOLEAN NOT NULL
-);
-```
-
-#### Columns
-
-| Column             | Type           | Description                                                                 |
-|--------------------|----------------|-----------------------------------------------------------------------------|
-| `id`               | `INTEGER`      | Primary key for the table, automatically incremented value.                 |
-| `username`         | `VARCHAR(255)` | Username of the user.                                                       |
-| `password`         | `VARCHAR(255)` | Password of the user (bcrypt by default, or `{SHA-256} prefix for SHA-256). |
-| `enabled`          | `BOOLEAN`      | Indication if the user is enabled or not                                    |
-<!-- end -->
 
 <!-- begin database table ssl_user_authority -->
 ### Administrative User Authorities
