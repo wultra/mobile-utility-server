@@ -32,6 +32,6 @@ import java.util.List;
 public class Domain {
 
     private String name;
-    private final List<CertificateFingerprint> fingerprints = new ArrayList<>();
+    private final List<FullCertificateInfo> certificates = new ArrayList<>();
 
 }

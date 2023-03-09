@@ -25,27 +25,30 @@ import javax.persistence.*;
 
 
 /**
- * Entity representing an SSL pinning fingerprint.
+ * Entity representing an SSL pinning certificate.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "ssl_mobile_fingerprint")
-public class CertificateFingerprintEntity {
+@Table(name = "ssl_certificate")
+public class CertificateEntity {
 
     @Id
     @Column(name = "id")
     @GenericGenerator(
-            name = "ssl_mobile_fingerprint",
+            name = "ssl_certificate",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
-                    @Parameter(name = "sequence_name", value = "ssl_mobile_fingerprint_seq"),
+                    @Parameter(name = "sequence_name", value = "ssl_certificate_seq"),
                     @Parameter(name = "initial_value", value = "1"),
                     @Parameter(name = "increment_size", value = "1")
             }
     )
-    @GeneratedValue(generator = "ssl_mobile_fingerprint")
+    @GeneratedValue(generator = "ssl_certificate")
     private Long id;
+
+    @Column(name = "pem")
+    private String pem;
 
     @Column(name = "fingerprint")
     private String fingerprint;
@@ -71,6 +74,22 @@ public class CertificateFingerprintEntity {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * Get certificate in PEM format.
+     * @return Certificate in PEM format.
+     */
+    public String getPem() {
+        return pem;
+    }
+
+    /**
+     * Set certificate in PEM format.
+     * @param pem Certificate in PEM format.
+     */
+    public void setPem(String pem) {
+        this.pem = pem;
     }
 
     /**

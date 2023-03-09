@@ -18,10 +18,10 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
-import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
-import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateFingerprintConverter;
-import com.wultra.app.mobileutilityserver.rest.model.entity.NamedCertificateFingerprint;
+import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
+import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +37,11 @@ import java.util.List;
 @Service
 public class CertificateFingerprintService {
 
-    private final CertificateFingerprintRepository repo;
-    private final CertificateFingerprintConverter converter;
+    private final CertificateRepository repo;
+    private final CertificateConverter converter;
 
     @Autowired
-    public CertificateFingerprintService(CertificateFingerprintRepository repo, CertificateFingerprintConverter converter) {
+    public CertificateFingerprintService(CertificateRepository repo, CertificateConverter converter) {
         this.repo = repo;
         this.converter = converter;
     }
@@ -54,11 +54,11 @@ public class CertificateFingerprintService {
      * @return Collection with SSL pinning fingerprints, possibly empty.
      */
     @Transactional
-    public List<NamedCertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
-        final List<CertificateFingerprintEntity> fingerprints = repo.findAllByAppName(appName);
-        final List<NamedCertificateFingerprint> result = new ArrayList<>();
-        for (CertificateFingerprintEntity f: fingerprints) {
-            final NamedCertificateFingerprint fingerprint = converter.convertNamedCertificateFrom(f);
+    public List<CertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
+        final List<CertificateEntity> fingerprints = repo.findAllByAppName(appName);
+        final List<CertificateFingerprint> result = new ArrayList<>();
+        for (CertificateEntity f: fingerprints) {
+            final CertificateFingerprint fingerprint = converter.convertNamedCertificateFrom(f);
             if (fingerprint != null) {
                 result.add(fingerprint);
             }
