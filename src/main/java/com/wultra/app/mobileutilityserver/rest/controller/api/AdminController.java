@@ -20,13 +20,12 @@ package com.wultra.app.mobileutilityserver.rest.controller.api;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintDirectRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.service.AdminService;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,24 +71,19 @@ public class AdminController {
         return adminService.applicationDetail(name);
     }
 
-    @PostMapping("apps/{name}/fingerprints/direct")
-    public FingerprintDetailResponse createApplicationFingerprint(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationFingerprintDirectRequest request) throws AppNotFoundException {
-        return adminService.createApplicationFingerprint(name, request);
+    @PostMapping("apps/{name}/certificates/auto")
+    public CertificateDetailResponse createApplicationCertificateAuto(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationCertificateRequest request) throws AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException {
+        return adminService.createApplicationCertificate(name, request);
     }
 
-    @PostMapping("apps/{name}/fingerprints/auto")
-    public FingerprintDetailResponse createApplicationFingerprintAuto(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationFingerprintRequest request) throws AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException {
-        return adminService.createApplicationFingerprint(name, request);
+    @PostMapping("apps/{name}/certificates/pem")
+    public CertificateDetailResponse createApplicationCertificatePem(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationCertificatePemRequest request) throws AppNotFoundException, IOException, NoSuchAlgorithmException {
+        return adminService.createApplicationCertificate(name, request);
     }
 
-    @PostMapping("apps/{name}/fingerprints/pem")
-    public FingerprintDetailResponse createApplicationFingerprintPem(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationFingerprintPemRequest request) throws AppNotFoundException, IOException, NoSuchAlgorithmException {
-        return adminService.createApplicationFingerprint(name, request);
-    }
-
-    @DeleteMapping("apps/{name}/fingerprints")
-    public Response deleteFingerprint(@PathVariable("name") String appName, @RequestParam("domain") String domain, @RequestParam("fingerprint") String fingerprint) {
-        adminService.deleteFingerprint(appName, domain, fingerprint);
+    @DeleteMapping("apps/{name}/certificates")
+    public Response deleteCertificates(@PathVariable("name") String appName, @RequestParam("domain") String domain, @RequestParam("fingerprint") String fingerprint) {
+        adminService.deleteCertificate(appName, domain, fingerprint);
         return new Response();
     }
 
@@ -99,9 +93,9 @@ public class AdminController {
         return new Response();
     }
 
-    @DeleteMapping("fingerprints/expired")
-    public Response deleteExpiredFingerprints() {
-        adminService.deleteExpiredFingerprints();
+    @DeleteMapping("certificates/expired")
+    public Response deleteExpiredCertificates() {
+        adminService.deleteExpiredCertificates();
         return new Response();
     }
 

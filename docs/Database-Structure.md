@@ -64,16 +64,17 @@ CREATE TABLE ssl_mobile_domain (
 | `domain`           | `VARCHAR(255)` | Host name of the domain, such as `mobile.wultra.com`.       |
 <!-- end -->
 
-<!-- begin database table ssl_mobile_fingerprint -->
-### SSL Certificate Fingerprints 
+<!-- begin database table ssl_certificate -->
+### SSL Certificate 
 
-Table with TLS/SSL certificate fingerprints that should be pinned in the mobile app.
+Table with TLS/SSL certificate and fingerprints that should be pinned in the mobile app.
 
 #### Schema
 
 ```sql
-CREATE TABLE ssl_mobile_fingerprint (
+CREATE TABLE ssl_certificate (
     id INTEGER PRIMARY KEY,
+    pem TEXT NOT NULL,
     fingerprint VARCHAR(255) NOT NULL,
     expires INTEGER NOT NULL,
     mobile_domain_id INTEGER NOT NULL
@@ -82,12 +83,13 @@ CREATE TABLE ssl_mobile_fingerprint (
 
 #### Columns
 
-| Column              | Type           | Description                                                               |
-|---------------------|----------------|---------------------------------------------------------------------------|
-| `id`                | `INTEGER`      | Primary key for the table, automatically incremented value.               |
-| `fingerprint`       | `VARCHAR(255)` | Value of the certificate fingerprint.                                     |
-| `expires`           | `INTEGER`      | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
-| `mobile_domain_id`  | `INTEGER`      | Reference to related application domain in the `ssl_mobile_domain` table. |
+| Column             | Type           | Description                                                               |
+|--------------------|----------------|---------------------------------------------------------------------------|
+| `id`               | `INTEGER`      | Primary key for the table, automatically incremented value.               |
+| `pem`              | `TEXT`         | Original certificate value in PEM format.                                 |
+| `fingerprint`      | `VARCHAR(255)` | Value of the certificate fingerprint.                                     |
+| `expires`          | `INTEGER`      | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
+| `mobile_domain_id` | `INTEGER`      | Reference to related application domain in the `ssl_mobile_domain` table. |
 <!-- end -->
 
 <!-- begin database table ssl_user -->
@@ -166,15 +168,15 @@ CREATE SEQUENCE IF NOT EXISTS ssl_mobile_domain_seq MAXVALUE 9999999999999 CACHE
 ```
 <!-- end -->
 
-<!-- begin database sequence ssl_mobile_fingerprint_seq -->
-### SSL Certificate Fingerprint Sequence
+<!-- begin database sequence ssl_certificate_seq -->
+### SSL Certificate Sequence
 
-Sequence responsible for SSL fingerprints autoincrements.
+Sequence responsible for SSL certificates and fingerprints autoincrements.
 
 #### Schema
 
 ```sql
-CREATE SEQUENCE IF NOT EXISTS ssl_mobile_fingerprint_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS ssl_certificates_seq MAXVALUE 9999999999999 CACHE 20;
 ```
 <!-- end -->
 

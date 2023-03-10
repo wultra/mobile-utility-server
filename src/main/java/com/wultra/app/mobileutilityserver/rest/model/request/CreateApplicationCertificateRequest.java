@@ -16,20 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.entity;
+package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotBlank;
 
 /**
- * Entity representing full certificate fingerprint including the name.
+ * Request for creating certificate by automatically fetching TLS/SSL certificate of the domain.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class NamedCertificateFingerprint extends CertificateFingerprint {
+public class CreateApplicationCertificateRequest {
 
-    private String name;
+    @NotBlank
+    private String domain;
 
 }

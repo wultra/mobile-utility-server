@@ -28,6 +28,7 @@ import lombok.Data;
  */
 @Data
 public class CertificateFingerprint {
+    private String name;
     private String fingerprint;
     private long expires;
     

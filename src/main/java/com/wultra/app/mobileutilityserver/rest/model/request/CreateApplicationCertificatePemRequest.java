@@ -24,13 +24,13 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Request for creating fingerprint by submitting PEM request.
+ * Request for creating certificate by submitting PEM request.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class CreateApplicationFingerprintPemRequest extends CreateApplicationFingerprintRequest {
+public class CreateApplicationCertificatePemRequest extends CreateApplicationCertificateRequest {
 
     @NotBlank
     private String pem;

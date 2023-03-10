@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Wultra Mobile Utility Server
+  ~ Copyright (C) 2023  Wultra s.r.o.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="ssl_mobile_fingerprint" columnName="pem"/>
+            </not>
+        </preConditions>
+        <comment>Create a new column to store the certificate in PEM format.</comment>
+        <addColumn tableName="ssl_mobile_fingerprint">
+            <column name="pem" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="ssl_mobile_fingerprint" columnName="pem"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
+        <comment>Rename the ssl_mobile_fingerprint table to ssl_certificate.</comment>
+        <renameTable oldTableName="ssl_mobile_fingerprint" newTableName="ssl_certificate"/>
+        <rollback>
+            <renameTable oldTableName="ssl_certificate" newTableName="ssl_mobile_fingerprint"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
+        <comment>Rename the ssl_mobile_fingerprint_seq sequence to ssl_certificate_seq.</comment>
+        <renameSequence oldSequenceName="ssl_mobile_fingerprint_seq" newSequenceName="ssl_certificate_seq"/>
+        <rollback>
+            <renameSequence oldSequenceName="ssl_certificate_seq" newSequenceName="ssl_mobile_fingerprint_seq"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

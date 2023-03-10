@@ -57,7 +57,7 @@ public class MobileDomainEntity {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval=true)
-    private final List<CertificateFingerprintEntity> fingerprints = new ArrayList<>();
+    private final List<CertificateEntity> certificates = new ArrayList<>();
 
     /**
      * Get ID.
@@ -107,7 +107,7 @@ public class MobileDomainEntity {
         this.app = app;
     }
 
-    public List<CertificateFingerprintEntity> getFingerprints() {
-        return fingerprints;
+    public List<CertificateEntity> getCertificates() {
+        return certificates;
     }
 }

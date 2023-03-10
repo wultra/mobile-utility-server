@@ -18,24 +18,24 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.CertificateFingerprintEntity;
+import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.repo.CertificateFingerprintRepository;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateFingerprintConverter;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintDirectRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintPemRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationFingerprintRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateDirectRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.FingerprintDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -68,24 +68,24 @@ import java.util.List;
 public class AdminService {
 
     private final MobileAppRepository mobileAppRepository;
-    private final CertificateFingerprintRepository certificateFingerprintRepository;
+    private final CertificateRepository certificateRepository;
     private final MobileDomainRepository mobileDomainRepository;
 
-    private final CertificateFingerprintConverter fingerprintConverter;
+    private final CertificateConverter certificateConverter;
     private final MobileAppConverter mobileAppConverter;
 
     private final CryptographicOperationsService cryptographicOperationsService;
 
     @Autowired
     public AdminService(MobileAppRepository mobileAppRepository,
-                        CertificateFingerprintRepository certificateFingerprintRepository,
+                        CertificateRepository certificateRepository,
                         MobileDomainRepository mobileDomainRepository,
-                        CertificateFingerprintConverter fingerprintConverter,
+                        CertificateConverter certificateConverter,
                         MobileAppConverter mobileAppConverter, CryptographicOperationsService cryptographicOperationsService) {
         this.mobileAppRepository = mobileAppRepository;
-        this.certificateFingerprintRepository = certificateFingerprintRepository;
+        this.certificateRepository = certificateRepository;
         this.mobileDomainRepository = mobileDomainRepository;
-        this.fingerprintConverter = fingerprintConverter;
+        this.certificateConverter = certificateConverter;
         this.mobileAppConverter = mobileAppConverter;
         this.cryptographicOperationsService = cryptographicOperationsService;
     }
@@ -148,8 +148,9 @@ public class AdminService {
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintDirectRequest request) throws AppNotFoundException {
+    public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateDirectRequest request) throws AppNotFoundException {
         final String domain = request.getDomain();
+        final String pem = request.getPem();
         final String fingerprint = request.getFingerprint();
         final Long expires = request.getExpires();
 
@@ -158,12 +159,12 @@ public class AdminService {
             throw new AppNotFoundException(appName);
         }
 
-        final List<CertificateFingerprintEntity> fingerprintEntityOptional = certificateFingerprintRepository.findFirstByAppNameAndDomain(appName, domain);
-        if (!fingerprintEntityOptional.isEmpty()) {
-            for (CertificateFingerprintEntity f : fingerprintEntityOptional) {
-                if (fingerprint.equalsIgnoreCase(f.getFingerprint())) {
-                    final FingerprintDetailResponse response = fingerprintConverter.convertFingerprintDetailResponse(f);
-                    logger.info("Fingerprint up-to-date: {}", response);
+        final List<CertificateEntity> certificateEntityOptional = certificateRepository.findFirstByAppNameAndDomain(appName, domain);
+        if (!certificateEntityOptional.isEmpty()) {
+            for (CertificateEntity cert : certificateEntityOptional) {
+                if (fingerprint.equalsIgnoreCase(cert.getFingerprint())) {
+                    final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(cert);
+                    logger.info("Certificate up-to-date: {}", response);
                     return response;
                 }
             }
@@ -177,20 +178,21 @@ public class AdminService {
             domainEntity = mobileDomainRepository.save(domainEntity);
         }
 
-        final CertificateFingerprintEntity fingerprintEntity = new CertificateFingerprintEntity();
-        fingerprintEntity.setDomain(domainEntity);
-        fingerprintEntity.setFingerprint(fingerprint);
-        fingerprintEntity.setExpires(expires);
+        final CertificateEntity certificateEntity = new CertificateEntity();
+        certificateEntity.setDomain(domainEntity);
+        certificateEntity.setPem(pem);
+        certificateEntity.setFingerprint(fingerprint);
+        certificateEntity.setExpires(expires);
 
-        final CertificateFingerprintEntity savedFingerprintEntity = certificateFingerprintRepository.save(fingerprintEntity);
+        final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
-        final FingerprintDetailResponse response = fingerprintConverter.convertFingerprintDetailResponse(savedFingerprintEntity);
-        logger.info("Fingerprint refreshed: {}", response);
+        final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(savedCertificateEntity);
+        logger.info("Certificate refreshed: {}", response);
         return response;
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintPemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
+    public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificatePemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
 
         final String domain = request.getDomain();
         final String pem = request.getPem();
@@ -201,16 +203,17 @@ public class AdminService {
         final X509CertificateHolder x509Cert = (X509CertificateHolder) pemInfo;
         final long notAfter = x509Cert.getNotAfter().getTime() / 1000;
 
-        final CreateApplicationFingerprintDirectRequest innerRequest = new CreateApplicationFingerprintDirectRequest();
+        final CreateApplicationCertificateDirectRequest innerRequest = new CreateApplicationCertificateDirectRequest();
         innerRequest.setDomain(domain);
+        innerRequest.setPem(pem);
         innerRequest.setFingerprint(cryptographicOperationsService.computeSHA256Signature(pem.getBytes(StandardCharsets.UTF_8)));
         innerRequest.setExpires(notAfter);
 
-        return this.createApplicationFingerprint(appName, innerRequest);
+        return this.createApplicationCertificate(appName, innerRequest);
     }
 
     @Transactional
-    public FingerprintDetailResponse createApplicationFingerprint(String appName, CreateApplicationFingerprintRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
+    public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
         final String domain = request.getDomain();
 
         final SSLSocketFactory factory = HttpsURLConnection.getDefaultSSLSocketFactory();
@@ -223,24 +226,24 @@ public class AdminService {
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
         logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
-        final CreateApplicationFingerprintPemRequest innerRequest = new CreateApplicationFingerprintPemRequest();
+        final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
         innerRequest.setPem(certPem);
 
-        return this.createApplicationFingerprint(appName, innerRequest);
+        return this.createApplicationCertificate(appName, innerRequest);
 
     }
 
     @Transactional
-    public void deleteFingerprint(String appName, String domain, String fingerprint) {
+    public void deleteCertificate(String appName, String domain, String fingerprint) {
         final MobileDomainEntity mobileDomainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(appName, domain);
         if (mobileDomainEntity == null) {
             return;
         }
-        final List<CertificateFingerprintEntity> fingerprints = mobileDomainEntity.getFingerprints();
-        for (CertificateFingerprintEntity fingerprintDb: fingerprints) {
-            if (fingerprintDb.getFingerprint().equalsIgnoreCase(fingerprint)) {
-                fingerprints.remove(fingerprintDb);
+        final List<CertificateEntity> certificates = mobileDomainEntity.getCertificates();
+        for (CertificateEntity certificate: certificates) {
+            if (certificate.getFingerprint().equalsIgnoreCase(fingerprint)) {
+                certificates.remove(certificate);
                 mobileDomainRepository.save(mobileDomainEntity);
                 return;
             }
@@ -253,8 +256,8 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteExpiredFingerprints() {
-        certificateFingerprintRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
+    public void deleteExpiredCertificates() {
+        certificateRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
     }
 
 }

@@ -16,21 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.request;
+package com.wultra.app.mobileutilityserver.rest.model.response;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
 /**
- * Request for creating fingerprint by automatically fetching TLS/SSL certificate of the domain.
+ * Response for the fingerprint detail.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
 @Data
-public class CreateApplicationFingerprintRequest {
+public class CertificateDetailResponse {
 
-    @NotBlank
-    private String domain;
+    private String name;
+    private String pem;
+    private String fingerprint;
+    private long expires;
 
 }
