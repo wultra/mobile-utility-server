@@ -49,7 +49,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
@@ -206,7 +205,7 @@ public class AdminService {
         final CreateApplicationCertificateDirectRequest innerRequest = new CreateApplicationCertificateDirectRequest();
         innerRequest.setDomain(domain);
         innerRequest.setPem(pem);
-        innerRequest.setFingerprint(cryptographicOperationsService.computeSHA256Signature(pem.getBytes(StandardCharsets.UTF_8)));
+        innerRequest.setFingerprint(cryptographicOperationsService.computeSHA256Hash(x509Cert.getEncoded()));
         innerRequest.setExpires(notAfter);
 
         return this.createApplicationCertificate(appName, innerRequest);

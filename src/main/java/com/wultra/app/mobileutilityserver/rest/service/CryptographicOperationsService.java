@@ -59,7 +59,7 @@ public class CryptographicOperationsService {
      * @return Hash of provided data as Base64 string.
      * @throws NoSuchAlgorithmException In case algorithm does not exist.
      */
-    public String computeSHA256Signature(byte[] data) throws NoSuchAlgorithmException {
+    public String computeSHA256Hash(byte[] data) throws NoSuchAlgorithmException {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(data);
         return base64.encode(md.digest());

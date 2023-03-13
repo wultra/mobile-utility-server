@@ -73,6 +73,7 @@ public class ResponseSignFilter extends OncePerRequestFilter {
                 baos.write(cb);
                 baos.write('&');
                 baos.write(rb);
+                baos.close();
 
                 final byte[] signatureBase = baos.toByteArray();
 
