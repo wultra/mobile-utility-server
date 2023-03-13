@@ -64,7 +64,7 @@
         <bc.version>1.72</bc.version>
         <powerauth-java-crypto.version>1.4.0</powerauth-java-crypto.version>
         <rest-model-base.version>1.6.0</rest-model-base.version>
-        <springdoc-openapi-ui.version>1.6.14</springdoc-openapi-ui.version>
+        <springdoc-openapi-ui.version>1.6.15</springdoc-openapi-ui.version>
 
     </properties>
 
