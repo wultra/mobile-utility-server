@@ -65,6 +65,7 @@
         <powerauth-java-crypto.version>1.4.0</powerauth-java-crypto.version>
         <rest-model-base.version>1.6.0</rest-model-base.version>
         <springdoc-openapi-ui.version>1.6.15</springdoc-openapi-ui.version>
+        <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
 
     </properties>
 
@@ -159,7 +160,7 @@
         <dependency>
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.9.2</version>
+            <version>${gatling-charts-highcharts.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -189,7 +190,7 @@
 
     <profiles>
         <profile>
-            <id>embedded-db</id>
+            <id>liquibase</id>
             <properties>
                 <liquibase.version>4.20.0</liquibase.version>
             </properties>
@@ -208,15 +209,15 @@
                         <executions>
                             <execution>
                                 <id>copy-resources</id>
-                                <phase>process-classes</phase>
+                                <phase>process-resources</phase>
                                 <goals>
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/classes/db/changelog</outputDirectory>
+                                    <outputDirectory>${basedir}/target/classes/db/changelog/</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${basedir}/docs/db/changelog</directory>
+                                            <directory>${basedir}/docs/db/changelog/changesets/${project.artifactId}</directory>
                                             <includes>
                                                 <include>**/*.*</include>
                                             </includes>

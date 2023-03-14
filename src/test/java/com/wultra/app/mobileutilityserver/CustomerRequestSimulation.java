@@ -48,8 +48,8 @@ public class CustomerRequestSimulation extends Simulation {
 
     @Override
     public void before() {
-        final ConfigurableApplicationContext app = SpringApplication.run(MobileUtilityServerApplication.class);
-        app.registerShutdownHook();
+//        final ConfigurableApplicationContext app = SpringApplication.run(MobileUtilityServerApplication.class);
+//        app.registerShutdownHook();
     }
 
     // Protocol Definition
