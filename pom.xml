@@ -192,7 +192,7 @@
         <profile>
             <id>liquibase</id>
             <properties>
-                <liquibase.version>4.19.0</liquibase.version>
+                <liquibase.version>4.20.0</liquibase.version>
             </properties>
             <dependencies>
                 <dependency>

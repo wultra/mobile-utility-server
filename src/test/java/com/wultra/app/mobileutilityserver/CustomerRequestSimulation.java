@@ -18,17 +18,13 @@
 
 package com.wultra.app.mobileutilityserver;
 
-import com.google.common.io.BaseEncoding;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
 import io.gatling.javaapi.http.HttpDsl;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
-import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,19 +42,13 @@ import static io.gatling.javaapi.http.HttpDsl.http;
  */
 public class CustomerRequestSimulation extends Simulation {
 
-    @Override
-    public void before() {
-//        final ConfigurableApplicationContext app = SpringApplication.run(MobileUtilityServerApplication.class);
-//        app.registerShutdownHook();
-    }
-
     // Protocol Definition
     final HttpProtocolBuilder httpProtocol = HttpDsl.http
             .baseUrl(System.getProperty("baseUrl", "http://localhost:8080"))
             .acceptHeader("application/json")
             .userAgentHeader("Gatling Performance Test");
 
-    Iterator<Map<String, Object>> feeder =
+    final Iterator<Map<String, Object>> feeder =
             Stream.generate((Supplier<Map<String, Object>>) () -> {
                         final String challengeHeader = RandomStringUtils.randomAlphanumeric(16);
                         return Collections.singletonMap("challenge", challengeHeader);

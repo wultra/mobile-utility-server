@@ -8,7 +8,7 @@ The database structure is extremely simple, we provide an example in PostgreSQL 
 
 The following image captures the overview of the tables in the schema:
 
-<img src="./img/mobile_app.png" width="544" alt="Mobile Utility Server DB Schema"/>
+<img src="./img/mobile_app.png" width="888" alt="Mobile Utility Server DB Schema"/>
 
 ## Database Tables
 
