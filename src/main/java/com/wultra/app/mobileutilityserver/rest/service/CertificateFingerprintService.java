@@ -18,11 +18,13 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
+import com.wultra.app.mobileutilityserver.config.CacheConfiguration;
 import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -54,6 +56,7 @@ public class CertificateFingerprintService {
      * @return Collection with SSL pinning fingerprints, possibly empty.
      */
     @Transactional
+    @Cacheable(cacheNames = CacheConfiguration.CERTIFICATE_FINGERPRINTS)
     public List<CertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
         final List<CertificateEntity> fingerprints = repo.findAllByAppName(appName);
         final List<CertificateFingerprint> result = new ArrayList<>();

@@ -19,8 +19,8 @@ package com.wultra.app.mobileutilityserver.rest.filter;
 
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
 import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +47,8 @@ import java.security.spec.InvalidKeySpecException;
 @Component
 public class ResponseSignFilter extends OncePerRequestFilter {
 
+    private static final String PATH_PREFIX = "/app/init";
+
     private final MobileAppService mobileAppService;
 
     private final CryptographicOperationsService cryptographicOperationsService;
@@ -55,6 +57,12 @@ public class ResponseSignFilter extends OncePerRequestFilter {
     public ResponseSignFilter(MobileAppService mobileAppService, CryptographicOperationsService cryptographicOperationsService) {
         this.mobileAppService = mobileAppService;
         this.cryptographicOperationsService = cryptographicOperationsService;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        final String url = request.getRequestURI();
+        return !url.startsWith(PATH_PREFIX);
     }
 
     @Override
