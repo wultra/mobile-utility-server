@@ -22,10 +22,10 @@ import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,8 +56,8 @@ public class CertificateFingerprintService {
     @Transactional
     public List<CertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
         final List<CertificateEntity> fingerprints = repo.findAllByAppName(appName);
-        final List<CertificateFingerprint> result = new ArrayList<>();
-        for (CertificateEntity f: fingerprints) {
+        final List<CertificateFingerprint> result = new ArrayList<>(fingerprints.size());
+        for (final CertificateEntity f: fingerprints) {
             final CertificateFingerprint fingerprint = converter.convertNamedCertificateFrom(f);
             if (fingerprint != null) {
                 result.add(fingerprint);

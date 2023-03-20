@@ -29,11 +29,11 @@ import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailR
 import com.wultra.app.mobileutilityserver.rest.service.AdminService;
 import io.getlime.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;

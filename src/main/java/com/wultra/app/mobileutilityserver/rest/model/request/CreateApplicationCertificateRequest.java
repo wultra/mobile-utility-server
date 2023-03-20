@@ -18,9 +18,8 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * Request for creating certificate by automatically fetching TLS/SSL certificate of the domain.

@@ -18,10 +18,10 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
+import jakarta.persistence.*;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

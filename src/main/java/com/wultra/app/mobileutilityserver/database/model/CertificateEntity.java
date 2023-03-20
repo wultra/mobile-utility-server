@@ -18,10 +18,9 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-
-import javax.persistence.*;
 
 
 /**
