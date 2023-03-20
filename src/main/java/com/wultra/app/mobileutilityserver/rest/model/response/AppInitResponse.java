@@ -31,8 +31,8 @@ import java.util.List;
 @Data
 public class AppInitResponse {
 
-    private long timestamp = Instant.now().getEpochSecond();
-    private List<CertificateFingerprint> fingerprints;
+    private final long timestamp = Instant.now().getEpochSecond();
+    private final List<CertificateFingerprint> fingerprints;
 
     public AppInitResponse(List<CertificateFingerprint> fingerprints) {
         this.fingerprints = fingerprints;
