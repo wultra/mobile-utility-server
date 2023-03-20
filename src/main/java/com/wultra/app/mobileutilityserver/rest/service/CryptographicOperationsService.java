@@ -46,6 +46,8 @@ public class CryptographicOperationsService {
     private final SignatureUtils signatureUtils;
     private final BaseEncoding base64 = BaseEncoding.base64();
 
+    private final SecureRandom secureRandom = new SecureRandom(); // Sufficient for the use-case.
+
     @Autowired
     public CryptographicOperationsService(KeyGenerator keyGenerator, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
         this.keyGenerator = keyGenerator;
@@ -116,7 +118,7 @@ public class CryptographicOperationsService {
      */
     public String computeECDSASignature(byte[] signatureBase, String privateKeyBase64) throws GenericCryptoException, InvalidKeyException, CryptoProviderException, InvalidKeySpecException {
         final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(BaseEncoding.base64().decode(privateKeyBase64));
-        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey);
+        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey, secureRandom);
         return base64.encode(ecdsaSignature);
     }
 }

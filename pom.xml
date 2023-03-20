@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.9</version>
+        <version>3.0.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -55,16 +55,16 @@
 
     <properties>
         <!-- Java Properties -->
-        <java.version>11</java.version>
+        <java.version>17</java.version>
 
         <!-- Project Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency Versions -->
         <bc.version>1.72</bc.version>
-        <powerauth-java-crypto.version>1.4.0</powerauth-java-crypto.version>
+        <powerauth-java-crypto.version>1.5.0-SNAPSHOT</powerauth-java-crypto.version>
         <rest-model-base.version>1.6.0</rest-model-base.version>
-        <springdoc-openapi-ui.version>1.6.15</springdoc-openapi-ui.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
 
     </properties>
@@ -141,8 +141,8 @@
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->

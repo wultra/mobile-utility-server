@@ -20,6 +20,8 @@ package com.wultra.app.mobileutilityserver.rest.errorhandling;
 import com.wultra.app.mobileutilityserver.rest.model.errors.ExtendedError;
 import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -36,9 +38,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 /**
  * Controller advice responsible for error handling.

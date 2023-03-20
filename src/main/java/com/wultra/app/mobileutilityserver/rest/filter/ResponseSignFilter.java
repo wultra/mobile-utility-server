@@ -23,17 +23,16 @@ import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
 import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -69,13 +68,10 @@ public class ResponseSignFilter extends OncePerRequestFilter {
                 final byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
                 final byte[] rb = responseWrapper.getContentAsByteArray();
 
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream( );
-                baos.write(cb);
-                baos.write('&');
-                baos.write(rb);
-                baos.close();
-
-                final byte[] signatureBase = baos.toByteArray();
+                final byte[] signatureBase = new byte[cb.length + rb.length + 1];
+                System.arraycopy(cb, 0, signatureBase, 0, cb.length);
+                signatureBase[cb.length] = '&';
+                System.arraycopy(rb, 0, signatureBase, cb.length + 1, rb.length);
 
                 // Fetch the app private key, check if such app exists
                 final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);

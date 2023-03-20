@@ -37,6 +37,7 @@ import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailR
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.openssl.PEMParser;
@@ -46,7 +47,6 @@ import org.springframework.stereotype.Service;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyPair;

@@ -68,11 +68,14 @@ public class HomeController {
      * Serving the robots.txt file with disallowed indexing.
      * @return Default robots.txt file.
      */
+    @SuppressWarnings("SameReturnValue")
     @RequestMapping(value = "/robots.txt", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String getRobotsTxt() {
-        return "User-agent: *\n"
-                + "Disallow: /\n";
+        return """
+                User-agent: *
+                Disallow: /
+                """;
     }
 
 }
