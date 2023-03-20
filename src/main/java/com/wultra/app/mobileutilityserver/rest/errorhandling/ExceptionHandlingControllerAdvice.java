@@ -22,8 +22,7 @@ import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
 import io.getlime.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.access.AccessDeniedException;
@@ -45,9 +44,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Petr Dvorak, petr@wultra.com
  */
 @ControllerAdvice
+@Slf4j
 public class ExceptionHandlingControllerAdvice {
-
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingControllerAdvice.class);
 
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
