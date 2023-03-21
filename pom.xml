@@ -96,12 +96,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- Application Runtime Dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </dependency>
-
         <!-- Default Database Engine -->
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -185,6 +179,44 @@
                 <artifactId>gatling-maven-plugin</artifactId>
                 <version>4.3.0</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-banned-dependencies</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.bouncycastle:bcpkix-jdk15on:*:*:compile</exclude>
+                                        <exclude>org.bouncycastle:bcprov-jdk15on:*:*:compile</exclude>
+                                        <!-- Force switching to Jakarta EE -->
+                                        <exclude>javax.*</exclude>
+                                        <!-- already on application server or servlet container -->
+                                        <exclude>jakarta.servlet:jakarta.servlet-api:*</exclude>
+                                        <exclude>jakarta.servlet.jsp:jakarta.servlet.jsp-api:*</exclude>
+                                        <!-- replaced by jakarta -->
+                                        <exclude>com.sun.mail</exclude>
+                                        <exclude>com.sun.xml.bind</exclude>
+                                    </excludes>
+                                    <includes>
+                                        <!-- Jakarta API are allowed to be provided -->
+                                        <include>jakarta.*:*:jar:*:provided</include>
+                                        <!-- Not yet migrated to Jakarta -->
+                                        <include>javax.cache:*</include>
+                                        <!-- Gatling test dependency -->
+                                        <include>javax.jms:javax.jms-api:*:*:test</include>
+                                    </includes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -223,6 +255,26 @@
                                             </includes>
                                         </resource>
                                     </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-banned-dependencies</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <bannedDependencies>
+                                            <!--  Liquibase depends on javax.xml.bind:jaxb-api, javax.activation:javax.activation-api -->
+                                            <level>WARN</level>
+                                        </bannedDependencies>
+                                    </rules>
                                 </configuration>
                             </execution>
                         </executions>
