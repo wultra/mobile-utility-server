@@ -19,11 +19,13 @@
 package com.wultra.app.mobileutilityserver.rest.service;
 
 import com.google.common.io.BaseEncoding;
+import io.getlime.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
 import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,10 @@ import java.security.spec.InvalidKeySpecException;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
+@Slf4j
 public class CryptographicOperationsService {
+
+    private static final String SECURE_RANDOM_ALGORITHM_NAME = "DEFAULT";
 
     private final KeyGenerator keyGenerator;
     private final KeyConvertor keyConvertor;
@@ -46,11 +51,30 @@ public class CryptographicOperationsService {
     private final SignatureUtils signatureUtils;
     private final BaseEncoding base64 = BaseEncoding.base64();
 
+    private final SecureRandom secureRandom;
+
     @Autowired
     public CryptographicOperationsService(KeyGenerator keyGenerator, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
         this.keyGenerator = keyGenerator;
         this.keyConvertor = keyConvertor;
         this.signatureUtils = signatureUtils;
+        this.secureRandom = secureRandom();
+    }
+
+    /**
+     * Get the strong secure random available in the system. Try using Bouncy Castle first with a fallback to new
+     * secure random (log warning).
+     *
+     * @return Secure random instance.
+     */
+    private SecureRandom secureRandom() {
+        try {
+            return SecureRandom.getInstance(SECURE_RANDOM_ALGORITHM_NAME, PowerAuthConfiguration.CRYPTO_PROVIDER_NAME);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            logger.warn("Unable to register strong random number generator: {}", e.getMessage());
+            logger.debug("Exception details: ", e);
+            return new SecureRandom();
+        }
     }
 
     /**
@@ -116,7 +140,7 @@ public class CryptographicOperationsService {
      */
     public String computeECDSASignature(byte[] signatureBase, String privateKeyBase64) throws GenericCryptoException, InvalidKeyException, CryptoProviderException, InvalidKeySpecException {
         final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(BaseEncoding.base64().decode(privateKeyBase64));
-        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey);
+        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey, secureRandom);
         return base64.encode(ecdsaSignature);
     }
 }

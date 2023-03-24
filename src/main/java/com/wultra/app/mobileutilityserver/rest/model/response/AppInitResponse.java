@@ -21,7 +21,6 @@ import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerpri
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +31,10 @@ import java.util.List;
 @Data
 public class AppInitResponse {
 
-    private long timestamp = Instant.now().getEpochSecond();
-    private List<CertificateFingerprint> fingerprints = new ArrayList<>();
+    private final long timestamp = Instant.now().getEpochSecond();
+    private final List<CertificateFingerprint> fingerprints;
 
+    public AppInitResponse(List<CertificateFingerprint> fingerprints) {
+        this.fingerprints = fingerprints;
+    }
 }

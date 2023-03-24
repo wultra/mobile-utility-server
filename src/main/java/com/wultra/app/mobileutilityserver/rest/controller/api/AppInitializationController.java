@@ -85,9 +85,7 @@ public class AppInitializationController {
         final List<CertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(appName);
 
         // Return the response
-        final AppInitResponse response = new AppInitResponse();
-        response.getFingerprints().addAll(fingerprints);
-        return response;
+        return new AppInitResponse(fingerprints);
     }
 
     @GetMapping("public-key")

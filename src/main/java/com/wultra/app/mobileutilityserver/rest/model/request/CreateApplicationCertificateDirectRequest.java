@@ -18,10 +18,9 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * Request for creating certificate by directly providing the certificate data.

@@ -20,7 +20,7 @@ package com.wultra.app.mobileutilityserver.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -43,8 +43,8 @@ import java.util.Map;
  *
  * @author Petr Dvorak, petr@wultra.com
  */
+@Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
     @Value("${mobile-utility-server.security.auth.basicHttp.stateless}")
@@ -105,8 +105,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .authorizeRequests(authorize -> authorize
-                .antMatchers("/admin/**").hasRole("ADMIN")
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll())
                 .httpBasic()
             .and()
