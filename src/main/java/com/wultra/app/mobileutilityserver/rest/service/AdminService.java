@@ -18,7 +18,6 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.config.CacheConfiguration;
 import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
@@ -43,8 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.openssl.PEMParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -75,24 +72,23 @@ public class AdminService {
 
     private final CertificateConverter certificateConverter;
     private final MobileAppConverter mobileAppConverter;
-
-    private final CacheManager cacheManager;
-
     private final CryptographicOperationsService cryptographicOperationsService;
+    private final CacheService cacheService;
 
     @Autowired
     public AdminService(MobileAppRepository mobileAppRepository,
                         CertificateRepository certificateRepository,
                         MobileDomainRepository mobileDomainRepository,
                         CertificateConverter certificateConverter,
-                        MobileAppConverter mobileAppConverter, CacheManager cacheManager, CryptographicOperationsService cryptographicOperationsService) {
+                        MobileAppConverter mobileAppConverter,
+                        CryptographicOperationsService cryptographicOperationsService, CacheService cacheService) {
         this.mobileAppRepository = mobileAppRepository;
         this.certificateRepository = certificateRepository;
         this.mobileDomainRepository = mobileDomainRepository;
         this.certificateConverter = certificateConverter;
         this.mobileAppConverter = mobileAppConverter;
-        this.cacheManager = cacheManager;
         this.cryptographicOperationsService = cryptographicOperationsService;
+        this.cacheService = cacheService;
     }
 
     /**
@@ -127,7 +123,7 @@ public class AdminService {
 
             final MobileAppEntity savedMobileAppEntity = mobileAppRepository.save(mobileAppEntity);
 
-            evictMobileAppAndPrivateKeyCache(name);
+            cacheService.notifyEvictAppCache(name);
 
             return mobileAppConverter.convertMobileApp(savedMobileAppEntity);
         } catch (CryptoProviderException e) {
@@ -193,7 +189,7 @@ public class AdminService {
 
         final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
-        evictCertificateFingerprintCache(appName);
+        cacheService.notifyEvictCertificateCache(appName);
 
         final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(savedCertificateEntity);
         logger.info("Certificate refreshed: {}", response);
@@ -233,7 +229,6 @@ public class AdminService {
         socket.close();
 
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
-        logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
         final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
@@ -254,7 +249,7 @@ public class AdminService {
             if (certificate.getFingerprint().equalsIgnoreCase(fingerprint)) {
                 certificates.remove(certificate);
                 mobileDomainRepository.save(mobileDomainEntity);
-                evictCertificateFingerprintCache(appName);
+                cacheService.notifyEvictCertificateCache(appName);
                 return;
             }
         }
@@ -263,49 +258,13 @@ public class AdminService {
     @Transactional
     public void deleteDomain(String appName, String domain) {
         mobileDomainRepository.deleteByAppNameAndDomain(appName, domain);
-        evictCertificateFingerprintCache(appName);
+        cacheService.notifyEvictCertificateCache(appName);
     }
 
     @Transactional
     public void deleteExpiredCertificates() {
         certificateRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
-        invalidateCertificateCache();
-    }
-
-    /**
-     * Evict caches for mobile apps and private keys for given app name.
-     * @param appName App Name.
-     */
-    private void evictMobileAppAndPrivateKeyCache(String appName) {
-        final Cache mobileAppsCache = cacheManager.getCache(CacheConfiguration.MOBILE_APPS);
-        if (mobileAppsCache != null) {
-            mobileAppsCache.evict(appName);
-        }
-        final Cache privateKeyCache = cacheManager.getCache(CacheConfiguration.PRIVATE_KEYS);
-        if (privateKeyCache != null) {
-            privateKeyCache.evict(appName);
-        }
-    }
-
-    /**
-     * Evict certificate fingerprint cache for a given app name.
-     * @param appName App name.
-     */
-    private void evictCertificateFingerprintCache(String appName) {
-        final Cache cache = cacheManager.getCache(CacheConfiguration.CERTIFICATE_FINGERPRINTS);
-        if (cache != null) {
-            cache.evict(appName);
-        }
-    }
-
-    /**
-     * Invalidate values in the certificate cache.
-     */
-    private void invalidateCertificateCache() {
-        final Cache cache = cacheManager.getCache(CacheConfiguration.CERTIFICATE_FINGERPRINTS);
-        if (cache != null) {
-            cache.invalidate();
-        }
+        cacheService.invalidateCertificateCache();
     }
 
 }

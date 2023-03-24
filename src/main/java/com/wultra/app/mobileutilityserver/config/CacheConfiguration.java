@@ -18,8 +18,20 @@
 
 package com.wultra.app.mobileutilityserver.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wultra.app.mobileutilityserver.redis.RedisMessageSubscriber;
+import com.wultra.app.mobileutilityserver.rest.service.CacheService;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
  * Configuration for caching.
@@ -30,8 +42,45 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 public class CacheConfiguration {
 
-    public static final String CERTIFICATE_FINGERPRINTS = "certificateFingerprints";
-    public static final String MOBILE_APPS = "mobileApps";
-    public static final String PRIVATE_KEYS = "privateKeys";
+    @Bean
+    public RedisSerializer<Object> redisSerializer() {
+        return new GenericJackson2JsonRedisSerializer();
+    }
+
+    @Bean
+    public ChannelTopic topic() {
+        return new ChannelTopic("channel-in-memory-cache-eviction");
+    }
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory();
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        final RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory());
+        template.setDefaultSerializer(redisSerializer());
+        return template;
+    }
+
+    @Bean
+    public MessageListener messageListener(CacheService cacheService, ObjectMapper objectMapper) {
+        return new RedisMessageSubscriber(cacheService, objectMapper);
+    }
+
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter(CacheService cacheService, ObjectMapper objectMapper) {
+        return new MessageListenerAdapter(messageListener(cacheService, objectMapper));
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisContainer(CacheService cacheService, ObjectMapper objectMapper) {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(messageListener(cacheService, objectMapper), topic());
+        return container;
+    }
 
 }
