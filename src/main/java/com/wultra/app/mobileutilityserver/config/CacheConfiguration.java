@@ -53,14 +53,17 @@ public class CacheConfiguration {
     }
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory();
+    public LettuceConnectionFactory redisConnectionFactory(RedisConfiguration redisConfiguration) {
+        return new LettuceConnectionFactory(
+                redisConfiguration.getRedisHost(),
+                redisConfiguration.getRedisPort()
+        );
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    public RedisTemplate<String, Object> redisTemplate(RedisConfiguration redisConfiguration) {
         final RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
+        template.setConnectionFactory(redisConnectionFactory(redisConfiguration));
         template.setDefaultSerializer(redisSerializer());
         return template;
     }
@@ -76,9 +79,9 @@ public class CacheConfiguration {
     }
 
     @Bean
-    public RedisMessageListenerContainer redisContainer(CacheService cacheService, ObjectMapper objectMapper) {
+    public RedisMessageListenerContainer redisContainer(RedisConfiguration redisConfiguration, CacheService cacheService, ObjectMapper objectMapper) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(redisConnectionFactory());
+        container.setConnectionFactory(redisConnectionFactory(redisConfiguration));
         container.addMessageListener(messageListener(cacheService, objectMapper), topic());
         return container;
     }

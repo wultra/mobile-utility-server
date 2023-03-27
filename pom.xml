@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.4</version>
+        <version>3.0.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -66,6 +66,7 @@
         <rest-model-base.version>1.6.0</rest-model-base.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
+        <embedded-redis.version>0.7.2</embedded-redis.version>
 
     </properties>
 
@@ -159,6 +160,12 @@
             <groupId>io.gatling.highcharts</groupId>
             <artifactId>gatling-charts-highcharts</artifactId>
             <version>${gatling-charts-highcharts.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>${embedded-redis.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
