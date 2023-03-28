@@ -18,7 +18,6 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.google.common.io.BaseEncoding;
 import io.getlime.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
 import io.getlime.security.powerauth.crypto.lib.generator.KeyGenerator;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -26,13 +25,17 @@ import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoExc
 import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
 import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.security.*;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 /**
  * Service with various cryptographic helper utils.
@@ -49,7 +52,6 @@ public class CryptographicOperationsService {
     private final KeyConvertor keyConvertor;
 
     private final SignatureUtils signatureUtils;
-    private final BaseEncoding base64 = BaseEncoding.base64();
 
     private final SecureRandom secureRandom;
 
@@ -86,7 +88,7 @@ public class CryptographicOperationsService {
     public String computeSHA256Hash(byte[] data) throws NoSuchAlgorithmException {
         final MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(data);
-        return base64.encode(md.digest());
+        return Base64.getEncoder().encodeToString(md.digest());
     }
 
     /**
@@ -104,7 +106,7 @@ public class CryptographicOperationsService {
      * @return Base64 encoded value of the private key.
      */
     public String convertPrivateKeyToBase64(PrivateKey privateKey) {
-        return base64.encode(keyConvertor.convertPrivateKeyToBytes(privateKey));
+        return Base64.getEncoder().encodeToString(keyConvertor.convertPrivateKeyToBytes(privateKey));
     }
 
     /**
@@ -114,7 +116,7 @@ public class CryptographicOperationsService {
      * @throws CryptoProviderException In case the public key is not valid.
      */
     public String convertPublicKeyToBase64(PublicKey publicKey) throws CryptoProviderException {
-        return base64.encode(keyConvertor.convertPublicKeyToBytes(publicKey));
+        return Base64.getEncoder().encodeToString(keyConvertor.convertPublicKeyToBytes(publicKey));
     }
 
     /**
@@ -122,10 +124,14 @@ public class CryptographicOperationsService {
      * @param cert Certificate to be encoded.
      * @return PEM encoded certificate.
      */
-    public String certificateToPem(X509Certificate cert) throws CertificateEncodingException {
-        return "-----BEGIN CERTIFICATE-----\n"
-                + base64.withSeparator("\n", 64).encode(cert.getEncoded()) + "\n"
-                + "-----END CERTIFICATE-----";
+    public String certificateToPem(final X509Certificate cert) throws CertificateEncodingException {
+        final StringWriter stringWriter = new StringWriter();
+        try (final JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)) {
+            pemWriter.writeObject(cert);
+        } catch (IOException e) {
+            throw new CertificateEncodingException(e);
+        }
+        return stringWriter.toString();
     }
 
     /**
@@ -139,8 +145,8 @@ public class CryptographicOperationsService {
      * @throws InvalidKeySpecException In case provided private key spec is invalid.
      */
     public String computeECDSASignature(byte[] signatureBase, String privateKeyBase64) throws GenericCryptoException, InvalidKeyException, CryptoProviderException, InvalidKeySpecException {
-        final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(BaseEncoding.base64().decode(privateKeyBase64));
+        final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(Base64.getDecoder().decode(privateKeyBase64));
         final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey, secureRandom);
-        return base64.encode(ecdsaSignature);
+        return Base64.getEncoder().encodeToString(ecdsaSignature);
     }
 }
