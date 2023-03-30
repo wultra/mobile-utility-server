@@ -234,21 +234,17 @@
     <profiles>
         <profile>
             <id>liquibase</id>
-            <properties>
-                <liquibase.version>4.20.0</liquibase.version>
-            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-core</artifactId>
-                    <version>${liquibase.version}</version>
                 </dependency>
             </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.3.0</version>
+                        <version>3.3.1</version>
                         <executions>
                             <execution>
                                 <id>copy-resources</id>
