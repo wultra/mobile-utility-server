@@ -198,6 +198,9 @@ public class AdminService {
 
         final PEMParser pemParser = new PEMParser(new StringReader(pem));
         final Object pemInfo = pemParser.readObject();
+        if (pemInfo == null) {
+            throw new IOException("PerParser read null, appName: " + appName);
+        }
         pemParser.close();
         final X509CertificateHolder x509Cert = (X509CertificateHolder) pemInfo;
         final long notAfter = x509Cert.getNotAfter().getTime() / 1000;
