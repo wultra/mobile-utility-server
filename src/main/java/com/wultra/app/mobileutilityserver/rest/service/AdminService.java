@@ -215,13 +215,7 @@ public class AdminService {
     public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
         final String domain = request.getDomain();
 
-        final SSLSocketFactory factory = HttpsURLConnection.getDefaultSSLSocketFactory();
-        final SSLSocket socket = (SSLSocket) factory.createSocket(domain, 443);
-        socket.startHandshake();
-        final Certificate[] certs = socket.getSession().getPeerCertificates();
-        final X509Certificate cert = (X509Certificate) certs[0];
-        socket.close();
-
+        final X509Certificate cert = fetchCertificate(domain);
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
         logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
@@ -230,7 +224,15 @@ public class AdminService {
         innerRequest.setPem(certPem);
 
         return this.createApplicationCertificate(appName, innerRequest);
+    }
 
+    private static X509Certificate fetchCertificate(final String domain) throws IOException {
+        final SSLSocketFactory factory = HttpsURLConnection.getDefaultSSLSocketFactory();
+        try (final SSLSocket socket = (SSLSocket) factory.createSocket(domain, 443)) {
+            socket.startHandshake();
+            final Certificate[] certs = socket.getSession().getPeerCertificates();
+            return (X509Certificate) certs[0];
+        }
     }
 
     @Transactional
