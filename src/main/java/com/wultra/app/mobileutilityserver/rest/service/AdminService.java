@@ -232,6 +232,7 @@ public class AdminService {
     private static X509Certificate fetchCertificate(final String domain) throws IOException {
         final SSLSocketFactory factory = HttpsURLConnection.getDefaultSSLSocketFactory();
         try (final SSLSocket socket = (SSLSocket) factory.createSocket(domain, 443)) {
+            socket.setEnabledProtocols(new String[]{"TLSv1.2", "TLSv1.3"});
             socket.startHandshake();
             final Certificate[] certs = socket.getSession().getPeerCertificates();
             return (X509Certificate) certs[0];
