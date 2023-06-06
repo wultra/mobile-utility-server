@@ -23,15 +23,19 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundEx
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.request.VerifyVersionRequest;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResponse;
 import com.wultra.app.mobileutilityserver.rest.service.CertificateFingerprintService;
 import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,6 +99,15 @@ public class AppInitializationController {
             throw new PublicKeyNotFoundException(appName);
         }
         return new PublicKeyResponse(publicKey);
+    }
+
+    @Operation(
+            summary = "Verify application version.",
+            description = "Verify whether application version is up to date or may be updated or should be updated."
+    )
+    @PostMapping("verify-version")
+    public VerifyVersionResponse verifyVersion(@Valid @RequestBody final VerifyVersionRequest request) {
+        return mobileAppService.verifyVersion(request);
     }
 
 }
