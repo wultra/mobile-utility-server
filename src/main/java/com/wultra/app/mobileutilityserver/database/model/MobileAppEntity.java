@@ -20,8 +20,6 @@ package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +35,8 @@ public class MobileAppEntity {
 
     @Id
     @Column(name = "id")
-    @GenericGenerator(
-            name = "ssl_mobile_app",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "ssl_mobile_app_seq"),
-                    @Parameter(name = "initial_value", value = "1"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
-    @GeneratedValue(generator = "ssl_mobile_app")
+    @SequenceGenerator(name = "ssl_mobile_app", sequenceName = "ssl_mobile_app_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_mobile_app")
     private Long id;
 
     @Column(name = "name")

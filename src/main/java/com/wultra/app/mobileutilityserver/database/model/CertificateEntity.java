@@ -19,8 +19,6 @@
 package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 
 /**
@@ -34,16 +32,8 @@ public class CertificateEntity {
 
     @Id
     @Column(name = "id")
-    @GenericGenerator(
-            name = "ssl_certificate",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @Parameter(name = "sequence_name", value = "ssl_certificate_seq"),
-                    @Parameter(name = "initial_value", value = "1"),
-                    @Parameter(name = "increment_size", value = "1")
-            }
-    )
-    @GeneratedValue(generator = "ssl_certificate")
+    @SequenceGenerator(name = "ssl_certificate", sequenceName = "ssl_certificate_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_certificate")
     private Long id;
 
     @Column(name = "pem")
