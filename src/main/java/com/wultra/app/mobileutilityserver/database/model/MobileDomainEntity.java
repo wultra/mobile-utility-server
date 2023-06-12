@@ -20,7 +20,6 @@ package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +35,8 @@ public class MobileDomainEntity {
 
     @Id
     @Column(name = "id")
-    @GenericGenerator(
-            name = "ssl_mobile_domain",
-            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "ssl_mobile_domain_seq"),
-                    @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            }
-    )
-    @GeneratedValue(generator = "ssl_mobile_domain")
+    @SequenceGenerator(name = "ssl_mobile_domain", sequenceName = "ssl_mobile_domain_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_mobile_domain")
     private Long id;
 
     @Column(name = "domain")
