@@ -54,6 +54,7 @@ public class LocalizedTextEntity {
     @Getter
     @Setter
     @ToString
+    @EqualsAndHashCode
     public static class LocalizedTextId implements Serializable {
 
         @Serial
