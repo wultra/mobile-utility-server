@@ -100,7 +100,7 @@ class MobileAppServiceTest {
         LocaleContextHolder.setLocale(new Locale("cs"));
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.REQUIRE_UPDATE, result.getStatus());
+        assertEquals(VerifyVersionResponse.Status.FORCE_UPDATE, result.getStatus());
         assertEquals("Upgrade is required to make internet banking working.", result.getMessage(), "Missing text for 'cs', expecting fallback to 'en'");
     }
 

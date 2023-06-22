@@ -59,7 +59,7 @@ public class VerifyVersionResponse {
     public enum Status {
         OK,
         SUGGEST_UPDATE,
-        REQUIRE_UPDATE
+        FORCE_UPDATE
     }
 
 }

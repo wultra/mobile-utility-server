@@ -137,7 +137,7 @@ public class MobileAppService {
 
         if (requiredVersion != null && requiredVersion.compareTo(currentVersion) > 0) {
             return VerifyVersionResponse.builder()
-                    .status(VerifyVersionResponse.Status.REQUIRE_UPDATE)
+                    .status(VerifyVersionResponse.Status.FORCE_UPDATE)
                     .message(fetchMessage(applicationVersion.getMessageKey()))
                     .build();
         }
