@@ -142,6 +142,68 @@ CREATE TABLE ssl_user_authority (
 | `authority` | `VARCHAR(255)` | Name of authority for the user prefixed with `ROLE_` (`ROLE_ADMIN`). |
 <!-- end -->
 
+
+<!-- begin database table ssl_mobile_app_version -->
+### Mobile Application Version
+
+Table to force or suggest update of mobile application version.
+
+#### Schema
+
+```sql
+create table ssl_mobile_app_version
+(
+    id                integer      not null primary key,
+    application_name  varchar(255) not null,
+    platform          varchar(10)  not null,
+    major_os_version  integer,
+    suggested_version varchar(24),
+    required_version  varchar(24),
+    message_key       varchar(255)
+);
+```
+
+#### Columns
+
+| Column              | Type           | Description                                                                                                            |
+|---------------------|----------------|------------------------------------------------------------------------------------------------------------------------|
+| `id`                | `INTEGER`      | Primary key for the table, automatically incremented value.                                                            |
+| `application_name`  | `VARCHAR(255)` | Application name.                                                                                                      |
+| `platform`          | `VARCHAR(10)`  | `ANDROID`, `IOS`                                                                                                       |
+| `major_os_version`  | `INTEGER`      | For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29. When `null`, the rule is applied for all versions. |
+| `suggested_version` | `VARCHAR(24)`  | If the application version is lower, update is suggested.                                                              |
+| `required_version`  | `VARCHAR(24)`  | If the application version is lower, update is required.                                                               |
+| `message_key`       | `VARCHAR(255)` | Together with language identifies row in `ssl_localized_text`                                                          |
+<!-- end -->
+
+
+<!-- begin database table ssl_localized_text -->
+### Localized Text
+
+Table with localized texts.
+
+#### Schema
+
+```sql
+create table ssl_localized_text
+(
+    message_key varchar(255) not null,
+    language    varchar(2)   not null,
+    text        text         not null,
+    primary key (message_key, language)
+);
+```
+
+#### Columns
+
+| Column        | Type           | Description                                                              |
+|---------------|----------------|--------------------------------------------------------------------------|
+| `message_key` | `VARCHAR(255)` | Primary composite key for the table.                                     |
+| `language`    | `VARCHAR(2)`   | Primary composite key for the table. ISO 639-1 two-letter language code. |
+| `text`        | `TEXT`         | Localized text.                                                          |
+<!-- end -->
+
+
 ## Sequences
 
 <!-- begin database sequence ssl_mobile_app_seq -->
@@ -179,6 +241,19 @@ Sequence responsible for SSL certificates and fingerprints autoincrements.
 CREATE SEQUENCE IF NOT EXISTS ssl_certificates_seq MAXVALUE 9999999999999 CACHE 20;
 ```
 <!-- end -->
+
+<!-- begin database sequence ssl_mobile_app_version_seq -->
+### Mobile Application Version Sequence
+
+Sequence responsible for mobile application version autoincrements.
+
+#### Schema
+
+```sql
+CREATE SEQUENCE IF NOT EXISTS ssl_mobile_app_version_seq;
+```
+<!-- end -->
+
 
 ## Foreign Indexes
 
