@@ -115,7 +115,7 @@ public class MobileAppService {
     private static MobileAppVersionEntity.Platform convert(final VerifyVersionRequest.Platform platform) {
         return switch(platform) {
             case ANDROID -> MobileAppVersionEntity.Platform.ANDROID;
-            case APPLE -> MobileAppVersionEntity.Platform.APPLE;
+            case IOS -> MobileAppVersionEntity.Platform.IOS;
         };
     }
 

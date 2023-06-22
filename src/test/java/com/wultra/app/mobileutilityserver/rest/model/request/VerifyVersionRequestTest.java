@@ -48,7 +48,7 @@ class VerifyVersionRequestTest {
         final VerifyVersionRequest tested = new VerifyVersionRequest();
         tested.setApplicationName("test-app");
         tested.setApplicationVersion("3.20.1");
-        tested.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        tested.setPlatform(VerifyVersionRequest.Platform.IOS);
         tested.setSystemVersion("12.4.1");
 
         final Set<ConstraintViolation<VerifyVersionRequest>> result = validator.validate(tested);
@@ -60,7 +60,7 @@ class VerifyVersionRequestTest {
         final VerifyVersionRequest tested = new VerifyVersionRequest();
         tested.setApplicationName("test-app");
         tested.setApplicationVersion("3.2.1");
-        tested.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        tested.setPlatform(VerifyVersionRequest.Platform.IOS);
         tested.setSystemVersion("29");
 
         final Set<ConstraintViolation<VerifyVersionRequest>> result = validator.validate(tested);

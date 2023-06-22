@@ -61,7 +61,7 @@ public class VerifyVersionRequest {
 
     public enum Platform {
         ANDROID,
-        APPLE
+        IOS
     }
 
 }

@@ -50,7 +50,7 @@ public class MobileAppVersionEntity {
     /**
      * Major operation system version, may be {@code null} to match all.
      * <p>
-     * For Apple e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
+     * For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
      */
     @Column(name = "major_os_version")
     private Integer majorOsVersion;
@@ -66,6 +66,6 @@ public class MobileAppVersionEntity {
 
     public enum Platform {
         ANDROID,
-        APPLE
+        IOS
     }
 }

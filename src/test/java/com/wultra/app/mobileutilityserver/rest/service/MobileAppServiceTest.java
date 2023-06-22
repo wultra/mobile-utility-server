@@ -51,7 +51,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("non-existing-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("12.4.2");
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
@@ -65,7 +65,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("suggested-and-required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("12.4.2");
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
@@ -79,7 +79,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("suggested-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("12.4.2");
 
         LocaleContextHolder.setLocale(new Locale("cs"));
@@ -94,7 +94,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("12.4.2");
 
         LocaleContextHolder.setLocale(new Locale("cs"));
@@ -109,7 +109,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("11.2.4");
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
@@ -137,7 +137,7 @@ class MobileAppServiceTest {
         final VerifyVersionRequest request = new VerifyVersionRequest();
         request.setApplicationVersion("3.2.1");
         request.setApplicationName("suggested-app");
-        request.setPlatform(VerifyVersionRequest.Platform.APPLE);
+        request.setPlatform(VerifyVersionRequest.Platform.IOS);
         request.setSystemVersion("11.2.4");
 
         final VerifyVersionResponse result = tested.verifyVersion(request);

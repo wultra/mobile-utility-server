@@ -35,7 +35,7 @@ public interface MobileAppVersionRepository extends CrudRepository<MobileAppVers
      *
      * @param applicationName Application name
      * @param platform Platform
-     * @param majorOsVersion Major operation system version. For Apple e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
+     * @param majorOsVersion Major operation system version. For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
      * @return found application version or empty
      */
     Optional<MobileAppVersionEntity> findFirstByApplicationNameAndPlatformAndMajorOsVersion(String applicationName, MobileAppVersionEntity.Platform platform, int majorOsVersion);

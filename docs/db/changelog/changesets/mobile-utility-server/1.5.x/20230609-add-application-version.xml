@@ -48,11 +48,11 @@
             <column name="application_name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="platform" type="varchar(10)" remarks="ANDROID, APPLE">
+            <column name="platform" type="varchar(10)" remarks="ANDROID, IOS">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="major_os_version" type="integer" remarks="For Apple e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29." />
+            <column name="major_os_version" type="integer" remarks="For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29." />
             <column name="suggested_version" type="varchar(24)" remarks="SemVer 2.0"/>
             <column name="required_version" type="varchar(24)" remarks="SemVer 2.0"/>
             <column name="message_key" type="varchar(255)" remarks="Together with language identifies row in ssl_localized_text" />
