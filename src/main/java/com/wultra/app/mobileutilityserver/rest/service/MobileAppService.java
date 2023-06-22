@@ -120,7 +120,7 @@ public class MobileAppService {
     }
 
     private Optional<MobileAppVersionEntity> findApplicationVersion(final String applicationName, final MobileAppVersionEntity.Platform platform, final int majorSystemVersion) {
-        final Optional<MobileAppVersionEntity> applicationVersion = mobileAppVersionRepository.findFirstByApplicationNameAndPlatformAndMajorSystemVersion(applicationName, platform, majorSystemVersion);
+        final Optional<MobileAppVersionEntity> applicationVersion = mobileAppVersionRepository.findFirstByApplicationNameAndPlatformAndMajorOsVersion(applicationName, platform, majorSystemVersion);
         if (applicationVersion.isPresent()) {
             logger.debug("Found exact match for applicationName: {}, platform: {} and majorSystemVersion: {}", applicationName, platform, majorSystemVersion);
             return applicationVersion;

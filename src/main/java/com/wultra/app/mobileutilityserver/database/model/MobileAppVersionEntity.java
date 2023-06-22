@@ -48,12 +48,12 @@ public class MobileAppVersionEntity {
     private Platform platform;
 
     /**
-     * Major system version, may be {@code null} to match all.
+     * Major operation system version, may be {@code null} to match all.
      * <p>
      * For Apple e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
      */
-    @Column(name = "major_system_version")
-    private Integer majorSystemVersion;
+    @Column(name = "major_os_version")
+    private Integer majorOsVersion;
 
     @Column(name = "suggested_version")
     private String suggestedVersion;

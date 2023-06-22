@@ -1,4 +1,4 @@
-insert into ssl_mobile_app_version(id, application_name, platform, suggested_version, required_version, major_system_version, message_key)
+insert into ssl_mobile_app_version(id, application_name, platform, suggested_version, required_version, major_os_version, message_key)
 values (nextval('ssl_mobile_app_version_seq'), 'suggested-app', 'APPLE', '3.3.0', null, null, 'suggested-app.performance'),
        (nextval('ssl_mobile_app_version_seq'), 'suggested-app', 'ANDROID', '3.3.0', null, null, 'suggested-app.performance'),
        (nextval('ssl_mobile_app_version_seq'), 'suggested-app', 'APPLE', '3.1.0', null, 11, null),
