@@ -4,6 +4,7 @@ Mobile Utility Server publishes comprehensive RESTful API with all endpoints req
 
 - [Get App Public Key](#get-app-public-key)
 - [Get App Fingerprints](#get-app-fingerprints)
+- [Verify Version](#verify-version)
 
 ## Swagger Documentation
 
@@ -163,5 +164,55 @@ In case application with given name is not found.
     "id": "717e1111-1111-1111-1111-1111c53fe0da",
     "code": "PUBLIC_KEY_NOT_FOUND",
     "message": "Public key for the provided app name was not found."
+}
+```
+
+
+### Verify Version
+
+Method to verify whether the mobile application version is up-to-date or whether it should or must be updated.
+
+
+#### Request `POST /app/verify-version`
+
+`VerifyVersionRequest`
+
+| Type     | Name                 | Description                                                                                 |
+|----------|----------------------|---------------------------------------------------------------------------------------------|
+| `String` | `applicationName`    | Application name                                                                            |
+| `String` | `applicationVersion` | Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account. |
+| `String` | `platform`           | Platform: `ANDROID`, `IOS`                                                                  |
+| `String` | `systemVersion`      | Operation system version, e.g. '31' for Android or '14.5.1' for iOS.                        |
+
+
+#### Response
+
+Returns the application version verification result.
+
+
+##### 200 OK
+
+In the case of a successful call.
+
+```json
+{
+  "status": "OK"
+}
+```
+
+| Response Attribute | Description                                                                                           |
+|--------------------|-------------------------------------------------------------------------------------------------------|
+| `status`           | The status of the mobile application version. Possible values: `OK`, `SUGGEST_UPDATE`, `FORCE_UPDATE` |
+| `message`          | Optional localized message, should be filled when the status is `SUGGEST_UPDATE` or `REQUIRE_UPDATE`. |
+
+##### 400 Bad Request
+
+In case of any validation error.
+
+```json
+{
+    "id": "${ERROR_ID}",
+    "code": "${ERROR_CODE}",
+    "message": "${ERROR_MESSAGE}"
 }
 ```
