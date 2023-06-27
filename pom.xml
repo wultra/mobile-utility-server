@@ -61,7 +61,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Dependency Versions -->
-        <bc.version>1.74</bc.version>
+        <bc.version>1.75</bc.version>
         <powerauth-java-crypto.version>1.5.0-SNAPSHOT</powerauth-java-crypto.version>
         <rest-model-base.version>1.6.0</rest-model-base.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
