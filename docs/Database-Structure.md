@@ -154,6 +154,7 @@ Table to force or suggest update of mobile application version.
 create table ssl_mobile_app_version
 (
     id                integer      not null primary key,
+    app_id            integer      not null,
     application_name  varchar(255) not null,
     platform          varchar(10)  not null,
     major_os_version  integer,
@@ -168,6 +169,7 @@ create table ssl_mobile_app_version
 | Column              | Type           | Description                                                                                                            |
 |---------------------|----------------|------------------------------------------------------------------------------------------------------------------------|
 | `id`                | `INTEGER`      | Primary key for the table, automatically incremented value.                                                            |
+| `app_id`            | `INTEGER`      | Reference to related mobile app entity.                                                                                |
 | `application_name`  | `VARCHAR(255)` | Application name.                                                                                                      |
 | `platform`          | `VARCHAR(10)`  | `ANDROID`, `IOS`                                                                                                       |
 | `major_os_version`  | `INTEGER`      | For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29. When `null`, the rule is applied for all versions. |

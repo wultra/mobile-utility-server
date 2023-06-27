@@ -40,6 +40,10 @@ public class MobileAppVersionEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_mobile_app_version")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "app_id", nullable = false)
+    private MobileAppEntity app;
+
     @Column(name = "application_name", nullable = false)
     private String applicationName;
 
