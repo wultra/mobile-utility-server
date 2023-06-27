@@ -109,7 +109,7 @@ public class MobileAppService {
             return VerifyVersionResponse.ok();
         }
 
-        return verifyAndroidVersion(applicationVersion.get(), request);
+        return verifyVersion(applicationVersion.get(), request);
     }
 
     private static MobileAppVersionEntity.Platform convert(final VerifyVersionRequest.Platform platform) {
@@ -129,7 +129,7 @@ public class MobileAppService {
         return mobileAppVersionRepository.findFirstByApplicationNameAndPlatform(applicationName, platform);
     }
 
-    private VerifyVersionResponse verifyAndroidVersion(final MobileAppVersionEntity applicationVersion, final VerifyVersionRequest request) {
+    private VerifyVersionResponse verifyVersion(final MobileAppVersionEntity applicationVersion, final VerifyVersionRequest request) {
         logger.debug("Verifying {}, {} ", applicationVersion, request);
         final DefaultArtifactVersion requiredVersion = parseVersion(applicationVersion.getRequiredVersion());
         final DefaultArtifactVersion suggestedVersion = parseVersion(applicationVersion.getSuggestedVersion());
