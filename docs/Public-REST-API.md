@@ -200,10 +200,10 @@ In the case of a successful call.
 }
 ```
 
-| Response Attribute | Description                                                                                           |
-|--------------------|-------------------------------------------------------------------------------------------------------|
-| `status`           | The status of the mobile application version. Possible values: `OK`, `SUGGEST_UPDATE`, `FORCE_UPDATE` |
-| `message`          | Optional localized message, should be filled when the status is `SUGGEST_UPDATE` or `REQUIRE_UPDATE`. |
+| Response Attribute | Description                                                                                                  |
+|--------------------|--------------------------------------------------------------------------------------------------------------|
+| `update`           | The update status of the mobile application version. Possible values: `NOT_REQUIRED`, `SUGGESTED`, `FORCED`. |
+| `message`          | Optional localized message, should be filled when the update status is `SUGGESTED` or `FORCED`.              |
 
 ##### 400 Bad Request
 

@@ -137,14 +137,14 @@ public class MobileAppService {
 
         if (requiredVersion != null && requiredVersion.compareTo(currentVersion) > 0) {
             return VerifyVersionResponse.builder()
-                    .status(VerifyVersionResponse.Status.FORCE_UPDATE)
+                    .update(VerifyVersionResponse.Update.FORCED)
                     .message(fetchMessage(applicationVersion.getMessageKey()))
                     .build();
         }
 
         if (suggestedVersion != null && suggestedVersion.compareTo(currentVersion) > 0) {
             return VerifyVersionResponse.builder()
-                    .status(VerifyVersionResponse.Status.SUGGEST_UPDATE)
+                    .update(VerifyVersionResponse.Update.SUGGESTED)
                     .message(fetchMessage(applicationVersion.getMessageKey()))
                     .build();
         }

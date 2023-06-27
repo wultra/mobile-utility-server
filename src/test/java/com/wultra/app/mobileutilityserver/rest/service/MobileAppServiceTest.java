@@ -56,7 +56,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus());
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate());
         assertNull(result.getMessage());
     }
 
@@ -70,7 +70,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus());
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate());
         assertNull(result.getMessage());
     }
 
@@ -85,7 +85,7 @@ class MobileAppServiceTest {
         LocaleContextHolder.setLocale(new Locale("cs"));
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.SUGGEST_UPDATE, result.getStatus());
+        assertEquals(VerifyVersionResponse.Update.SUGGESTED, result.getUpdate());
         assertEquals("Doporučujeme vám aktualizovat aplikaci kvůli vylepšenému výkonu.", result.getMessage());
     }
 
@@ -100,7 +100,7 @@ class MobileAppServiceTest {
         LocaleContextHolder.setLocale(new Locale("cs"));
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.FORCE_UPDATE, result.getStatus());
+        assertEquals(VerifyVersionResponse.Update.FORCED, result.getUpdate());
         assertEquals("Upgrade is required to make internet banking working.", result.getMessage(), "Missing text for 'cs', expecting fallback to 'en'");
     }
 
@@ -114,7 +114,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus(), "Newer version is required, but for major version 11 the threshold is lowered.");
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 11 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
@@ -128,7 +128,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus(), "Newer version is required, but for major version 29 the threshold is lowered.");
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 29 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
@@ -142,7 +142,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus(), "Newer version is suggested, but for major version 11 the threshold is lowered.");
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 11 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
@@ -156,7 +156,7 @@ class MobileAppServiceTest {
 
         final VerifyVersionResponse result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Status.OK, result.getStatus(), "Newer version is suggested, but for major version 29 the threshold is lowered.");
+        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 29 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 }

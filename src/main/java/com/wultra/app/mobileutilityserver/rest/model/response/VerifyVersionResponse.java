@@ -37,7 +37,7 @@ public class VerifyVersionResponse {
 
     @lombok.NonNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private Status status;
+    private Update update;
 
     @Schema(
             description = "Optional localized message, should be filled when the status is 'SUGGEST_UPDATE' or 'REQUIRE_UPDATE'.",
@@ -52,14 +52,14 @@ public class VerifyVersionResponse {
      */
     public static VerifyVersionResponse ok() {
         return VerifyVersionResponse.builder()
-                .status(VerifyVersionResponse.Status.OK)
+                .update(Update.NOT_REQUIRED)
                 .build();
     }
 
-    public enum Status {
-        OK,
-        SUGGEST_UPDATE,
-        FORCE_UPDATE
+    public enum Update {
+        NOT_REQUIRED,
+        SUGGESTED,
+        FORCED
     }
 
 }
