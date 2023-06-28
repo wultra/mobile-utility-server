@@ -33,8 +33,10 @@ public class AppInitResponse {
 
     private final long timestamp = Instant.now().getEpochSecond();
     private final List<CertificateFingerprint> fingerprints;
+    private final VerifyVersionResult verifyVersionResult;
 
-    public AppInitResponse(List<CertificateFingerprint> fingerprints) {
+    public AppInitResponse(final List<CertificateFingerprint> fingerprints, final VerifyVersionResult verifyVersionResult) {
         this.fingerprints = fingerprints;
+        this.verifyVersionResult = verifyVersionResult;
     }
 }

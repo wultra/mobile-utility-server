@@ -33,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class VerifyVersionResponse {
+public class VerifyVersionResult {
 
     @lombok.NonNull
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -50,8 +50,8 @@ public class VerifyVersionResponse {
      *
      * @return ok response
      */
-    public static VerifyVersionResponse ok() {
-        return VerifyVersionResponse.builder()
+    public static VerifyVersionResult ok() {
+        return VerifyVersionResult.builder()
                 .update(Update.NOT_REQUIRED)
                 .build();
     }

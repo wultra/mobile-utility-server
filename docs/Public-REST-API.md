@@ -4,7 +4,6 @@ Mobile Utility Server publishes comprehensive RESTful API with all endpoints req
 
 - [Get App Public Key](#get-app-public-key)
 - [Get App Fingerprints](#get-app-fingerprints)
-- [Verify Version](#verify-version)
 
 ## Swagger Documentation
 
@@ -82,20 +81,24 @@ In case application with given name is not found.
 ### Get App Fingerprints
 
 Method to obtain the fingerprints of the certificates that are pinned in the app for a provided application ID.
+Optionally also verify whether the mobile application version is up-to-date or whether it should or must be updated.
 
-#### Request `GET /app/init?appName=${name}`
+#### Request `GET /app/init?appName=${name}&appVersion=${appVersion}&osVersion=${osVersion}&platform=${platform}`
 
 | Header | Description |
 |---|---|
 | `X-Cert-Pinning-Challenge` | Random challenge that is included in the response signature calculation. It must be at least 16 bytes long. |
 
-| Query Param  | Description              |
-|--------------|--------------------------|
-| `appName`    | Name of the application. |
+| Query Param  | Description                                                                                                                                  |
+|--------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `appName`    | Name of the application.                                                                                                                     |
+| `appVersion` | Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account. (Optional, but needed for version verification.) |
+| `osVersion`  | Operation system version, e.g. '31' for Android or '14.5.1' for iOS. (Optional, but needed for version verification.)                        |
+| `platfrom`   | Platform: `ANDROID`, `IOS` (Optional, but needed for version verification.)                                                                  |
 
 #### Response
 
-Returns the list of finterprints in case of the success, or a standardized error output in the case of an error.
+Returns the list of fingerprints in case of the success together with optional result of version verification, or a standardized error output in the case of an error.
 
 ##### 200 OK
 
@@ -115,7 +118,10 @@ In the case of a successful call.
       "fingerprint": "fj8iVdqu....vCig=",
       "expires": 1603108800
     }
-  ]
+  ],
+  "verifyVersionResult": {
+    "update": "NOT_REQUIRED"
+  }
 }
 ```
 
@@ -123,13 +129,15 @@ In the case of a successful call.
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `X-Cert-Pinning-Signature` | Base64 value of an encoded response signature. The signature contains the response challenge as well as full response data, and it must be validated on the client side before the client accepts the response. |
 
-| Response Attribute         | Description                                                                       |
-|----------------------------|-----------------------------------------------------------------------------------|
-| `timestamp`                | The current timestamp on the server side.                                         |
-| `fingerprints`             | Array with the TLS/SSL certificate signatures.                                    |
-| `fingerprints.name`        | Name of the domain, for example, `test1.wultra.com`.                              |
-| `fingerprints.fingerprint` | The value of the certificate/public key fingerprint.                              |
-| `fingerprints.expires`     | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration. |
+| Response Attribute            | Description                                                                                                  |
+|-------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `timestamp`                   | The current timestamp on the server side.                                                                    |
+| `fingerprints`                | Array with the TLS/SSL certificate signatures.                                                               |
+| `fingerprints.name`           | Name of the domain, for example, `test1.wultra.com`.                                                         |
+| `fingerprints.fingerprint`    | The value of the certificate/public key fingerprint.                                                         |
+| `fingerprints.expires`        | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration.                            |
+| `verifyVersionResult.update`  | The update status of the mobile application version. Possible values: `NOT_REQUIRED`, `SUGGESTED`, `FORCED`. |
+| `verifyVersionResult.message` | Optional localized message, should be filled when the update status is `SUGGESTED` or `FORCED`.              |
 
 ##### 400 Bad Request
 
@@ -164,55 +172,5 @@ In case application with given name is not found.
     "id": "717e1111-1111-1111-1111-1111c53fe0da",
     "code": "PUBLIC_KEY_NOT_FOUND",
     "message": "Public key for the provided app name was not found."
-}
-```
-
-
-### Verify Version
-
-Method to verify whether the mobile application version is up-to-date or whether it should or must be updated.
-
-
-#### Request `POST /app/verify-version`
-
-`VerifyVersionRequest`
-
-| Type     | Name                 | Description                                                                                 |
-|----------|----------------------|---------------------------------------------------------------------------------------------|
-| `String` | `applicationName`    | Application name                                                                            |
-| `String` | `applicationVersion` | Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account. |
-| `String` | `platform`           | Platform: `ANDROID`, `IOS`                                                                  |
-| `String` | `systemVersion`      | Operation system version, e.g. '31' for Android or '14.5.1' for iOS.                        |
-
-
-#### Response
-
-Returns the application version verification result.
-
-
-##### 200 OK
-
-In the case of a successful call.
-
-```json
-{
-  "status": "OK"
-}
-```
-
-| Response Attribute | Description                                                                                                  |
-|--------------------|--------------------------------------------------------------------------------------------------------------|
-| `update`           | The update status of the mobile application version. Possible values: `NOT_REQUIRED`, `SUGGESTED`, `FORCED`. |
-| `message`          | Optional localized message, should be filled when the update status is `SUGGESTED` or `FORCED`.              |
-
-##### 400 Bad Request
-
-In case of any validation error.
-
-```json
-{
-    "id": "${ERROR_ID}",
-    "code": "${ERROR_CODE}",
-    "message": "${ERROR_MESSAGE}"
 }
 ```

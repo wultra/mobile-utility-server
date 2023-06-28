@@ -62,7 +62,7 @@ curl --request POST \
 ## Force Update
 
 Sometimes it is needed to suggest (or even to force) the client to update the mobile application version.
-For that purpose, there is the endpoint [Verify Version](./Public-REST-API.md#verify-version).
+It is a part of the response from [Get App Fingerprints](./Public-REST-API.md#get-app-fingerprints).
 
 The rules are store in the [database table ssl_mobile_app_version](./Database-Structure.md#mobile-application-version)
 

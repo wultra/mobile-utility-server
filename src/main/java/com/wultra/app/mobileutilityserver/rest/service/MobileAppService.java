@@ -23,8 +23,7 @@ import com.wultra.app.mobileutilityserver.database.model.MobileAppVersionEntity;
 import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppVersionRepository;
-import com.wultra.app.mobileutilityserver.rest.model.request.VerifyVersionRequest;
-import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -99,14 +98,14 @@ public class MobileAppService {
      * @param request verify request
      * @return verify response
      */
-    public VerifyVersionResponse verifyVersion(final VerifyVersionRequest request) {
+    public VerifyVersionResult verifyVersion(final VerifyVersionRequest request) {
         final String applicationName = request.getApplicationName();
         final MobileAppVersionEntity.Platform platform = convert(request.getPlatform());
         final int majorSystemVersion = new DefaultArtifactVersion(request.getSystemVersion()).getMajorVersion();
         final Optional<MobileAppVersionEntity> applicationVersion = findApplicationVersion(applicationName, platform, majorSystemVersion);
         if (applicationVersion.isEmpty()) {
             logger.info("Application name: {}, platform: {} is not configured, returning OK", applicationName, platform);
-            return VerifyVersionResponse.ok();
+            return VerifyVersionResult.ok();
         }
 
         return verifyVersion(applicationVersion.get(), request);
@@ -129,27 +128,27 @@ public class MobileAppService {
         return mobileAppVersionRepository.findFirstByApplicationNameAndPlatform(applicationName, platform);
     }
 
-    private VerifyVersionResponse verifyVersion(final MobileAppVersionEntity applicationVersion, final VerifyVersionRequest request) {
+    private VerifyVersionResult verifyVersion(final MobileAppVersionEntity applicationVersion, final VerifyVersionRequest request) {
         logger.debug("Verifying {}, {} ", applicationVersion, request);
         final DefaultArtifactVersion requiredVersion = parseVersion(applicationVersion.getRequiredVersion());
         final DefaultArtifactVersion suggestedVersion = parseVersion(applicationVersion.getSuggestedVersion());
         final DefaultArtifactVersion currentVersion = parseVersion(request.getApplicationVersion());
 
         if (requiredVersion != null && requiredVersion.compareTo(currentVersion) > 0) {
-            return VerifyVersionResponse.builder()
-                    .update(VerifyVersionResponse.Update.FORCED)
+            return VerifyVersionResult.builder()
+                    .update(VerifyVersionResult.Update.FORCED)
                     .message(fetchMessage(applicationVersion.getMessageKey()))
                     .build();
         }
 
         if (suggestedVersion != null && suggestedVersion.compareTo(currentVersion) > 0) {
-            return VerifyVersionResponse.builder()
-                    .update(VerifyVersionResponse.Update.SUGGESTED)
+            return VerifyVersionResult.builder()
+                    .update(VerifyVersionResult.Update.SUGGESTED)
                     .message(fetchMessage(applicationVersion.getMessageKey()))
                     .build();
         }
 
-        return VerifyVersionResponse.ok();
+        return VerifyVersionResult.ok();
     }
 
     private String fetchMessage(final String key) {

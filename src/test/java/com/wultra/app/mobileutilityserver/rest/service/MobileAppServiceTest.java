@@ -17,8 +17,7 @@
  */
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.rest.model.request.VerifyVersionRequest;
-import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,115 +47,123 @@ class MobileAppServiceTest {
 
     @Test
     void testVerifyVersion_appDoesNotExist() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("non-existing-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("12.4.2");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("non-existing-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("12.4.2")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate());
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate());
         assertNull(result.getMessage());
     }
 
     @Test
     void testVerifyVersion_upToDate() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("suggested-and-required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("12.4.2");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("suggested-and-required-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("12.4.2")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate());
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate());
         assertNull(result.getMessage());
     }
 
     @Test
     void testVerifyVersion_suggestUpdate() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("suggested-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("12.4.2");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("suggested-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("12.4.2")
+                .build();
 
         LocaleContextHolder.setLocale(new Locale("cs"));
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.SUGGESTED, result.getUpdate());
+        assertEquals(VerifyVersionResult.Update.SUGGESTED, result.getUpdate());
         assertEquals("Doporučujeme vám aktualizovat aplikaci kvůli vylepšenému výkonu.", result.getMessage());
     }
 
     @Test
     void testVerifyVersion_requireUpdate() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("12.4.2");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("required-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("12.4.2")
+                .build();
 
         LocaleContextHolder.setLocale(new Locale("cs"));
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.FORCED, result.getUpdate());
+        assertEquals(VerifyVersionResult.Update.FORCED, result.getUpdate());
         assertEquals("Upgrade is required to make internet banking working.", result.getMessage(), "Missing text for 'cs', expecting fallback to 'en'");
     }
 
     @Test
     void testVerifyVersion_whitelistedRequiredApple() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("11.2.4");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("required-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("11.2.4")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 11 the threshold is lowered.");
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 11 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
     @Test
     void testVerifyVersion_whitelistedRequiredAndroid() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("required-app");
-        request.setPlatform(VerifyVersionRequest.Platform.ANDROID);
-        request.setSystemVersion("29");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("required-app")
+                .platform(VerifyVersionRequest.Platform.ANDROID)
+                .systemVersion("29")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 29 the threshold is lowered.");
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is required, but for major version 29 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
     @Test
     void testVerifyVersion_whitelistedSuggestedApple() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("suggested-app");
-        request.setPlatform(VerifyVersionRequest.Platform.IOS);
-        request.setSystemVersion("11.2.4");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("suggested-app")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("11.2.4")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 11 the threshold is lowered.");
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 11 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 
     @Test
     void testVerifyVersion_whitelistedSuggestedAndroid() {
-        final VerifyVersionRequest request = new VerifyVersionRequest();
-        request.setApplicationVersion("3.2.1");
-        request.setApplicationName("suggested-app");
-        request.setPlatform(VerifyVersionRequest.Platform.ANDROID);
-        request.setSystemVersion("29");
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("suggested-app")
+                .platform(VerifyVersionRequest.Platform.ANDROID)
+                .systemVersion("29")
+                .build();
 
-        final VerifyVersionResponse result = tested.verifyVersion(request);
+        final VerifyVersionResult result = tested.verifyVersion(request);
 
-        assertEquals(VerifyVersionResponse.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 29 the threshold is lowered.");
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 29 the threshold is lowered.");
         assertNull(result.getMessage());
     }
 }
