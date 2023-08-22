@@ -19,6 +19,8 @@
 package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "ssl_mobile_app")
+@Getter
+@Setter
 public class MobileAppEntity {
 
     @Id
@@ -55,99 +59,4 @@ public class MobileAppEntity {
     @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, orphanRemoval=true)
     private List<MobileDomainEntity> domains = new ArrayList<>();
 
-    /**
-     * Get ID.
-     * @return ID.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Set ID.
-     * @param id ID.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Get mobile app name.
-     * @return App name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set mobile app name.
-     * @param name App name.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Get mobile app display name.
-     * @return App display name.
-     */
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    /**
-     * Set mobile app display name.
-     * @param displayName App display name.
-     */
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    /**
-     * Get app signing private key.
-     * @return Signing private key.
-     */
-    public String getSigningPrivateKey() {
-        return signingPrivateKey;
-    }
-
-    /**
-     * Set app signing private key.
-     * @param signingPrivateKey Signing private key.
-     */
-    public void setSigningPrivateKey(String signingPrivateKey) {
-        this.signingPrivateKey = signingPrivateKey;
-    }
-
-    /**
-     * Get app signing public key.
-     * @return Signing public key.
-     */
-    public String getSigningPublicKey() {
-        return signingPublicKey;
-    }
-
-    /**
-     * Set app signing public key.
-     * @param signingPublicKey Signing public key.
-     */
-    public void setSigningPublicKey(String signingPublicKey) {
-        this.signingPublicKey = signingPublicKey;
-    }
-
-    /**
-     * Get the list of domains.
-     * @return Domains.
-     */
-    public List<MobileDomainEntity> getDomains() {
-        return domains;
-    }
-
-    /**
-     * Set the list of domains.
-     * @param domains Domains.
-     */
-    public void setDomains(List<MobileDomainEntity> domains) {
-        this.domains = domains;
-    }
 }

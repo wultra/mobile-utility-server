@@ -25,14 +25,19 @@ import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
 import com.wultra.app.mobileutilityserver.rest.service.CertificateFingerprintService;
 import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.app.mobileutilityserver.rest.service.VerifyVersionRequest;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +50,8 @@ import java.util.List;
 @RestController
 @RequestMapping("app/init")
 @Tag(name = "App Initialization Controller")
+@Validated
+@Slf4j
 public class AppInitializationController {
 
     private final CertificateFingerprintService certificateFingerprintService;
@@ -57,16 +64,33 @@ public class AppInitializationController {
     }
 
     @GetMapping
-    @Parameters({
-            @Parameter(
-                    name = HttpHeaders.REQUEST_CHALLENGE,
-                    description = "Challenge that is included in the response signature. Must be at least 16 bytes long.",
-                    in = ParameterIn.HEADER,
-                    schema = @Schema(type = "string")
-            )
-    })
+    @Parameter(
+            name = HttpHeaders.REQUEST_CHALLENGE,
+            description = "Challenge that is included in the response signature. Must be at least 16 bytes long.",
+            in = ParameterIn.HEADER,
+            schema = @Schema(type = "string")
+    )
+    @Parameter(
+            name = QueryParams.QUERY_PARAM_APP_VERSION,
+            description = "Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account.",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string", pattern = "^\\d+\\.\\d+\\.\\d+(-.*)?$"),
+            example = "3.1.2"
+    )
+    @Parameter(
+            name = QueryParams.QUERY_PARAM_OS_VERSION,
+            description = "Operation system version, e.g. `31` for Android or `14.5.1` for iOS.",
+            in = ParameterIn.QUERY,
+            schema = @Schema(type = "string", pattern = "^\\d+\\.\\d+\\.\\d+(-.*)?|\\d+$"),
+            example = "14.5.1"
+    )
     public AppInitResponse appInit(
-            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String appName,
+            @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String applicationName,
+            @Pattern(regexp = "^\\d+\\.\\d+\\.\\d+(-.*)?$", message = "Application version must comply SemVer 2.0")
+            @RequestParam(value = QueryParams.QUERY_PARAM_APP_VERSION, required = false) String applicationVersion,
+            @Pattern(regexp = "^\\d+\\.\\d+\\.\\d+(-.*)?|\\d+$", message = "System version must comply SemVer 2.0 or to be a single number.")
+            @RequestParam(value = QueryParams.QUERY_PARAM_OS_VERSION, required = false) String systemVersion,
+            @RequestParam(value = QueryParams.QUERY_PARAM_PLATFORM, required = false) Platform platform,
             @RequestHeader(value = HttpHeaders.REQUEST_CHALLENGE, required = false) String challengeHeader
     ) throws InvalidChallengeHeaderException, AppNotFoundException {
 
@@ -76,16 +100,28 @@ public class AppInitializationController {
         }
 
         // Check if an app exists
-        final boolean appExists = mobileAppService.appExists(appName);
+        final boolean appExists = mobileAppService.appExists(applicationName);
         if (!appExists) {
-            throw new AppNotFoundException(appName);
+            throw new AppNotFoundException(applicationName);
         }
 
         // Find the fingerprints
-        final List<CertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(appName);
+        final List<CertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(applicationName);
 
-        // Return the response
-        return new AppInitResponse(fingerprints);
+        if (StringUtils.hasText(applicationVersion) && StringUtils.hasText(systemVersion) && platform != null) {
+            final VerifyVersionRequest verifyVersionRequest = VerifyVersionRequest.builder()
+                    .applicationName(applicationName)
+                    .applicationVersion(applicationVersion)
+                    .systemVersion(systemVersion)
+                    .platform(convert(platform))
+                    .build();
+            final VerifyVersionResult verifyVersionResult = mobileAppService.verifyVersion(verifyVersionRequest);
+
+            return new AppInitResponse(fingerprints, verifyVersionResult);
+        } else {
+            logger.debug("Context for verifying version not provided for application name: {}", applicationName);
+            return new AppInitResponse(fingerprints, null);
+        }
     }
 
     @GetMapping("public-key")
@@ -95,6 +131,18 @@ public class AppInitializationController {
             throw new PublicKeyNotFoundException(appName);
         }
         return new PublicKeyResponse(publicKey);
+    }
+
+    private static VerifyVersionRequest.Platform convert(final Platform source) {
+        return switch (source) {
+            case ANDROID -> VerifyVersionRequest.Platform.ANDROID;
+            case IOS -> VerifyVersionRequest.Platform.IOS;
+        };
+    }
+
+    public enum Platform {
+        ANDROID,
+        IOS
     }
 
 }

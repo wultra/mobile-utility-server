@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Wultra Mobile Utility Server
+  ~ Copyright (C) 2023  Wultra s.r.o.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="1" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230609-add-application-version.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="ssl_mobile_app_version_seq"/>
+            </not>
+        </preConditions>
+        <comment>Create a new sequence ssl_mobile_app_version_seq.</comment>
+        <createSequence sequenceName="ssl_mobile_app_version_seq" incrementBy="1" cacheSize="20"/>
+    </changeSet>
+
+    <changeSet id="2" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230609-add-application-version.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ssl_mobile_app_version"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table ssl_mobile_app_version.</comment>
+        <createTable tableName="ssl_mobile_app_version">
+            <column name="id" type="integer">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="app_id" type="integer">
+                <constraints nullable="false" foreignKeyName="ssl_mobile_app_fk" referencedTableName="ssl_mobile_app" referencedColumnNames="id" />
+            </column>
+            <column name="platform" type="varchar(10)" remarks="ANDROID, IOS">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="major_os_version" type="integer" remarks="For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29." />
+            <column name="suggested_version" type="varchar(24)" remarks="SemVer 2.0"/>
+            <column name="required_version" type="varchar(24)" remarks="SemVer 2.0"/>
+            <column name="message_key" type="varchar(255)" remarks="Together with language identifies row in ssl_localized_text" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230609-add-application-version.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ssl_localized_text"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table ssl_localized_text.</comment>
+        <createTable tableName="ssl_localized_text">
+            <column name="message_key" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="language" type="varchar(2)" remarks="ISO 639-1 two-letter language code.">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

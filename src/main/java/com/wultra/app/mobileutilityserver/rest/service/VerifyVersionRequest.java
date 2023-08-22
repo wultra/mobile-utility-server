@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2020  Wultra s.r.o.
+ * Copyright (C) 2023  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.http;
+
+package com.wultra.app.mobileutilityserver.rest.service;
+
+import lombok.Builder;
+import lombok.Getter;
 
 /**
- * Class with defined query parameter names.
+ * Parameter object for {@link MobileAppService#verifyVersion(VerifyVersionRequest)}.
  *
- * @author Petr Dvorak, petr@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-public class QueryParams {
+@Builder
+@Getter
+public class VerifyVersionRequest {
 
-    public static final String QUERY_PARAM_APP_NAME = "appName";
-    public static final String QUERY_PARAM_APP_VERSION = "appVersion";
-    public static final String QUERY_PARAM_OS_VERSION = "osVersion";
-    public static final String QUERY_PARAM_PLATFORM = "platform";
+    @lombok.NonNull
+    private String applicationName;
+
+    @lombok.NonNull
+    private String applicationVersion;
+
+    @lombok.NonNull
+    private Platform platform;
+
+    @lombok.NonNull
+    private String systemVersion;
+
+    public enum Platform {
+        ANDROID,
+        IOS
+    }
 
 }

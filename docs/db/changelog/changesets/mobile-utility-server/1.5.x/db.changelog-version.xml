@@ -27,6 +27,7 @@
     <include file="20230227-initial-import.xml" relativeToChangelogFile="true" />
     <include file="20230306-add-user-schema.xml" relativeToChangelogFile="true" />
     <include file="20230308-additional-cert-info.xml" relativeToChangelogFile="true"/>
+    <include file="20230609-add-application-version.xml" relativeToChangelogFile="true"/>
     <include file="20230622-add-foreign-keys.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
