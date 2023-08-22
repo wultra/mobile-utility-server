@@ -44,9 +44,6 @@ public class MobileAppVersionEntity {
     @JoinColumn(name = "app_id", nullable = false)
     private MobileAppEntity app;
 
-    @Column(name = "application_name", nullable = false)
-    private String applicationName;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "platform", nullable = false)
     private Platform platform;

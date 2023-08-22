@@ -48,9 +48,6 @@
             <column name="app_id" type="integer">
                 <constraints nullable="false" foreignKeyName="ssl_mobile_app_fk" referencedTableName="ssl_mobile_app" referencedColumnNames="id" />
             </column>
-            <column name="application_name" type="varchar(255)">
-                <constraints nullable="false" />
-            </column>
             <column name="platform" type="varchar(10)" remarks="ANDROID, IOS">
                 <constraints nullable="false"/>
             </column>

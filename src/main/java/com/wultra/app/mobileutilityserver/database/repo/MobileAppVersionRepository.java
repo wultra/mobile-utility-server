@@ -19,6 +19,7 @@
 package com.wultra.app.mobileutilityserver.database.repo;
 
 import com.wultra.app.mobileutilityserver.database.model.MobileAppVersionEntity;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
@@ -38,6 +39,7 @@ public interface MobileAppVersionRepository extends CrudRepository<MobileAppVers
      * @param majorOsVersion Major operation system version. For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
      * @return found application version or empty
      */
+    @Query("select m from MobileAppVersionEntity m where m.platform = :platform and m.majorOsVersion = :majorOsVersion and m.app.name = :applicationName")
     Optional<MobileAppVersionEntity> findFirstByApplicationNameAndPlatformAndMajorOsVersion(String applicationName, MobileAppVersionEntity.Platform platform, int majorOsVersion);
 
     /**
@@ -47,6 +49,7 @@ public interface MobileAppVersionRepository extends CrudRepository<MobileAppVers
      * @param platform Platform
      * @return found application version or empty
      */
+    @Query("select m from MobileAppVersionEntity m where m.platform = :platform and m.app.name = :applicationName and m.majorOsVersion is null")
     Optional<MobileAppVersionEntity> findFirstByApplicationNameAndPlatform(String applicationName, MobileAppVersionEntity.Platform platform);
 
 }
