@@ -19,9 +19,11 @@
 package com.wultra.app.mobileutilityserver.rest.service;
 
 import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
+import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
 import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
+import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
@@ -29,20 +31,15 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundExceptio
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateDirectRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.request.*;
+import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.openssl.PEMParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocket;
@@ -64,30 +61,19 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
+@Transactional
 public class AdminService {
 
     private final MobileAppRepository mobileAppRepository;
     private final CertificateRepository certificateRepository;
     private final MobileDomainRepository mobileDomainRepository;
+    private final LocalizedTextRepository localizedTextRepository;
 
     private final CertificateConverter certificateConverter;
     private final MobileAppConverter mobileAppConverter;
 
     private final CryptographicOperationsService cryptographicOperationsService;
-
-    @Autowired
-    public AdminService(MobileAppRepository mobileAppRepository,
-                        CertificateRepository certificateRepository,
-                        MobileDomainRepository mobileDomainRepository,
-                        CertificateConverter certificateConverter,
-                        MobileAppConverter mobileAppConverter, CryptographicOperationsService cryptographicOperationsService) {
-        this.mobileAppRepository = mobileAppRepository;
-        this.certificateRepository = certificateRepository;
-        this.mobileDomainRepository = mobileDomainRepository;
-        this.certificateConverter = certificateConverter;
-        this.mobileAppConverter = mobileAppConverter;
-        this.cryptographicOperationsService = cryptographicOperationsService;
-    }
 
     /**
      * Create a new application and generate signing keypair to it
@@ -95,7 +81,6 @@ public class AdminService {
      * @return Application details.
      * @throws AppException In case application of given name already exists.
      */
-    @Transactional
     public ApplicationDetailResponse createApplication(CreateApplicationRequest request) throws AppException {
         try {
             final String name = request.getName();
@@ -127,7 +112,7 @@ public class AdminService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ApplicationListResponse applicationList() {
         final Iterable<MobileAppEntity> mobileApps = mobileAppRepository.findAll();
         final ApplicationListResponse response = new ApplicationListResponse();
@@ -140,13 +125,12 @@ public class AdminService {
         return response;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ApplicationDetailResponse applicationDetail(String name) {
         final MobileAppEntity mobileAppEntity = mobileAppRepository.findFirstByName(name);
         return mobileAppConverter.convertMobileApp(mobileAppEntity);
     }
 
-    @Transactional
     public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateDirectRequest request) throws AppNotFoundException {
         final String domain = request.getDomain();
         final String pem = request.getPem();
@@ -190,7 +174,6 @@ public class AdminService {
         return response;
     }
 
-    @Transactional
     public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificatePemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
 
         final String domain = request.getDomain();
@@ -214,7 +197,6 @@ public class AdminService {
         return this.createApplicationCertificate(appName, innerRequest);
     }
 
-    @Transactional
     public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
         final String domain = request.getDomain();
 
@@ -239,7 +221,6 @@ public class AdminService {
         }
     }
 
-    @Transactional
     public void deleteCertificate(String appName, String domain, String fingerprint) {
         final MobileDomainEntity mobileDomainEntity = mobileDomainRepository.findFirstByAppNameAndDomain(appName, domain);
         if (mobileDomainEntity == null) {
@@ -255,14 +236,77 @@ public class AdminService {
         }
     }
 
-    @Transactional
     public void deleteDomain(String appName, String domain) {
         mobileDomainRepository.deleteByAppNameAndDomain(appName, domain);
     }
 
-    @Transactional
     public void deleteExpiredCertificates() {
         certificateRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
     }
 
+    @Transactional(readOnly = true)
+    public ApplicationVersionListResponse applicationVersionList(final String applicationName) {
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public ApplicationVersionDetailResponse applicationVersionDetail(final String applicationName) {
+        return null;
+    }
+
+    public ApplicationVersionDetailResponse createApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
+        return null;
+    }
+
+    public void deleteApplicationVersion(final String applicationName, final Long id) {
+        // TODO
+    }
+
+    @Transactional(readOnly = true)
+    public TextListResponse textList() {
+        return convert(localizedTextRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public TextDetailResponse textDetail(final String key, final String language) {
+        final var id = new LocalizedTextEntity.LocalizedTextId(key, language);
+        logger.debug("Looking for text ID: {}", id);
+        return convert(localizedTextRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException()));// TODO Lubos better exception + handling
+    }
+
+    public TextDetailResponse createText(final CreateTextRequest request) {
+        logger.debug("Creating text key: {}, language: {}", request.getMessageKey(), request.getLanguage());
+        final var result = localizedTextRepository.save(convert(request));
+        return convert(result);
+    }
+
+    public void deleteText(final String key, final String language) {
+        final var id = new LocalizedTextEntity.LocalizedTextId(key, language);
+        logger.debug("Deleting text ID: {}", id);
+        localizedTextRepository.deleteById(id);
+    }
+
+    private LocalizedTextEntity convert(final CreateTextRequest source) {
+        final var target = new LocalizedTextEntity();
+        target.setMessageKey(source.getMessageKey());
+        target.setLanguage(source.getLanguage());
+        target.setText(source.getText());
+        return target;
+    }
+
+    private static TextListResponse convert(final Iterable<LocalizedTextEntity> source) {
+        final var target = new TextListResponse();
+        source.forEach(it ->
+                target.getApplicationVersions().add(convert(it)));
+        return target;
+    }
+
+    private static TextDetailResponse convert(final LocalizedTextEntity source) {
+        final var target = new TextDetailResponse();
+        target.setMessageKey(source.getMessageKey());
+        target.setLanguage(source.getLanguage());
+        target.setText(source.getText());
+        return target;
+    }
 }
