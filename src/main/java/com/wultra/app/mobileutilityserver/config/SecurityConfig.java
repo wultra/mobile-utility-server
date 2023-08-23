@@ -21,8 +21,10 @@ package com.wultra.app.mobileutilityserver.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -97,23 +99,22 @@ public class SecurityConfig {
 
     /**
      * Configure security filter chain.
+     *
      * @param http HTTP configuration.
      * @return Security filter chain.
      * @throws Exception In case a configuration error occurs.
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll())
-                .httpBasic()
-            .and()
-                .sessionManagement()
-                .sessionCreationPolicy(stateless ? SessionCreationPolicy.STATELESS : SessionCreationPolicy.IF_REQUIRED);
-
-        return http.build();
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .anyRequest().permitAll())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(customizer ->
+                        customizer.sessionCreationPolicy(stateless ? SessionCreationPolicy.STATELESS : SessionCreationPolicy.IF_REQUIRED))
+                .build();
     }
 
 }
