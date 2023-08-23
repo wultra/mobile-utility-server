@@ -108,3 +108,21 @@ curl --request POST \
   "text": "Upgrade is required to make internet banking working."
 }'
 ```
+
+
+### Application Versions
+
+To insert an application version:
+
+```sh
+curl --request POST \
+  --url http://localhost:8080/admin/apps/mobile-app/versions \
+  --header 'Authorization: Basic YWRtaW46YWRtaW4=' \
+  --json '{
+  "majorOsVersion": 11,
+  "platform": "IOS",
+  "suggestedVersion": "3.2.1",
+  "requiredVersion": "2.9.8",
+  "messageKey": "required-app.internet-banking"
+}'
+```

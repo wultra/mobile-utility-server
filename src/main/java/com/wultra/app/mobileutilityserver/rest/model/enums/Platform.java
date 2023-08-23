@@ -16,21 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.wultra.app.mobileutilityserver.rest.model.response;
-
-import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
+package com.wultra.app.mobileutilityserver.rest.model.enums;
 
 /**
- * Response with list of {@link TextDetailResponse}.
+ * Platform of mobile applications.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-@Data
-public class TextListResponse {
-
-    private List<TextDetailResponse> texts = new ArrayList<>();
-
+public enum Platform {
+    ANDROID,
+    IOS
 }

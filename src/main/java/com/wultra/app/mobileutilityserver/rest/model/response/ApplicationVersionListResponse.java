@@ -20,6 +20,7 @@ package com.wultra.app.mobileutilityserver.rest.model.response;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,6 @@ import java.util.List;
 @Data
 public class ApplicationVersionListResponse {
 
-    private List<ApplicationVersionDetailResponse> applicationVersions;
+    private List<ApplicationVersionDetailResponse> applicationVersions = new ArrayList<>();
 
 }

@@ -120,7 +120,7 @@ public class AdminController {
     @Tag(name = TAG_ADMIN_APPLICATION_VERSION)
     @GetMapping("apps/{name}/versions/{id}")
     public ApplicationVersionDetailResponse applicationVersionDetail(@PathVariable("name") String applicationName, @PathVariable("id") Long id) {
-        return adminService.applicationVersionDetail(applicationName);
+        return adminService.applicationVersionDetail(applicationName, id);
     }
 
     @Tag(name = TAG_ADMIN_APPLICATION_VERSION)

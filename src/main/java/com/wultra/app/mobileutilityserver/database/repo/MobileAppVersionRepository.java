@@ -52,4 +52,13 @@ public interface MobileAppVersionRepository extends CrudRepository<MobileAppVers
     @Query("select m from MobileAppVersionEntity m where m.platform = :platform and m.app.name = :applicationName and m.majorOsVersion is null")
     Optional<MobileAppVersionEntity> findFirstByApplicationNameAndPlatform(String applicationName, MobileAppVersionEntity.Platform platform);
 
+    /**
+     * Find application version by given application name.
+     *
+     * @param applicationName Application name
+     * @return found application versions
+     */
+    @Query("select m from MobileAppVersionEntity m where  m.app.name = :applicationName")
+    Iterable<MobileAppVersionEntity> findByApplicationName(String applicationName);
+
 }

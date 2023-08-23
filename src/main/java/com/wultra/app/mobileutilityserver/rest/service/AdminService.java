@@ -18,19 +18,14 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
-import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
-import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
-import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
-import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
-import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
-import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
+import com.wultra.app.mobileutilityserver.database.model.*;
+import com.wultra.app.mobileutilityserver.database.repo.*;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
+import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import com.wultra.app.mobileutilityserver.rest.model.request.*;
 import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -69,6 +64,7 @@ public class AdminService {
     private final CertificateRepository certificateRepository;
     private final MobileDomainRepository mobileDomainRepository;
     private final LocalizedTextRepository localizedTextRepository;
+    private final MobileAppVersionRepository mobileAppVersionRepository;
 
     private final CertificateConverter certificateConverter;
     private final MobileAppConverter mobileAppConverter;
@@ -246,25 +242,37 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public ApplicationVersionListResponse applicationVersionList(final String applicationName) {
-        return null;
+        logger.debug("Looking for application versions name: {}", applicationName);
+        return convertVersions(mobileAppVersionRepository.findByApplicationName(applicationName));
     }
 
     @Transactional(readOnly = true)
-    public ApplicationVersionDetailResponse applicationVersionDetail(final String applicationName) {
-        return null;
+    public ApplicationVersionDetailResponse applicationVersionDetail(final String applicationName, final Long id) {
+        logger.debug("Looking for application version name: {}, ID: {}", applicationName, id);
+        return convert(mobileAppVersionRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException()));// TODO Lubos better exception + handling
     }
 
     public ApplicationVersionDetailResponse createApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
-        return null;
+        logger.debug("Creating application version for name: {}", applicationName);
+        final MobileAppVersionEntity entity = convert(request);
+        final MobileAppEntity app = mobileAppRepository.findFirstByName(applicationName);
+        if (app == null) {
+            throw new IllegalStateException(); // TODO Lubos
+        }
+        entity.setApp(app);
+        final var result = mobileAppVersionRepository.save(entity);
+        return convert(result);
     }
 
     public void deleteApplicationVersion(final String applicationName, final Long id) {
-        // TODO
+        logger.debug("Deleting application version name: {}, ID: {}", applicationName, id);
+        mobileAppVersionRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
     public TextListResponse textList() {
-        return convert(localizedTextRepository.findAll());
+        return convertTexts(localizedTextRepository.findAll());
     }
 
     @Transactional(readOnly = true)
@@ -287,7 +295,7 @@ public class AdminService {
         localizedTextRepository.deleteById(id);
     }
 
-    private LocalizedTextEntity convert(final CreateTextRequest source) {
+    private static LocalizedTextEntity convert(final CreateTextRequest source) {
         final var target = new LocalizedTextEntity();
         target.setMessageKey(source.getMessageKey());
         target.setLanguage(source.getLanguage());
@@ -295,10 +303,10 @@ public class AdminService {
         return target;
     }
 
-    private static TextListResponse convert(final Iterable<LocalizedTextEntity> source) {
+    private static TextListResponse convertTexts(final Iterable<LocalizedTextEntity> source) {
         final var target = new TextListResponse();
         source.forEach(it ->
-                target.getApplicationVersions().add(convert(it)));
+                target.getTexts().add(convert(it)));
         return target;
     }
 
@@ -308,5 +316,47 @@ public class AdminService {
         target.setLanguage(source.getLanguage());
         target.setText(source.getText());
         return target;
+    }
+
+    private static ApplicationVersionListResponse convertVersions(final Iterable<MobileAppVersionEntity> source) {
+        final var target = new ApplicationVersionListResponse();
+        source.forEach(it ->
+                target.getApplicationVersions().add(convert(it)));
+        return target;
+    }
+
+    private static ApplicationVersionDetailResponse convert(final MobileAppVersionEntity source) {
+        final var target = new ApplicationVersionDetailResponse();
+        target.setId(source.getId());
+        target.setRequiredVersion(source.getRequiredVersion());
+        target.setSuggestedVersion(source.getSuggestedVersion());
+        target.setMessageKey(source.getMessageKey());
+        target.setPlatform(convert(source.getPlatform()));
+        target.setMajorOsVersion(source.getMajorOsVersion());
+        return target;
+    }
+
+    private static Platform convert(final MobileAppVersionEntity.Platform source) {
+        return switch(source) {
+            case ANDROID -> Platform.ANDROID;
+            case IOS -> Platform.IOS;
+        };
+    }
+
+    private static MobileAppVersionEntity convert(final CreateApplicationVersionRequest source) {
+        final var target = new MobileAppVersionEntity();
+        target.setRequiredVersion(source.getRequiredVersion());
+        target.setSuggestedVersion(source.getSuggestedVersion());
+        target.setMessageKey(source.getMessageKey());
+        target.setMajorOsVersion(source.getMajorOsVersion());
+        target.setPlatform(convert(source.getPlatform()));
+        return target;
+    }
+
+    private static MobileAppVersionEntity.Platform convert(final Platform source) {
+        return switch(source) {
+            case ANDROID -> MobileAppVersionEntity.Platform.ANDROID;
+            case IOS -> MobileAppVersionEntity.Platform.IOS;
+        };
     }
 }

@@ -18,6 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
+import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -28,6 +29,8 @@ import lombok.Data;
  */
 @Data
 public class ApplicationVersionDetailResponse {
+
+    private Long id;
 
     private Platform platform;
 
@@ -44,10 +47,5 @@ public class ApplicationVersionDetailResponse {
 
     @NotBlank
     private String messageKey;
-
-    public enum Platform {
-        ANDROID,
-        IOS
-    }
 
 }

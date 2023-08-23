@@ -18,6 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
+import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -44,10 +45,5 @@ public class CreateApplicationVersionRequest {
 
     @NotBlank
     private String messageKey;
-
-    public enum Platform {
-        ANDROID,
-        IOS
-    }
 
 }
