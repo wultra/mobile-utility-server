@@ -87,3 +87,6 @@ The following configuration return `OK` for application version `2.9.0` if the o
 insert into ssl_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
 values (nextval('ssl_mobile_app_version_seq'), 1, 'IOS', '2.7.0', '1.9.0', 11, 'my-testing-app.message-key');
 ```
+
+The feature is enabled by default.
+For performance optimization you may disable it by setting `mobile-utility-server.features.version-verification.enabled=false`
