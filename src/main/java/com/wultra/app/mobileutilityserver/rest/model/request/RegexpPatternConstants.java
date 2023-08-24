@@ -18,35 +18,20 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
-import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import lombok.Data;
-
 /**
- * Request for creating application version used for forced update functionality.
+ * Regex pattern constants.
  *
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-@Data
-public class CreateApplicationVersionRequest {
+public final class RegexpPatternConstants {
 
-    private Platform platform;
+    private RegexpPatternConstants() {
+        throw new IllegalStateException("Should not be instantiated.");
+    }
 
     /**
-     * Major operation system version, may be {@code null} to match all.
-     * <p>
-     * For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
+     * Regexp for SemVer 2.0
      */
-    private Integer majorOsVersion;
-
-    @Pattern(regexp = RegexpPatternConstants.SEMVER_2_0, message = "Application version must comply SemVer 2.0")
-    private String suggestedVersion;
-
-    @Pattern(regexp = RegexpPatternConstants.SEMVER_2_0, message = "Application version must comply SemVer 2.0")
-    private String requiredVersion;
-
-    @NotBlank
-    private String messageKey;
+    public static final String SEMVER_2_0 = "^\\d+\\.\\d+\\.\\d+(-.*)?$";
 
 }
