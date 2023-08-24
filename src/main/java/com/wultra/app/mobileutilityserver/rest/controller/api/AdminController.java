@@ -60,7 +60,6 @@ public class AdminController {
     }
 
     @Tag(name = TAG_ADMIN_APPLICATION)
-
     @PostMapping("apps")
     public ApplicationDetailResponse createApplication(@Valid @RequestBody CreateApplicationRequest request) throws AppException {
         return adminService.createApplication(request);
