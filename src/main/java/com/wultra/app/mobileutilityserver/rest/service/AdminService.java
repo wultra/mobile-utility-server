@@ -29,6 +29,7 @@ import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import com.wultra.app.mobileutilityserver.rest.model.request.*;
 import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -46,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -250,7 +252,7 @@ public class AdminService {
     public ApplicationVersionDetailResponse applicationVersionDetail(final String applicationName, final Long id) {
         logger.debug("Looking for application version name: {}, ID: {}", applicationName, id);
         return convert(mobileAppVersionRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException()));// TODO Lubos better exception + handling
+                .orElseThrow(() -> new ConstraintViolationException("Version not found, ID: " + id, Collections.emptySet())));
     }
 
     public ApplicationVersionDetailResponse createApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
@@ -258,7 +260,7 @@ public class AdminService {
         final MobileAppVersionEntity entity = convert(request);
         final MobileAppEntity app = mobileAppRepository.findFirstByName(applicationName);
         if (app == null) {
-            throw new IllegalStateException(); // TODO Lubos
+            throw new ConstraintViolationException("Application not found, name: " + applicationName, Collections.emptySet());
         }
         entity.setApp(app);
         final var result = mobileAppVersionRepository.save(entity);
@@ -280,7 +282,7 @@ public class AdminService {
         final var id = new LocalizedTextEntity.LocalizedTextId(key, language);
         logger.debug("Looking for text ID: {}", id);
         return convert(localizedTextRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException()));// TODO Lubos better exception + handling
+                .orElseThrow(() -> new ConstraintViolationException("Text not found, ID: " + id, Collections.emptySet())));
     }
 
     public TextDetailResponse createText(final CreateTextRequest request) {

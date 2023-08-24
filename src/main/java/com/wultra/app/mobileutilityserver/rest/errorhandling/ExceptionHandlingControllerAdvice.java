@@ -130,7 +130,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        final ExtendedError error = new ExtendedError("ERROR_REQUEST", "Invalid object value");
+        final ExtendedError error = new ExtendedError("ERROR_REQUEST", e.getMessage());
         for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
             error.getViolations().add(
                     new Violation(violation.getPropertyPath().toString(), violation.getInvalidValue(), violation.getMessage())
