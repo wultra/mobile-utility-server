@@ -21,6 +21,7 @@ package com.wultra.app.mobileutilityserver.rest.model.request;
 import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ import lombok.Data;
 @Data
 public class CreateApplicationVersionRequest {
 
+    @NotNull
     private Platform platform;
 
     @Schema(
