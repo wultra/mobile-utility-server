@@ -53,7 +53,7 @@ public interface MobileAppVersionRepository extends CrudRepository<MobileAppVers
     Optional<MobileAppVersionEntity> findFirstByApplicationNameAndPlatform(String applicationName, MobileAppVersionEntity.Platform platform);
 
     /**
-     * Find application version by given application name.
+     * Find application versions by given application name.
      *
      * @param applicationName Application name
      * @return found application versions
