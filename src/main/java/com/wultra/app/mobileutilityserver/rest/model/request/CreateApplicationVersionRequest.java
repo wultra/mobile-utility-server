@@ -19,6 +19,7 @@
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -33,17 +34,31 @@ public class CreateApplicationVersionRequest {
 
     private Platform platform;
 
-    /**
-     * Major operation system version, may be {@code null} to match all.
-     * <p>
-     * For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.
-     */
+    @Schema(
+            description = """
+                    Major operation system version, may be `null` to match all.
+                    For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29.""",
+            type = "string",
+            example = "12"
+    )
     private Integer majorOsVersion;
 
     @Pattern(regexp = RegexpPatternConstants.SEMVER_2_0, message = "Application version must comply SemVer 2.0")
+    @Schema(
+            description = "Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account.",
+            type = "string",
+            pattern = RegexpPatternConstants.SEMVER_2_0,
+            example = "3.1.2"
+    )
     private String suggestedVersion;
 
     @Pattern(regexp = RegexpPatternConstants.SEMVER_2_0, message = "Application version must comply SemVer 2.0")
+    @Schema(
+            description = "Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account.",
+            type = "string",
+            pattern = RegexpPatternConstants.SEMVER_2_0,
+            example = "3.1.2"
+    )
     private String requiredVersion;
 
     @NotBlank

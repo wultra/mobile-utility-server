@@ -18,6 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -33,11 +34,13 @@ public class TextDetailResponse {
     @NotBlank
     private String messageKey;
 
-    /**
-     * ISO 639-1 two-letter language code.
-     */
     @NotBlank
     @Size(min = 2, max = 2)
+    @Schema(
+            description = "ISO 639-1 two-letter language code.",
+            type = "string",
+            example = "en"
+    )
     private String language;
 
     @NotBlank
