@@ -1,6 +1,6 @@
 /*
  * Wultra Mobile Utility Server
- * Copyright (C) 2020  Wultra s.r.o.
+ * Copyright (C) 2023  Wultra s.r.o.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,19 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.wultra.app.mobileutilityserver.rest.http;
+
+package com.wultra.app.mobileutilityserver.rest.model.request;
 
 /**
- * Class with defined query parameter names.
+ * Regex pattern constants.
  *
- * @author Petr Dvorak, petr@wultra.com
+ * @author Lubos Racansky, lubos.racansky@wultra.com
  */
-public class QueryParams {
+public final class RegexpPatternConstants {
 
-    public static final String QUERY_PARAM_APP_NAME = "appName";
-    public static final String QUERY_PARAM_APP_VERSION = "appVersion";
-    public static final String QUERY_PARAM_OS_VERSION = "osVersion";
-    public static final String QUERY_PARAM_PLATFORM = "platform";
-    public static final String QUERY_PARAM_LANGUAGE = "language";
+    private RegexpPatternConstants() {
+        throw new IllegalStateException("Should not be instantiated.");
+    }
+
+    /**
+     * Regexp for SemVer 2.0
+     */
+    public static final String SEMVER_2_0 = "^\\d+\\.\\d+\\.\\d+(-.*)?$";
 
 }

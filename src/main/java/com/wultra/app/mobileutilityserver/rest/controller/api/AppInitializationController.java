@@ -23,6 +23,7 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundEx
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.request.RegexpPatternConstants;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
@@ -74,7 +75,7 @@ public class AppInitializationController {
             name = QueryParams.QUERY_PARAM_APP_VERSION,
             description = "Application version in SemVer 2.0 format but only MAJOR.MINOR.PATCH are taken into account.",
             in = ParameterIn.QUERY,
-            schema = @Schema(type = "string", pattern = "^\\d+\\.\\d+\\.\\d+(-.*)?$"),
+            schema = @Schema(type = "string", pattern = RegexpPatternConstants.SEMVER_2_0),
             example = "3.1.2"
     )
     @Parameter(
@@ -86,7 +87,7 @@ public class AppInitializationController {
     )
     public AppInitResponse appInit(
             @RequestParam(QueryParams.QUERY_PARAM_APP_NAME) String applicationName,
-            @Pattern(regexp = "^\\d+\\.\\d+\\.\\d+(-.*)?$", message = "Application version must comply SemVer 2.0")
+            @Pattern(regexp = RegexpPatternConstants.SEMVER_2_0, message = "Application version must comply SemVer 2.0")
             @RequestParam(value = QueryParams.QUERY_PARAM_APP_VERSION, required = false) String applicationVersion,
             @Pattern(regexp = "^\\d+\\.\\d+\\.\\d+(-.*)?|\\d+$", message = "System version must comply SemVer 2.0 or to be a single number.")
             @RequestParam(value = QueryParams.QUERY_PARAM_OS_VERSION, required = false) String systemVersion,
