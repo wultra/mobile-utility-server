@@ -27,50 +27,50 @@
     <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="ssl_mobile_app_seq"/>
+                <sequenceExists sequenceName="mus_mobile_app_seq"/>
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile app entities.</comment>
-        <createSequence sequenceName="ssl_mobile_app_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_app_seq" maxValue="9999999999999" cacheSize="20"/>
         <rollback>
-            <dropSequence sequenceName="ssl_mobile_app_seq"/>
+            <dropSequence sequenceName="mus_mobile_app_seq"/>
         </rollback>
     </changeSet>
 
     <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="ssl_mobile_domain_seq"/>
+                <sequenceExists sequenceName="mus_mobile_domain_seq"/>
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile domain entities.</comment>
-        <createSequence sequenceName="ssl_mobile_domain_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_domain_seq" maxValue="9999999999999" cacheSize="20"/>
         <rollback>
-            <dropSequence sequenceName="ssl_mobile_domain_seq"/>
+            <dropSequence sequenceName="mus_mobile_domain_seq"/>
         </rollback>
     </changeSet>
 
     <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="ssl_mobile_fingerprint_seq"/>
+                <sequenceExists sequenceName="mus_mobile_fingerprint_seq"/>
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile SSL fingerprints entities.</comment>
-        <createSequence sequenceName="ssl_mobile_fingerprint_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_fingerprint_seq" maxValue="9999999999999" cacheSize="20"/>
         <rollback>
-            <dropSequence sequenceName="ssl_mobile_fingerprint_seq"/>
+            <dropSequence sequenceName="mus_mobile_fingerprint_seq"/>
         </rollback>
     </changeSet>
 
     <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ssl_mobile_app"/>
+                <tableExists tableName="mus_mobile_app"/>
             </not>
         </preConditions>
         <comment>Create a new table for mobile app entities.</comment>
-        <createTable tableName="ssl_mobile_app">
+        <createTable tableName="mus_mobile_app">
             <column name="id" type="integer">
                 <constraints primaryKey="true"/>
             </column>
@@ -88,41 +88,41 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ssl_mobile_app" cascadeConstraints="true"/>
+            <dropTable tableName="mus_mobile_app" cascadeConstraints="true"/>
         </rollback>
     </changeSet>
 
     <changeSet id="5" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ssl_mobile_domain"/>
+                <tableExists tableName="mus_mobile_domain"/>
             </not>
         </preConditions>
         <comment>Create a new table for mobile domain entities.</comment>
-        <createTable tableName="ssl_mobile_domain">
+        <createTable tableName="mus_mobile_domain">
             <column name="id" type="integer">
                 <constraints primaryKey="true"/>
             </column>
             <column name="app_id" type="integer">
-                <constraints nullable="false" foreignKeyName="ssl_mobile_domain_fk" referencedTableName="ssl_mobile_app"  deleteCascade="true" />
+                <constraints nullable="false" foreignKeyName="mus_mobile_domain_fk" referencedTableName="mus_mobile_app"  deleteCascade="true" />
             </column>
             <column name="domain" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ssl_mobile_domain" cascadeConstraints="true"/>
+            <dropTable tableName="mus_mobile_domain" cascadeConstraints="true"/>
         </rollback>
     </changeSet>
 
     <changeSet id="6" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ssl_mobile_fingerprint"/>
+                <tableExists tableName="mus_mobile_fingerprint"/>
             </not>
         </preConditions>
         <comment>Create a new table for mobile SSL fingerprint entities.</comment>
-        <createTable tableName="ssl_mobile_fingerprint">
+        <createTable tableName="mus_mobile_fingerprint">
             <column name="id" type="integer">
                 <constraints primaryKey="true"/>
             </column>
@@ -133,11 +133,11 @@
                 <constraints nullable="false"/>
             </column>
             <column name="mobile_domain_id" type="integer">
-                <constraints nullable="false" foreignKeyName="mobile_ssl_pinning_app_fk" referencedTableName="ssl_mobile_domain" deleteCascade="true"/>
+                <constraints nullable="false" foreignKeyName="mobile_ssl_pinning_app_fk" referencedTableName="mus_mobile_domain" deleteCascade="true"/>
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ssl_mobile_fingerprint" cascadeConstraints="true"/>
+            <dropTable tableName="mus_mobile_fingerprint" cascadeConstraints="true"/>
         </rollback>
     </changeSet>
 

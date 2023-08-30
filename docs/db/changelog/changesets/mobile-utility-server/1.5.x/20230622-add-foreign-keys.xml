@@ -27,28 +27,28 @@
     <changeSet id="1" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <foreignKeyConstraintExists foreignKeyName="ssl_user_fk" foreignKeyTableName="ssl_user_authority" />
+                <foreignKeyConstraintExists foreignKeyName="mus_user_fk" foreignKeyTableName="mus_user_authority" />
             </not>
         </preConditions>
-        <addForeignKeyConstraint baseTableName="ssl_user_authority" baseColumnNames="user_id" constraintName="ssl_user_fk" referencedTableName="ssl_user" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="mus_user_authority" baseColumnNames="user_id" constraintName="mus_user_fk" referencedTableName="mus_user" referencedColumnNames="id" />
     </changeSet>
 
     <changeSet id="2" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <foreignKeyConstraintExists foreignKeyName="ssl_mobile_app_fk" foreignKeyTableName="ssl_mobile_domain" />
+                <foreignKeyConstraintExists foreignKeyName="mus_mobile_app_fk" foreignKeyTableName="mus_mobile_domain" />
             </not>
         </preConditions>
-        <addForeignKeyConstraint baseTableName="ssl_mobile_domain" baseColumnNames="app_id" constraintName="ssl_mobile_app_fk" referencedTableName="ssl_mobile_app" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="mus_mobile_domain" baseColumnNames="app_id" constraintName="mus_mobile_app_fk" referencedTableName="mus_mobile_app" referencedColumnNames="id" />
     </changeSet>
 
     <changeSet id="3" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <foreignKeyConstraintExists foreignKeyName="ssl_mobile_domain_fk" foreignKeyTableName="ssl_certificate" />
+                <foreignKeyConstraintExists foreignKeyName="mus_mobile_domain_fk" foreignKeyTableName="mus_certificate" />
             </not>
         </preConditions>
-        <addForeignKeyConstraint baseTableName="ssl_certificate" baseColumnNames="mobile_domain_id" constraintName="ssl_mobile_domain_fk" referencedTableName="ssl_mobile_domain" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="mus_certificate" baseColumnNames="mobile_domain_id" constraintName="mus_mobile_domain_fk" referencedTableName="mus_mobile_domain" referencedColumnNames="id" />
     </changeSet>
 
 </databaseChangeLog>
