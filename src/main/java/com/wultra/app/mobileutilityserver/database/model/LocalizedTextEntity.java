@@ -30,7 +30,7 @@ import java.io.Serializable;
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Entity
-@Table(name = "ssl_localized_text")
+@Table(name = "mus_localized_text")
 @Getter
 @Setter
 @ToString

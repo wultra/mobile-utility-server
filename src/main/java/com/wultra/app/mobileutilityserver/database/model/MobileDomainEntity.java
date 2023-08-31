@@ -30,13 +30,13 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "ssl_mobile_domain")
+@Table(name = "mus_mobile_domain")
 public class MobileDomainEntity {
 
     @Id
     @Column(name = "id")
-    @SequenceGenerator(name = "ssl_mobile_domain", sequenceName = "ssl_mobile_domain_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_mobile_domain")
+    @SequenceGenerator(name = "mus_mobile_domain", sequenceName = "mus_mobile_domain_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mus_mobile_domain")
     private Long id;
 
     @Column(name = "domain")

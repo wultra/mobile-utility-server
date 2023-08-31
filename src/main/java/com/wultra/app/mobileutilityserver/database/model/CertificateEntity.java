@@ -27,13 +27,13 @@ import jakarta.persistence.*;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Entity
-@Table(name = "ssl_certificate")
+@Table(name = "mus_certificate")
 public class CertificateEntity {
 
     @Id
     @Column(name = "id")
-    @SequenceGenerator(name = "ssl_certificate", sequenceName = "ssl_certificate_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_certificate")
+    @SequenceGenerator(name = "mus_certificate", sequenceName = "mus_certificate_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mus_certificate")
     private Long id;
 
     @Column(name = "pem")

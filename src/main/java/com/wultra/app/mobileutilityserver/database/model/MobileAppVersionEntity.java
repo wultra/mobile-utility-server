@@ -29,15 +29,15 @@ import lombok.ToString;
  * @author Lubos Racansky, lubos.racansky@wultra.com
  */
 @Entity
-@Table(name = "ssl_mobile_app_version")
+@Table(name = "mus_mobile_app_version")
 @Getter
 @Setter
 @ToString
 public class MobileAppVersionEntity {
 
     @Id
-    @SequenceGenerator(name = "ssl_mobile_app_version", sequenceName = "ssl_mobile_app_version_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ssl_mobile_app_version")
+    @SequenceGenerator(name = "mus_mobile_app_version", sequenceName = "mus_mobile_app_version_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mus_mobile_app_version")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
