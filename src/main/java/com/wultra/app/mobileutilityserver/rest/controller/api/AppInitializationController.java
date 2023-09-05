@@ -37,6 +37,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -57,11 +58,17 @@ public class AppInitializationController {
 
     private final CertificateFingerprintService certificateFingerprintService;
     private final MobileAppService mobileAppService;
+    private final boolean versionVerificationEnabled;
 
     @Autowired
-    public AppInitializationController(CertificateFingerprintService certificateFingerprintService, MobileAppService mobileAppService) {
+    public AppInitializationController(
+            final CertificateFingerprintService certificateFingerprintService,
+            final MobileAppService mobileAppService,
+            @Value("${mobile-utility-server.features.version-verification.enabled}") final boolean versionVerificationEnabled) {
+
         this.certificateFingerprintService = certificateFingerprintService;
         this.mobileAppService = mobileAppService;
+        this.versionVerificationEnabled = versionVerificationEnabled;
     }
 
     @GetMapping
@@ -109,7 +116,7 @@ public class AppInitializationController {
         // Find the fingerprints
         final List<CertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(applicationName);
 
-        if (StringUtils.hasText(applicationVersion) && StringUtils.hasText(systemVersion) && platform != null) {
+        if (shouldVerifyVersion(applicationVersion, systemVersion, platform)) {
             final VerifyVersionRequest verifyVersionRequest = VerifyVersionRequest.builder()
                     .applicationName(applicationName)
                     .applicationVersion(applicationVersion)
@@ -123,6 +130,14 @@ public class AppInitializationController {
             logger.debug("Context for verifying version not provided for application name: {}", applicationName);
             return new AppInitResponse(fingerprints, null);
         }
+    }
+
+    private boolean shouldVerifyVersion(final String applicationVersion, final String systemVersion, final Platform platform) {
+        if (!versionVerificationEnabled) {
+            logger.debug("Skipping application version verification, feature disabled");
+            return false;
+        }
+        return StringUtils.hasText(applicationVersion) && StringUtils.hasText(systemVersion) && platform != null;
     }
 
     @GetMapping("public-key")
