@@ -214,7 +214,7 @@ Sequence responsible for mobile app autoincrements.
 #### Schema
 
 ```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_seq INCREMENT BY 1 START WITH 1 CACHE 20;
 ```
 <!-- end -->
 
@@ -226,7 +226,7 @@ Sequence responsible for mobile domain autoincrements.
 #### Schema
 
 ```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_domain_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS mus_mobile_domain_seq INCREMENT BY 1 START WITH 1 CACHE 20;
 ```
 <!-- end -->
 
@@ -238,7 +238,7 @@ Sequence responsible for SSL certificates and fingerprints autoincrements.
 #### Schema
 
 ```sql
-CREATE SEQUENCE IF NOT EXISTS mus_certificates_seq MAXVALUE 9999999999999 CACHE 20;
+CREATE SEQUENCE IF NOT EXISTS mus_certificates_seq INCREMENT BY 1 START WITH 1 CACHE 20;
 ```
 <!-- end -->
 
@@ -250,7 +250,7 @@ Sequence responsible for mobile application version autoincrements.
 #### Schema
 
 ```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_version_seq;
+CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_version_seq INCREMENT BY 1 START WITH 1 CACHE 20;
 ```
 <!-- end -->
 
