@@ -31,7 +31,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence for user entities.</comment>
-        <createSequence sequenceName="mus_user_seq" maxValue="9999999999999" incrementBy="1" cacheSize="20"/>
+        <createSequence sequenceName="mus_user_seq" startValue="1" incrementBy="1" cacheSize="20"/>
         <rollback>
             <dropSequence sequenceName="mus_user_seq"/>
         </rollback>
@@ -44,7 +44,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence for user authority entities.</comment>
-        <createSequence sequenceName="mus_user_authority_seq" maxValue="9999999999999" incrementBy="1" cacheSize="20"/>
+        <createSequence sequenceName="mus_user_authority_seq" startValue="1" incrementBy="1" cacheSize="20"/>
         <rollback>
             <dropSequence sequenceName="mus_user_authority_seq"/>
         </rollback>

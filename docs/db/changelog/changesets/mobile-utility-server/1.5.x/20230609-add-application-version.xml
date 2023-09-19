@@ -31,7 +31,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence mus_mobile_app_version_seq.</comment>
-        <createSequence sequenceName="mus_mobile_app_version_seq" incrementBy="1" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_app_version_seq" startValue="1" incrementBy="1" cacheSize="20"/>
     </changeSet>
 
     <changeSet id="2" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230609-add-application-version.xml">

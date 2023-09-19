@@ -31,7 +31,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile app entities.</comment>
-        <createSequence sequenceName="mus_mobile_app_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_app_seq" startValue="1" cacheSize="20" incrementBy="1" />
         <rollback>
             <dropSequence sequenceName="mus_mobile_app_seq"/>
         </rollback>
@@ -44,7 +44,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile domain entities.</comment>
-        <createSequence sequenceName="mus_mobile_domain_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_domain_seq" startValue="1" cacheSize="20" incrementBy="1" />
         <rollback>
             <dropSequence sequenceName="mus_mobile_domain_seq"/>
         </rollback>
@@ -57,7 +57,7 @@
             </not>
         </preConditions>
         <comment>Create a new sequence for mobile SSL fingerprints entities.</comment>
-        <createSequence sequenceName="mus_mobile_fingerprint_seq" maxValue="9999999999999" cacheSize="20"/>
+        <createSequence sequenceName="mus_mobile_fingerprint_seq" startValue="1" cacheSize="20" incrementBy="1" />
         <rollback>
             <dropSequence sequenceName="mus_mobile_fingerprint_seq"/>
         </rollback>
