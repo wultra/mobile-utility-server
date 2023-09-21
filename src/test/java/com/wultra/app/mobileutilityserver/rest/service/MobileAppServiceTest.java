@@ -166,4 +166,19 @@ class MobileAppServiceTest {
         assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Newer version is suggested, but for major version 29 the threshold is lowered.");
         assertNull(result.getMessage());
     }
+
+    @Test
+    void testVerifyVersion_duplicateEntries() {
+        final VerifyVersionRequest request = VerifyVersionRequest.builder()
+                .applicationVersion("3.2.1")
+                .applicationName("duplicate-entries")
+                .platform(VerifyVersionRequest.Platform.IOS)
+                .systemVersion("11.2.4")
+                .build();
+
+        final VerifyVersionResult result = tested.verifyVersion(request);
+
+        assertEquals(VerifyVersionResult.Update.NOT_REQUIRED, result.getUpdate(), "Misconfiguration should not throw an exception.");
+        assertNull(result.getMessage());
+    }
 }

@@ -29,11 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Service acting as a DAO for mobile application related objects.
@@ -118,13 +120,25 @@ public class MobileAppService {
     }
 
     private Optional<MobileAppVersionEntity> findApplicationVersion(final String applicationName, final MobileAppVersionEntity.Platform platform, final int majorSystemVersion) {
-        final Optional<MobileAppVersionEntity> applicationVersion = mobileAppVersionRepository.findFirstByApplicationNameAndPlatformAndMajorOsVersion(applicationName, platform, majorSystemVersion);
+        final Optional<MobileAppVersionEntity> applicationVersion = findFailSafe(() ->
+                mobileAppVersionRepository.findFirstByApplicationNameAndPlatformAndMajorOsVersion(applicationName, platform, majorSystemVersion));
         if (applicationVersion.isPresent()) {
             logger.debug("Found exact match for applicationName: {}, platform: {} and majorSystemVersion: {}", applicationName, platform, majorSystemVersion);
             return applicationVersion;
         }
         logger.debug("Looking for applicationName: {} and platform: {} without specific majorSystemVersion.", applicationName, platform);
-        return mobileAppVersionRepository.findFirstByApplicationNameAndPlatform(applicationName, platform);
+        return findFailSafe(() -> mobileAppVersionRepository.findFirstByApplicationNameAndPlatform(applicationName, platform));
+    }
+
+    private static Optional<MobileAppVersionEntity> findFailSafe(final Supplier<Optional<MobileAppVersionEntity>> supplier) {
+        try {
+            return supplier.get();
+        } catch (IncorrectResultSizeDataAccessException e) {
+            // should be validated by admin API, but fail-safe routine, because unique index not working due to nullable major OS version
+            logger.warn("Misconfigured application versions, got more results: {}", e.getMessage());
+            logger.debug("Misconfigured application versions, got more results", e);
+            return Optional.empty();
+        }
     }
 
     private VerifyVersionResult verifyVersion(final MobileAppVersionEntity applicationVersion, final VerifyVersionRequest request) {

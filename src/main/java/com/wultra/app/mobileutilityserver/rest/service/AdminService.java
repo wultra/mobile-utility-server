@@ -50,6 +50,7 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Administration related methods.
@@ -257,6 +258,8 @@ public class AdminService {
 
     public ApplicationVersionDetailResponse createApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
         logger.debug("Creating application version for name: {}", applicationName);
+        validateCreateApplicationVersion(applicationName, request);
+
         final MobileAppVersionEntity entity = convert(request);
         final MobileAppEntity app = mobileAppRepository.findFirstByName(applicationName);
         if (app == null) {
@@ -265,6 +268,27 @@ public class AdminService {
         entity.setApp(app);
         final var result = mobileAppVersionRepository.save(entity);
         return convert(result);
+    }
+
+    private void validateCreateApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
+        final MobileAppVersionEntity.Platform platform = convert(request.getPlatform());
+        final Integer majorOsVersion = request.getMajorOsVersion();
+        final Optional<MobileAppVersionEntity> applicationVersion;
+
+        if (majorOsVersion != null) {
+            applicationVersion = mobileAppVersionRepository
+                    .findFirstByApplicationNameAndPlatformAndMajorOsVersion(applicationName, platform, majorOsVersion);
+        } else {
+            applicationVersion = mobileAppVersionRepository
+                    .findFirstByApplicationNameAndPlatform(applicationName, platform);
+        }
+
+        if (applicationVersion.isPresent()) {
+            throw new ConstraintViolationException(
+                    "Application version already exists, applicationName=%s, platform=%s, majorOsVersion=%d"
+                            .formatted(applicationName, platform, majorOsVersion),
+                    Collections.emptySet());
+        }
     }
 
     public void deleteApplicationVersion(final String applicationName, final Long id) {
