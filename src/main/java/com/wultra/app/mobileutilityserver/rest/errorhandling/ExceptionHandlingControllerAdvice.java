@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class ExceptionHandlingControllerAdvice {
 
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleMissingRequestHeaderException(ServletRequestBindingException ex) {
         final String code = "UNKNOWN_ERROR";
