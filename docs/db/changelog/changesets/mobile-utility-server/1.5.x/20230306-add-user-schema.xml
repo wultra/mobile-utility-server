@@ -27,37 +27,37 @@
     <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="ssl_user_seq"/>
+                <sequenceExists sequenceName="mus_user_seq"/>
             </not>
         </preConditions>
         <comment>Create a new sequence for user entities.</comment>
-        <createSequence sequenceName="ssl_user_seq" maxValue="9999999999999" incrementBy="1" cacheSize="20"/>
+        <createSequence sequenceName="mus_user_seq" startValue="1" incrementBy="1" cacheSize="20"/>
         <rollback>
-            <dropSequence sequenceName="ssl_user_seq"/>
+            <dropSequence sequenceName="mus_user_seq"/>
         </rollback>
     </changeSet>
 
     <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sequenceExists sequenceName="ssl_user_authority_seq"/>
+                <sequenceExists sequenceName="mus_user_authority_seq"/>
             </not>
         </preConditions>
         <comment>Create a new sequence for user authority entities.</comment>
-        <createSequence sequenceName="ssl_user_authority_seq" maxValue="9999999999999" incrementBy="1" cacheSize="20"/>
+        <createSequence sequenceName="mus_user_authority_seq" startValue="1" incrementBy="1" cacheSize="20"/>
         <rollback>
-            <dropSequence sequenceName="ssl_authority_user_seq"/>
+            <dropSequence sequenceName="mus_user_authority_seq"/>
         </rollback>
     </changeSet>
 
     <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ssl_user"/>
+                <tableExists tableName="mus_user"/>
             </not>
         </preConditions>
         <comment>Create a new table for user entities.</comment>
-        <createTable tableName="ssl_user">
+        <createTable tableName="mus_user">
             <column name="id" type="integer">
                 <constraints primaryKey="true"/>
             </column>
@@ -72,30 +72,30 @@
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ssl_user" cascadeConstraints="true"/>
+            <dropTable tableName="mus_user" cascadeConstraints="true"/>
         </rollback>
     </changeSet>
 
     <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="ssl_user_authority"/>
+                <tableExists tableName="mus_user_authority"/>
             </not>
         </preConditions>
         <comment>Create a new table for user authority entities.</comment>
-        <createTable tableName="ssl_user_authority">
+        <createTable tableName="mus_user_authority">
             <column name="id" type="integer">
                 <constraints primaryKey="true"/>
             </column>
             <column name="user_id" type="integer">
-                <constraints nullable="false" foreignKeyName="ssl_user_fk" referencedTableName="ssl_user"  deleteCascade="true" />
+                <constraints nullable="false" foreignKeyName="mus_user_fk" referencedTableName="mus_user"  deleteCascade="true" />
             </column>
             <column name="authority" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
         <rollback>
-            <dropTable tableName="ssl_user_authority" cascadeConstraints="true"/>
+            <dropTable tableName="mus_user_authority" cascadeConstraints="true"/>
         </rollback>
     </changeSet>
 

@@ -72,8 +72,8 @@ Configuration `major_os_version=null` means that the rule applies for all operat
 The following configuration force update of application version `2.9.0` because it is lower than the suggested `3.3.0` and even lower than the required `3.1.1`.    
 
 ```sql
-insert into ssl_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
-values (nextval('ssl_mobile_app_version_seq'), 1, 'IOS', '3.3.0', '3.1.0', null, 'my-testing-app.message-key');
+insert into mus_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
+values (nextval('mus_mobile_app_version_seq'), 1, 'IOS', '3.3.0', '3.1.0', null, 'my-testing-app.message-key');
 ```
 
 In may happen, that it is not possible to update to the new version, because it is using newer API not available in the older operation system.
@@ -81,8 +81,8 @@ In that case, configure a rule for the specific operation system major version (
 The following configuration return `OK` for application version `2.9.0` if the operation system version is `11.x.x`.
 
 ```sql
-insert into ssl_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
-values (nextval('ssl_mobile_app_version_seq'), 1, 'IOS', '2.7.0', '1.9.0', 11, 'my-testing-app.message-key');
+insert into mus_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
+values (nextval('mus_mobile_app_version_seq'), 1, 'IOS', '2.7.0', '1.9.0', 11, 'my-testing-app.message-key');
 ```
 
 The feature is enabled by default.

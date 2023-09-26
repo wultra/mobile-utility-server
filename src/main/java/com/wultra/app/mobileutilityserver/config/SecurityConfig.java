@@ -64,10 +64,10 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(DataSource dataSource) {
         final JdbcUserDetailsManager manager = new JdbcUserDetailsManager(dataSource);
         manager.setUsersByUsernameQuery(
-                "SELECT username, password, enabled FROM ssl_user where username = ?"
+                "SELECT username, password, enabled FROM mus_user where username = ?"
         );
         manager.setAuthoritiesByUsernameQuery(
-                "SELECT u.username, a.authority FROM ssl_user_authority a, ssl_user u "
+                "SELECT u.username, a.authority FROM mus_user_authority a, mus_user u "
                         + " WHERE u.username = ? AND u.id = a.user_id"
         );
         return manager;
