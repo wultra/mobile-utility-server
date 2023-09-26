@@ -62,9 +62,9 @@
 
         <!-- Dependency Versions -->
         <bc.version>1.76</bc.version>
-        <powerauth-java-crypto.version>1.5.0-SNAPSHOT</powerauth-java-crypto.version>
-        <rest-model-base.version>1.6.0</rest-model-base.version>
-        <springdoc-openapi-starter-webmvc-ui.version>2.0.4</springdoc-openapi-starter-webmvc-ui.version>
+        <powerauth-java-crypto.version>1.5.0</powerauth-java-crypto.version>
+        <wultra-core.version>1.7.0</wultra-core.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
 
     </properties>
@@ -125,7 +125,7 @@
         <dependency>
             <groupId>io.getlime.core</groupId>
             <artifactId>rest-model-base</artifactId>
-            <version>${rest-model-base.version}</version>
+            <version>${wultra-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

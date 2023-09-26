@@ -25,8 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test for {@link CreateApplicationVersionRequest}.
@@ -59,14 +58,17 @@ class CreateApplicationVersionRequestTest {
 
         final var result = validator.validate(tested);
 
-        assertEquals(4, result.size());
+        assertAll(
+                () -> assertEquals(3, result.size()),
+                () -> {
+                    final var actualPaths = result.stream()
+                            .map(ConstraintViolation::getPropertyPath)
+                            .map(Path::toString)
+                            .collect(Collectors.toSet());
 
-        final var actualPaths = result.stream()
-                .map(ConstraintViolation::getPropertyPath)
-                .map(Path::toString)
-                .collect(Collectors.toSet());
-        final var expectedPaths = Set.of("messageKey", "requiredVersion", "suggestedVersion", "platform");
-        assertEquals(expectedPaths, actualPaths);
+                    final var expectedPaths = Set.of("requiredVersion", "suggestedVersion", "platform");
+                    assertEquals(expectedPaths, actualPaths);
+                });
     }
 
     private static Validator createValidator() {

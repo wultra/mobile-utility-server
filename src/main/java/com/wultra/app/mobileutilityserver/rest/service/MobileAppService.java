@@ -24,11 +24,10 @@ import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppVersionRepository;
 import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.plexus.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +42,7 @@ import java.util.Optional;
  */
 @Service
 @Transactional(readOnly = true)
+@AllArgsConstructor
 @Slf4j
 public class MobileAppService {
 
@@ -51,21 +51,6 @@ public class MobileAppService {
     private final MobileAppVersionRepository mobileAppVersionRepository;
 
     private final LocalizedTextRepository localizedTextRepository;
-
-    private final boolean versionVerificationEnabled;
-
-    @Autowired
-    public MobileAppService(
-            final MobileAppRepository mobileAppRepository,
-            final MobileAppVersionRepository mobileAppVersionRepository,
-            final LocalizedTextRepository localizedTextRepository,
-            @Value("${mobile-utility-server.features.version-verification.enabled}") final boolean versionVerificationEnabled) {
-
-        this.mobileAppRepository = mobileAppRepository;
-        this.mobileAppVersionRepository = mobileAppVersionRepository;
-        this.localizedTextRepository = localizedTextRepository;
-        this.versionVerificationEnabled = versionVerificationEnabled;
-    }
 
     /**
      * Checks if an app with a provided name exists.
@@ -106,7 +91,6 @@ public class MobileAppService {
         return mobileAppEntity.getSigningPublicKey();
     }
 
-
     /**
      * Verify application version.
      *
@@ -114,12 +98,6 @@ public class MobileAppService {
      * @return verify response or {@code null} if feature disabled
      */
     public VerifyVersionResult verifyVersion(final VerifyVersionRequest request) {
-
-        if (!versionVerificationEnabled) {
-            logger.debug("Skipping application version verification, feature disabled");
-            return null;
-        }
-
         final String applicationName = request.getApplicationName();
         final MobileAppVersionEntity.Platform platform = convert(request.getPlatform());
         final int majorSystemVersion = new DefaultArtifactVersion(request.getSystemVersion()).getMajorVersion();
