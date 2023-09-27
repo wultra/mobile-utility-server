@@ -62,7 +62,7 @@
 
         <!-- Dependency Versions -->
         <bc.version>1.76</bc.version>
-        <powerauth-java-crypto.version>1.5.0</powerauth-java-crypto.version>
+        <powerauth-crypto.version>1.5.1</powerauth-crypto.version>
         <wultra-core.version>1.7.0</wultra-core.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
@@ -118,7 +118,7 @@
         <dependency>
             <groupId>io.getlime.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
-            <version>${powerauth-java-crypto.version}</version>
+            <version>${powerauth-crypto.version}</version>
         </dependency>
 
         <!-- Other Dependencies -->
