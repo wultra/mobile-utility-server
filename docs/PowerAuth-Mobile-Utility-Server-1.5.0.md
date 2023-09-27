@@ -1,19 +1,69 @@
-## Migration from 1.4.0 to 1.5.x
+# Migration from 1.4.0 to 1.5.x
 
-This guide contains instructions for migration from PowerAuth Server version 1.4.0 to version 1.5.x.
+This guide provides step-by-step instructions for migrating from PowerAuth Mobile Utility Server version 1.4.0 to
+version 1.5.x.
 
-### Prerequisites
+## Prerequisites
 
-Before performing the migration, users are advised to run the associated Liquibase scripts. Once the Liquibase scripts
-have been executed successfully, proceed with the steps in the "Database Changes" section below and run
-the `1.5.x-migration.sql` script.
+Before you begin the migration, ensure you have the necessary SQL scripts and the Liquibase tool available. Depending on
+your database type, the scripts can be located in `./docs/sql/oracle` or `./docs/sql/postgresql`.
 
-### Database Changes
+## Migration Steps
 
-#### Data Migration between Tables
+1. **Stop the Application**: Ensure that the PowerAuth Mobile Utility Server application is not running. Shut it down if
+   it's currently
+   active.
 
-Migration involves copying data from old tables to new tables and subsequently deleting the old tables. Below are the
-SQL commands used for this process:
+
+2. **Execute Pre-Migration Script**: Navigate to the appropriate SQL scripts directory based on your database type. Run
+   the `1.5.x-migration-before.sql` script.
+
+
+3. **Run Liquibase Commands**: Use the Liquibase tool to apply database changes. Run the following command
+   script `docker-db-update.sh`.
+
+
+4. **Execute Post-Migration Script**: After the Liquibase changes are applied, run the `1.5.x-migration-after.sql`
+   script located in the same directory as the pre-migration script.
+
+
+5. **Start the Application**: Once all the database changes are successfully applied, you can restart the PowerAuth
+   Server application.
+
+## Database Changes - overview
+
+#### Drop Old Tables
+
+After successful data migration, the old tables are no longer required and can be dropped:
+
+```sql
+-- Drop old tables
+DROP TABLE ssl_certificate CASCADE;
+DROP TABLE ssl_localized_text CASCADE;
+DROP TABLE ssl_mobile_app CASCADE;
+DROP TABLE ssl_mobile_app_version CASCADE;
+DROP TABLE ssl_mobile_domain CASCADE;
+DROP TABLE ssl_user CASCADE;
+DROP TABLE ssl_user_authority CASCADE;
+```
+
+#### Drop Old Sequences
+
+Similarly, old sequences associated with the dropped tables will be removed:
+
+```sql
+-- Drop old sequences
+DROP SEQUENCE ssl_certificate_seq CASCADE;
+DROP SEQUENCE ssl_mobile_app_seq CASCADE;
+DROP SEQUENCE ssl_mobile_app_version_seq CASCADE;
+DROP SEQUENCE ssl_mobile_domain_seq CASCADE;
+DROP SEQUENCE ssl_user_authority_seq CASCADE;
+DROP SEQUENCE ssl_user_seq CASCADE;
+```
+
+### Data Migration between Tables
+
+Migration involves copying data from old tables to new tables and subsequently deleting the old tables.
 
 ```sql
 -- Migrate data
@@ -39,35 +89,6 @@ INSERT INTO mus_certificate SELECT * FROM ssl_certificate;
 
 -- For table localized_text
 INSERT INTO mus_localized_text SELECT * FROM ssl_localized_text;
-```
-
-#### Drop Old Tables
-
-After successful data migration, the old tables are no longer required and can be dropped:
-
-```sql
--- Drop old tables
-DROP TABLE ssl_certificate CASCADE;
-DROP TABLE ssl_localized_text CASCADE;
-DROP TABLE ssl_mobile_app CASCADE;
-DROP TABLE ssl_mobile_app_version CASCADE;
-DROP TABLE ssl_mobile_domain CASCADE;
-DROP TABLE ssl_user CASCADE;
-DROP TABLE ssl_user_authority CASCADE;
-```
-
-#### Drop Old Sequences
-
-Similarly, old sequences associated with the dropped tables can be removed:
-
-```sql
--- Drop old sequences
-DROP SEQUENCE ssl_certificate_seq CASCADE;
-DROP SEQUENCE ssl_mobile_app_seq CASCADE;
-DROP SEQUENCE ssl_mobile_app_version_seq CASCADE;
-DROP SEQUENCE ssl_mobile_domain_seq CASCADE;
-DROP SEQUENCE ssl_user_authority_seq CASCADE;
-DROP SEQUENCE ssl_user_seq CASCADE;
 ```
 
 ### Conclusion
