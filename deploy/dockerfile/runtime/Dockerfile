@@ -8,6 +8,7 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
     LB_VERSION=4.23.2 \
+    LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
 
 ENV PATH=$PATH:$LB_HOME
@@ -45,6 +46,8 @@ STOPSIGNAL SIGQUIT
 
 # Set non-root PowerAuth user
 USER powerauth
+
+COPY deploy/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (liquibase)
 COPY deploy/dockerfile/runtime/docker-entrypoint.sh /
