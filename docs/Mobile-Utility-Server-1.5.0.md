@@ -1,16 +1,33 @@
-## Migration from 1.4.0 to 1.5.x
+# Migration from 1.4.0 to 1.5.x
 
 This guide contains instructions for migration from Mobile Utility Server version 1.4.0 to version 1.5.x.
 
-### Prerequisites
+## Spring Boot 3
+
+The PowerAuth Enrollment Sever was upgraded to Spring Boot 3, Spring Framework 6, and Hibernate 6.
+It requires Java 17 or newer.
+
+Remove this property.
+
+`spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults=false`
+
+Make sure that you use dialect without version.
+
+```properties
+# spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+# spring.jpa.database-platform=org.hibernate.dialect.OracleDialect
+```
+
+
+## Prerequisites
 
 Before performing the migration, users are advised to run the associated Liquibase scripts. Once the Liquibase scripts
 have been executed successfully, proceed with the steps in the "Database Changes" section below and run
 the `1.5.x-migration.sql` script.
 
-### Database Changes
+## Database Changes
 
-#### Data Migration between Tables
+### Data Migration between Tables
 
 Migration involves copying data from old tables to new tables and subsequently deleting the old tables. Below are the
 SQL commands used for this process:
@@ -41,7 +58,7 @@ INSERT INTO mus_certificate SELECT * FROM ssl_certificate;
 INSERT INTO mus_localized_text SELECT * FROM ssl_localized_text;
 ```
 
-#### Drop Old Tables
+### Drop Old Tables
 
 After successful data migration, the old tables are no longer required and can be dropped:
 
@@ -56,7 +73,7 @@ DROP TABLE ssl_user CASCADE;
 DROP TABLE ssl_user_authority CASCADE;
 ```
 
-#### Drop Old Sequences
+### Drop Old Sequences
 
 Similarly, old sequences associated with the dropped tables can be removed:
 
