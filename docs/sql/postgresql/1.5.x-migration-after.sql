@@ -40,4 +40,3 @@ DROP SEQUENCE ssl_mobile_app_version_seq CASCADE;
 DROP SEQUENCE ssl_mobile_domain_seq CASCADE;
 DROP SEQUENCE ssl_user_authority_seq CASCADE;
 DROP SEQUENCE ssl_user_seq CASCADE;
-
