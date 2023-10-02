@@ -61,7 +61,7 @@ curl --request POST \
 Sometimes it is needed to suggest (or even to force) the client to update the mobile application version.
 It is a part of the response from [Get App Fingerprints](./Public-REST-API.md#get-app-fingerprints).
 
-The rules are store in the [database table ssl_mobile_app_version](./Database-Structure.md#mobile-application-version).
+The rules are store in the [database table mus_mobile_app_version](./Database-Structure.md#mobile-application-version).
 
 The logic is lenient, returning `OK` even if the application version is not configured.
 Otherwise, compare the given application version (respecting the platform) to configured suggested or required version.
