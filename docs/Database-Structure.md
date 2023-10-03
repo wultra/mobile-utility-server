@@ -20,7 +20,7 @@ Contains information related to various mobile apps.
 #### Schema
 
 ```sql
-CREATE TABLE mobile_app (
+CREATE TABLE mus_mobile_app (
     id INTEGER PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     display_name VARCHAR(255) NOT NULL,

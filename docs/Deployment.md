@@ -25,7 +25,7 @@ spring.datasource.driverClassName=${MOBILE_UTILITY_SERVER_DATASOURCE_DRIVER:org.
 spring.jpa.properties.hibernate.connection.CharSet=${MOBILE_UTILITY_SERVER_JPA_CHARSET:}
 spring.jpa.properties.hibernate.connection.characterEncoding=${MOBILE_UTILITY_SERVER_JPA_CHARACTER_ENCODING:utf8}
 spring.jpa.properties.hibernate.connection.useUnicode=${MOBILE_UTILITY_SERVER_JPA_USE_UNICODE:true}
-spring.jpa.database-platform=${MOBILE_UTILITY_SERVER_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQL10Dialect}
+spring.jpa.database-platform=${MOBILE_UTILITY_SERVER_JPA_DATABASE_PLATFORM:org.hibernate.dialect.PostgreSQLDialect}
 spring.datasource.jndi-name=${MOBILE_UTILITY_SERVER_DATASOURCE_JNDI_NAME:false}
 spring.jpa.hibernate.ddl-auto=${MOBILE_UTILITY_SERVER_JPA_DDL_AUTO:none}
 ```
