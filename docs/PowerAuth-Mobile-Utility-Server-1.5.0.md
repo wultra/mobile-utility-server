@@ -11,6 +11,7 @@ version 1.5.x.
     - Oracle: `${repo_root}/docs/sql/oracle`
     - PostgreSQL: `${repo_root}/docs/sql/postgresql`
 
+
 2. **Docker DB Update Script**: Before running the script `docker-db-update.sh`, ensure that you have set up the
    required environment variables. For a list of the required environment variables or additional details, refer to the
    associated documentation [Deployment.md](Deployment.md).
@@ -20,17 +21,27 @@ version 1.5.x.
 1. **Stop the Application**: Ensure that the PowerAuth Mobile Utility Server application is not running. Shut it down if
    it's currently active.
 
-2. **Execute Pre-Migration Script**: Navigate to the appropriate SQL scripts directory based on your database type. Run
+
+2. **Backup the Database**: Before making any changes, it's crucial to **back up your database**. This step ensures you have
+   a fallback in case of any unforeseen issues.
+
+   > **IMPORTANT**: Ensure that you've backed up your entire database before proceeding
+
+
+3. **Execute Pre-Migration Script**: Navigate to the appropriate SQL scripts directory based on your database type. Run
    the `1.5.x-migration-before.sql` script.
 
-3. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
+
+4. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
    Please take a look at a list of necessary environmental variables listed
    here [env.list.tmp](../deploy/env.list.tmp).
 
-4. **Execute Post-Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration-after.sql` script
+
+5. **Execute Post-Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration-after.sql` script
    located in the same directory as the pre-migration script.
 
-5. **Start the PowerAuth MUS Application**: Once all the database changes are successfully applied, restart the
+
+6. **Start the PowerAuth MUS Application**: Once all the database changes are successfully applied, restart the
    PowerAuth Mobile Utility Server application.
 
 ## Database Changes - detailed description of changes above
