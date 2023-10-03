@@ -24,6 +24,8 @@ version 1.5.x.
    the `1.5.x-migration-before.sql` script.
 
 3. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
+   Please take a look at a list of necessary environmental variables listed
+   here [env.list.tmp](../deploy/env.list.tmp).
 
 4. **Execute Post-Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration-after.sql` script
    located in the same directory as the pre-migration script.
@@ -38,7 +40,9 @@ changes:
 
 ### Resetting Liquibase Tracking Tables
 
-Liquibase uses specific tables to track which changesets have been applied to the database. Occasionally, to ensure a fresh start or to reset its state, these tables might need to be dropped. The `1.5.x-migration-before.sql` script takes care of this by removing the following Liquibase-specific tables:
+Liquibase uses specific tables to track which changesets have been applied to the database. Occasionally, to ensure a
+fresh start or to reset its state, these tables might need to be dropped. The `1.5.x-migration-before.sql` script takes
+care of this by removing the following Liquibase-specific tables:
 
 ```sql
 -- Drop liquibase tracking tables
