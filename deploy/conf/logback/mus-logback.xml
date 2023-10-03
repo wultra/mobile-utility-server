@@ -3,7 +3,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <includeMdc>true</includeMdc>
-            <customFields>{"appname":"mobile_utility_server"}</customFields>
+            <customFields>{"appname":"mobile-utility-server"}</customFields>
         </encoder>
     </appender>
 
