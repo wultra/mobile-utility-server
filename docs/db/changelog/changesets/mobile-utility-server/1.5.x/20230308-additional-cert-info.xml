@@ -57,4 +57,20 @@
         </rollback>
     </changeSet>
 
+    <changeSet id="4" author="Jan Dusil" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="mus_certificate" foreignKeyName="mus_mobile_fingerprint_mobile_domain_id_fk"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="mus_certificate" constraintName="mus_mobile_fingerprint_mobile_domain_id_fk"/>
+    </changeSet>
+
+    <changeSet id="5" author="Jan Dusil" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyTableName="mus_certificate" foreignKeyName="mus_mobile_fingerprint_mobile_domain_id_fk"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="mus_certificate" baseColumnNames="mobile_domain_id" constraintName="mus_certificate_mobile_domain_id_fk" referencedTableName="mus_mobile_domain" referencedColumnNames="id" />
+    </changeSet>
+
 </databaseChangeLog>
