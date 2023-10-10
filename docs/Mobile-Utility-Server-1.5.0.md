@@ -28,20 +28,16 @@ version 1.5.x.
    > **IMPORTANT**: Ensure that you've backed up your entire database before proceeding
 
 
-3. **Execute Pre-Migration Script**: Navigate to the appropriate SQL scripts directory based on your database type. Run
-   the `1.5.x-migration-before.sql` script.
-
-
-4. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
+3. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
    Please take a look at a list of necessary environmental variables listed
    here [env.list.tmp](../deploy/env.list.tmp).
 
 
-5. **Execute Post-Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration-after.sql` script
-   located in the same directory as the pre-migration script.
+4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration.sql` script
+   located in the sql directory.
 
 
-6. **Start the PowerAuth MUS Application**: Once all the database changes are successfully applied, restart the
+5. **Start the PowerAuth MUS Application**: Once all the database changes are successfully applied, restart the
    PowerAuth Mobile Utility Server application.
 
 ## Database Changes - detailed description of changes above
@@ -49,17 +45,6 @@ version 1.5.x.
 The steps detailed above have taken care of migrating the database structure. The following is an overview of the major
 changes:
 
-### Resetting Liquibase Tracking Tables
-
-Liquibase uses specific tables to track which changesets have been applied to the database. Occasionally, to ensure a
-fresh start or to reset its state, these tables might need to be dropped. The `1.5.x-migration-before.sql` script takes
-care of this by removing the following Liquibase-specific tables:
-
-```sql
--- Drop liquibase tracking tables
-DROP TABLE databasechangelog CASCADE;
-DROP TABLE databasechangeloglock CASCADE;
-```
 
 ### Data Migration between Tables
 
