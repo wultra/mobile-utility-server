@@ -46,7 +46,7 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="app_id" type="integer">
-                <constraints nullable="false" foreignKeyName="mus_mobile_app_fk" referencedTableName="mus_mobile_app" referencedColumnNames="id" />
+                <constraints nullable="false" foreignKeyName="mus_mobile_app_version_app_id_fk" referencedTableName="mus_mobile_app" referencedColumnNames="id" />
             </column>
             <column name="platform" type="varchar(10)" remarks="ANDROID, IOS">
                 <constraints nullable="false"/>
