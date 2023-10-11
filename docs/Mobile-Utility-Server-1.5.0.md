@@ -1,7 +1,7 @@
-# Migration from 1.x.x to 1.5.x
+# Migration from 1.1.x to 1.5.0
 
-This guide provides step-by-step instructions for migrating from PowerAuth Mobile Utility Server version 1.x.x to
-version 1.5.x.
+This guide provides step-by-step instructions for migrating from PowerAuth Mobile Utility Server version 1.1.x to
+version 1.5.0.
 
 ## Prerequisites
 
