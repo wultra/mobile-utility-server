@@ -55,25 +55,10 @@ The migration involves transferring data from old tables to new ones. Post data 
 -- TABLES
 
 -- For table mobile_app
-INSERT INTO mus_mobile_app SELECT * FROM ssl_mobile_app;
-
--- For table mobile_app_version
-INSERT INTO mus_mobile_app_version SELECT * FROM ssl_mobile_app_version;
-
--- For table mobile_domain
-INSERT INTO mus_mobile_domain SELECT * FROM ssl_mobile_domain;
-
--- For table user
-INSERT INTO mus_user SELECT * FROM ssl_user;
-
--- For table user_authority
-INSERT INTO mus_user_authority SELECT * FROM ssl_user_authority;
+INSERT INTO mus_mobile_app SELECT * FROM mobile_app;
 
 -- For table certificate
-INSERT INTO mus_certificate SELECT * FROM ssl_certificate;
-
--- For table localized_text
-INSERT INTO mus_localized_text SELECT * FROM ssl_localized_text;
+INSERT INTO mus_certificate SELECT * FROM mobile_ssl_pinning;
 ```
 
 ### Removal of Deprecated Tables and Sequences
@@ -83,22 +68,12 @@ in use, have been removed.
 
 ```sql
 -- Drop old tables
-DROP TABLE ssl_certificate CASCADE;
-DROP TABLE ssl_localized_text CASCADE;
-DROP TABLE ssl_mobile_app CASCADE;
-DROP TABLE ssl_mobile_app_version CASCADE;
-DROP TABLE ssl_mobile_domain CASCADE;
-DROP TABLE ssl_user CASCADE;
-DROP TABLE ssl_user_authority CASCADE;
+DROP TABLE mobile_ssl_pinning CASCADE;
+DROP TABLE mobile_app CASCADE;
 
 -- Drop old sequences
-DROP SEQUENCE ssl_certificate_seq CASCADE;
-DROP SEQUENCE ssl_mobile_app_seq CASCADE;
-DROP SEQUENCE ssl_mobile_app_version_seq CASCADE;
-DROP SEQUENCE ssl_mobile_domain_seq CASCADE;
-DROP SEQUENCE ssl_user_authority_seq CASCADE;
-DROP SEQUENCE ssl_user_seq CASCADE;
-
+DROP SEQUENCE mobile_ssl_pinning_seq CASCADE;
+DROP SEQUENCE mobile_app_seq CASCADE;
 ```
 
 ### Conclusion
