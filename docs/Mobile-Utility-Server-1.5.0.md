@@ -28,7 +28,7 @@ version 1.5.x.
    > **IMPORTANT**: Ensure that you've backed up your entire database before proceeding
 
 
-3. **Run Liquibase Commands with Docker**: To apply the database changes, execute the `docker-db-update.sh` script.
+3. **Run Liquibase update**:  Execute [liquibase](https://www.liquibase.com/download) scripts located in `docs\db\changelog\db.changelog-master` For convenience, you can use supplied Dockerfiles and apply the database changes by execute the `docker-db-update.sh` script.
    Please take a look at a list of necessary environmental variables listed
    here [env.list.tmp](../deploy/env.list.tmp).
 
