@@ -33,7 +33,7 @@ version 1.5.0.
    here [env.list.tmp](../deploy/env.list.tmp).
 
 
-4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.5.x-migration.sql` script
+4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.5.0-migration.sql` script
    located in the sql directory.
 
 
