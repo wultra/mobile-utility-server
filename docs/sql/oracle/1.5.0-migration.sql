@@ -4,8 +4,7 @@
 -- For table mobile_app
 INSERT INTO mus_mobile_app SELECT * FROM mobile_app;
 
--- For table certificate
-INSERT INTO mus_certificate SELECT * FROM mobile_ssl_pinning;
+-- There is no migration for table certificate
 
 
 
