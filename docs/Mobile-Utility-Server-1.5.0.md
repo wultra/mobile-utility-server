@@ -40,7 +40,7 @@ This guide provides step-by-step instructions for migrating from PowerAuth Mobil
    PowerAuth Mobile Utility Server application.
 
 6. **Import Certificates**: Certificates are not possible to migrate automatically.
-It is needed to [Importing Certificate in PEM Format](Configuration.md#importing-certificate-in-pem-format) via API.
+It is needed to [Importing Certificate in PEM Format](Configuration.md#importing-certificate-in-pem-format) via API. See [Creating First Admin User](Configuration.md#creating-first-admin-user).
 
 
 ## Database Changes - detailed description of changes above
@@ -84,3 +84,8 @@ DROP SEQUENCE mobile_app_seq CASCADE;
 
 Upon successfully executing the provided SQL commands and scripts, the migration process is complete.
 Ensure to verify and test the updated database to confirm the successful migration from version 1.1.0 to 1.5.0.
+
+## API
+
+There is a new context path `/admin` for administrative purposes.
+It is authenticated, but it should be exposed only in trusted networks.
