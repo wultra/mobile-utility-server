@@ -36,9 +36,8 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Security configuration.
@@ -49,6 +48,11 @@ import java.util.Map;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final String SHA_256 = "SHA-256";
+    private static final String BCRYPT = "bcrypt";
+
+    private static final Set<String> SUPPORTED_HASH_ALGORITHMS = Set.of(SHA_256, BCRYPT);
+
     @Value("${mobile-utility-server.security.auth.basicHttp.stateless}")
     private boolean stateless;
 
@@ -57,8 +61,6 @@ public class SecurityConfig {
 
     @Value("${mobile-utility-server.security.auth.bcrypt.cycles}")
     private int bcryptCycles;
-
-    private final String[] supportedHashAlgorithms = { "SHA-256", "bcrypt" };
 
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
@@ -83,14 +85,14 @@ public class SecurityConfig {
     @Bean
     @SuppressWarnings({"deprecation", "java:S5344"})
     public PasswordEncoder passwordEncoder() throws NoSuchAlgorithmException {
-        if (!List.of(supportedHashAlgorithms).contains(algorithm)) {
-            throw new NoSuchAlgorithmException(String.format("Unsupported algorithm specified: %s, must be one of: %s.", algorithm, Arrays.toString(supportedHashAlgorithms)));
+        if (!SUPPORTED_HASH_ALGORITHMS.contains(algorithm)) {
+            throw new NoSuchAlgorithmException(String.format("Unsupported algorithm specified: %s, must be one of: %s.", algorithm, SUPPORTED_HASH_ALGORITHMS));
         }
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder(bcryptCycles);
-        final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder("SHA-256");
+        final MessageDigestPasswordEncoder sha256 = new MessageDigestPasswordEncoder(SHA_256);
         final Map<String, PasswordEncoder> encoders = Map.of(
-                "bcrypt", bcrypt,
-                "SHA-256", sha256
+                BCRYPT, bcrypt,
+                SHA_256, sha256
         );
         final DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder(algorithm, encoders);
         passwordEncoder.setDefaultPasswordEncoderForMatches(bcrypt); // try using bcrypt as default
