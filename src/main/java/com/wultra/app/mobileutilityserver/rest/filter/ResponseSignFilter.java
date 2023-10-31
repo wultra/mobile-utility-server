@@ -17,29 +17,26 @@
  */
 package com.wultra.app.mobileutilityserver.rest.filter;
 
-import com.google.common.io.BaseEncoding;
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppDAO;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
-import io.getlime.security.powerauth.crypto.lib.util.KeyConvertor;
-import io.getlime.security.powerauth.crypto.lib.util.SignatureUtils;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
-import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 
 /**
@@ -48,55 +45,50 @@ import java.security.spec.InvalidKeySpecException;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Component
+@Slf4j
 public class ResponseSignFilter extends OncePerRequestFilter {
 
-    private final MobileAppDAO mobileAppService;
-    private final KeyConvertor keyConvertor;
-    private final SignatureUtils signatureUtils;
+    private final MobileAppService mobileAppService;
+
+    private final CryptographicOperationsService cryptographicOperationsService;
 
     @Autowired
-    public ResponseSignFilter(MobileAppDAO mobileAppService, KeyConvertor keyConvertor, SignatureUtils signatureUtils) {
+    public ResponseSignFilter(MobileAppService mobileAppService, CryptographicOperationsService cryptographicOperationsService) {
         this.mobileAppService = mobileAppService;
-        this.keyConvertor = keyConvertor;
-        this.signatureUtils = signatureUtils;
+        this.cryptographicOperationsService = cryptographicOperationsService;
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException {
         final ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
         chain.doFilter(request, responseWrapper);
-        String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
+        final String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
         if (HttpHeaders.validChallengeHeader(requestChallenge)) {
-            try {
+            // Prepare the signature base data
+            final byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
+            final byte[] rb = responseWrapper.getContentAsByteArray();
 
-                // Prepare the signature base data
-                byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
-                byte[] rb = responseWrapper.getContentAsByteArray();
+            final byte[] signatureBase = new byte[cb.length + rb.length + 1];
+            System.arraycopy(cb, 0, signatureBase, 0, cb.length);
+            signatureBase[cb.length] = '&';
+            System.arraycopy(rb, 0, signatureBase, cb.length + 1, rb.length);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream( );
-                baos.write(cb);
-                baos.write('&');
-                baos.write(rb);
+            // Fetch the app private key, check if such app exists
+            final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);
+            final String privateKeyBase64 = mobileAppService.privateKey(appName);
 
-                byte[] signatureBase = baos.toByteArray();
-
-                // Fetch the app private key, check if such app exists
-                final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);
-                final String privateKeyBase64 = mobileAppService.privateKey(appName);
-                if (privateKeyBase64 != null) {
-                    // Convert the private key
-                    final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(BaseEncoding.base64().decode(privateKeyBase64));
-
+            if (privateKeyBase64 != null) {
+                try {
                     // Compute the signature
-                    final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey);
+                    final String ecdsaSignature = cryptographicOperationsService.computeECDSASignature(signatureBase, privateKeyBase64);
 
                     // Set the request header
-                    response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, BaseEncoding.base64().encode(ecdsaSignature));
+                    response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, ecdsaSignature);
+                } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
+                    logger.error("Unable to sign response, appName: {}", appName, ex);
+                    throw new IOException("Unable to sign response, appName: " + appName, ex);
                 }
-            } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
-                throw new IOException(ex);
             }
-
         }
         responseWrapper.copyBodyToResponse();
     }

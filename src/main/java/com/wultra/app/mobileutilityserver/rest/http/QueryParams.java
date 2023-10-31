@@ -25,5 +25,9 @@ package com.wultra.app.mobileutilityserver.rest.http;
 public class QueryParams {
 
     public static final String QUERY_PARAM_APP_NAME = "appName";
+    public static final String QUERY_PARAM_APP_VERSION = "appVersion";
+    public static final String QUERY_PARAM_OS_VERSION = "osVersion";
+    public static final String QUERY_PARAM_PLATFORM = "platform";
+    public static final String QUERY_PARAM_LANGUAGE = "language";
 
 }

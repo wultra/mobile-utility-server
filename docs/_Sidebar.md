@@ -4,6 +4,8 @@
 
 [Database Structure](./Database-Structure.md)
 
+[Migration Instructions](./Migration-Instructions.md)
+
 [Configuration](./Configuration.md)
 
-[RESTful API](./REST-API.md)
+[Public RESTful API](./Public-REST-API.md)

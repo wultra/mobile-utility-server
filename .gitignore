@@ -6,6 +6,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Docker image support files
+**/deploy/images/*.war
+
 ### STS ###
 .apt_generated
 .classpath

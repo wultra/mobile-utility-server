@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Wultra Mobile Utility Server
+  ~ Copyright (C) 2023  Wultra s.r.o.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+
+    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="mus_mobile_app_seq"/>
+            </not>
+        </preConditions>
+        <comment>Create a new sequence for mobile app entities.</comment>
+        <createSequence sequenceName="mus_mobile_app_seq" startValue="1" cacheSize="20" incrementBy="1" />
+        <rollback>
+            <dropSequence sequenceName="mus_mobile_app_seq"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="mus_mobile_domain_seq"/>
+            </not>
+        </preConditions>
+        <comment>Create a new sequence for mobile domain entities.</comment>
+        <createSequence sequenceName="mus_mobile_domain_seq" startValue="1" cacheSize="20" incrementBy="1" />
+        <rollback>
+            <dropSequence sequenceName="mus_mobile_domain_seq"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="mus_mobile_fingerprint_seq"/>
+            </not>
+        </preConditions>
+        <comment>Create a new sequence for mobile SSL fingerprints entities.</comment>
+        <createSequence sequenceName="mus_mobile_fingerprint_seq" startValue="1" cacheSize="20" incrementBy="1" />
+        <rollback>
+            <dropSequence sequenceName="mus_mobile_fingerprint_seq"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mus_mobile_app"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table for mobile app entities.</comment>
+        <createTable tableName="mus_mobile_app">
+            <column name="id" type="integer">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="display_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sign_private_key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sign_public_key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="mus_mobile_app" cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mus_mobile_domain"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table for mobile domain entities.</comment>
+        <createTable tableName="mus_mobile_domain">
+            <column name="id" type="integer">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="app_id" type="integer">
+                <constraints nullable="false" foreignKeyName="mus_mobile_domain_app_id_fk" referencedTableName="mus_mobile_app" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="domain" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="mus_mobile_domain" cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="6" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mus_mobile_fingerprint"/>
+            </not>
+        </preConditions>
+        <comment>Create a new table for mobile SSL fingerprint entities.</comment>
+        <createTable tableName="mus_mobile_fingerprint">
+            <column name="id" type="integer">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="fingerprint" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expires" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mobile_domain_id" type="integer">
+                <constraints nullable="false" foreignKeyName="mus_mobile_fingerprint_mobile_domain_id_fk" referencedTableName="mus_mobile_domain" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="mus_mobile_fingerprint" cascadeConstraints="true"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

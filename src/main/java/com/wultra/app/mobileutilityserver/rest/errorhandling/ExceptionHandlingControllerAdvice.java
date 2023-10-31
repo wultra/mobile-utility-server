@@ -17,17 +17,26 @@
  */
 package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
-import com.wultra.app.mobileutilityserver.rest.model.response.ErrorResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.wultra.app.mobileutilityserver.rest.model.errors.ExtendedError;
+import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
+import io.getlime.core.rest.model.base.response.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.firewall.RequestRejectedException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.UUID;
 
 /**
  * Controller advice responsible for error handling.
@@ -35,47 +44,182 @@ import java.util.UUID;
  * @author Petr Dvorak, petr@wultra.com
  */
 @ControllerAdvice
+@Slf4j
 public class ExceptionHandlingControllerAdvice {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlingControllerAdvice.class);
-
-    @ExceptionHandler(Throwable.class)
+    @ExceptionHandler(ServletRequestBindingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleMissingRequestHeaderException(ServletRequestBindingException ex) {
-        String code = "UNKNOWN_ERROR";
-        String message = "An error occurred when processing the request.";
-        String id = UUID.randomUUID().toString();
-        logger.error("Unknown error happened. ID: {}", id, ex);
-        return new ErrorResponse(code, message, id);
+        final String code = "UNKNOWN_ERROR";
+        final String message = "An error occurred when processing the request.";
+        logger.error("Unknown error happened: {}", ex.getMessage());
+        logger.debug("Exception detail: ", ex);
+        return new ErrorResponse(code, message);
     }
 
     @ExceptionHandler(PublicKeyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handlePublicKeyNotFoundException(PublicKeyNotFoundException ex) {
-        String code = "PUBLIC_KEY_NOT_FOUND";
-        String message = "Public key for the provided app name was not found.";
-        String id = UUID.randomUUID().toString();
-        logger.warn("Public key for the provided app name: {} was not found. ID: {}", ex.getAppName(), id);
-        return new ErrorResponse(code, message, id);
+        final String code = "PUBLIC_KEY_NOT_FOUND";
+        final String message = "Public key for the provided app name was not found.";
+        logger.warn("Public key for the provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
+        logger.debug("Exception detail: ", ex);
+        return new ErrorResponse(code, message);
+    }
+
+    @ExceptionHandler(AppException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorResponse handleAppException(AppException ex) {
+        final String code = "APP_EXCEPTION";
+        final String message = ex.getMessage();
+        logger.warn("Problem occurred while working with applications: {}", ex.getMessage());
+        logger.debug("Exception detail: ", ex);
+        return new ErrorResponse(code, message);
     }
 
     @ExceptionHandler(AppNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleAppNotFoundException(AppNotFoundException ex) {
-        String code = "APP_NOT_FOUND";
-        String message = "App with a provided ID was not found.";
-        String id = UUID.randomUUID().toString();
-        logger.warn("Application for a provided app name: {} was not found. ID: {}", ex.getAppName(), id);
-        return new ErrorResponse(code, message, id);
+        final String code = "APP_NOT_FOUND";
+        final String message = "App with a provided ID was not found.";
+        logger.warn("Application for a provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
+        logger.debug("Exception detail: ", ex);
+        return new ErrorResponse(code, message);
     }
 
     @ExceptionHandler(InvalidChallengeHeaderException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public @ResponseBody ErrorResponse handleInvalidChallengeHeaderException(InvalidChallengeHeaderException ex) {
-        String code = "INSUFFICIENT_CHALLENGE";
-        String message = "Request does not contain sufficiently strong challenge header, 16B is required at least.";
-        String id = UUID.randomUUID().toString();
-        logger.error("Request does not contain sufficiently strong challenge header, 16B is required at least. ID: {}", id);
-        return new ErrorResponse(code, message, id);
+        final String code = "INSUFFICIENT_CHALLENGE";
+        final String message = "Request does not contain sufficiently strong challenge header, 16B is required at least.";
+        logger.error("Request does not contain sufficiently strong challenge header, 16B is required at least: {}", ex.getMessage());
+        logger.debug("Exception detail: ", ex);
+        return new ErrorResponse(code, message);
+    }
+
+    // Standard Spring Exceptions
+
+    /**
+     * Exception handler for issues related to failed argument validations.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        final ExtendedError error = new ExtendedError("ERROR_REQUEST", "Invalid method parameter value");
+        for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
+            error.getViolations().add(
+                    new Violation(fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage())
+            );
+        }
+        return new io.getlime.core.rest.model.base.response.ErrorResponse(error);
+    }
+
+    /**
+     * Exception handler for issues related to failed argument validations.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        final ExtendedError error = new ExtendedError("ERROR_REQUEST", e.getMessage());
+        for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+            error.getViolations().add(
+                    new Violation(violation.getPropertyPath().toString(), violation.getInvalidValue(), violation.getMessage())
+            );
+        }
+        return new io.getlime.core.rest.model.base.response.ErrorResponse(error);
+    }
+
+    /**
+     * Exception handler for issues related to missing mandatory attribute.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for issues related to invalid HTTP media type.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(HttpMediaTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpMediaTypeException(HttpMediaTypeException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for issues related to malicious requests.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(RequestRejectedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleRequestRejectedException(RequestRejectedException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for issues related to invalid HTTP method.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+    }
+
+    /**
+     * Exception handler for issues related to invalid mappings.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(HttpMessageConversionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", "Unable to map request data. Check the JSON payload.");
+    }
+
+    /**
+     * Exception handler for authentication and role issues.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_AUTHENTICATION", e.getMessage());
     }
 }
