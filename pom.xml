@@ -60,10 +60,12 @@
         <!-- Project Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!-- Wultra dependencies -->
+        <powerauth-crypto.version>1.6.0-SNAPSHOT</powerauth-crypto.version>
+        <wultra-core.version>1.8.0-SNAPSHOT</wultra-core.version>
+
         <!-- Dependency Versions -->
         <bc.version>1.76</bc.version>
-        <powerauth-crypto.version>1.5.1</powerauth-crypto.version>
-        <wultra-core.version>1.7.0</wultra-core.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.9.2</gatling-charts-highcharts.version>
         <logstash.version>7.4</logstash.version>
