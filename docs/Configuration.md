@@ -2,6 +2,67 @@
 
 Several administrative tasks should be performed regularly while working with Mobile Utility Server to keep the published content up-to-date.
 
+
+## Network
+
+The context path `/admin` for administrative purposes is authenticated, but it should be exposed only in trusted networks.
+
+
+## Creating First Admin User
+
+When calling admin APIs provided by the Mobile Utility Server, basic HTTP authentication is required.
+This why we need to add users and their passwords in the database.
+
+The first user we need to add is basically the main admin user, let's call the user `system-admin`.
+The first user needs to be inserted in the database.
+
+First, we need to generate the password via `openssl`:
+
+```sh
+openssl rand -base64 12
+```
+
+Output will look like this:
+
+```
+DH4v3SCoDRDUAFBD
+```
+
+In order to store the password in the database, we need to encode it using `bcrypt` first.
+You can use the `htpasswd` command to achieve this:
+
+```sh
+htpasswd -bnBC 12 "" DH4v3SCoDRDUAFBD | tr -d ':'
+```
+
+Output will look like this:
+
+```
+$2y$12$GM/J9uvNy1W.eSy1mB2HB.xk2uLYtnjcD3rUEkqPkVCL43b0F9xa.
+```
+
+You can now put this all together and store the user in the database:
+
+```sql
+INSERT INTO mus_user (id, username, password, enabled)
+VALUES (nextval('mus_user_seq'), 'system-admin', '$2y$12$GM/J9uvNy1W.eSy1mB2HB.xk2uLYtnjcD3rUEkqPkVCL43b0F9xa.', true);
+
+INSERT INTO mus_user_authority (id, user_id, authority)
+VALUES (nextval('mus_user_authority_seq'), (SELECT id FROM mus_user WHERE username = 'system-admin'), 'ROLE_ADMIN');
+```
+
+- We stored the hashed password for the `system-admin` user.
+- We used authority `ROLE_ADMIN` for the administrator user who can call services published under `/admin` context.
+  Regular users who only need to call registration and operation APIs can use a restricted `ROLE_USER` authority.
+
+You can now check the changes in the database:
+
+- `mus_user` - New user record with the bcrypt-hashed password.
+- `mus_user_authority` - New user authority record.
+
+At this point, you can open [http://localhost:8080/admin/apps](http://localhost:8080/admin/apps) and use `system-admin` as username and `DH4v3SCoDRDUAFBD`, your password value respectively (plaintext) as the password.
+
+
 ## Adding New Mobile Application
 
 You can easily add a new mobile application by running the following API call:
