@@ -19,7 +19,7 @@ package com.wultra.app.mobileutilityserver.rest.service;
 
 import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
-import jakarta.validation.ConstraintViolationException;
+import javax.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

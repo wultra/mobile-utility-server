@@ -146,7 +146,7 @@ public class CryptographicOperationsService {
      */
     public String computeECDSASignature(byte[] signatureBase, String privateKeyBase64) throws GenericCryptoException, InvalidKeyException, CryptoProviderException, InvalidKeySpecException {
         final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(Base64.getDecoder().decode(privateKeyBase64));
-        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey, secureRandom);
+        final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey);
         return Base64.getEncoder().encodeToString(ecdsaSignature);
     }
 }

@@ -18,7 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

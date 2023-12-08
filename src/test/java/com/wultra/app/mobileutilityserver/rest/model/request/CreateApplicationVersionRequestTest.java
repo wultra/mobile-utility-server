@@ -19,7 +19,7 @@
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
-import jakarta.validation.*;
+import javax.validation.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
