@@ -22,7 +22,7 @@ import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

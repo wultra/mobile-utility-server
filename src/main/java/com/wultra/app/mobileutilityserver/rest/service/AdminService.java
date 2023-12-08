@@ -29,7 +29,7 @@ import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
 import com.wultra.app.mobileutilityserver.rest.model.request.*;
 import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import jakarta.validation.ConstraintViolationException;
+import javax.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.cert.X509CertificateHolder;

@@ -18,7 +18,7 @@
 
 package com.wultra.app.mobileutilityserver.database.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 
 /**
