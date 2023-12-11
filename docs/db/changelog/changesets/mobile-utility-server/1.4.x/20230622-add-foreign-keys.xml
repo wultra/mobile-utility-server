@@ -24,7 +24,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet id="1" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
+    <changeSet id="1" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.4x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="mus_user_authority_user_id_fk" foreignKeyTableName="mus_user_authority" />
@@ -33,7 +33,7 @@
         <addForeignKeyConstraint baseTableName="mus_user_authority" baseColumnNames="user_id" constraintName="mus_user_authority_user_id_fk" referencedTableName="mus_user" referencedColumnNames="id" />
     </changeSet>
 
-    <changeSet id="2" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
+    <changeSet id="2" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.4x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="mus_mobile_domain_app_id_fk" foreignKeyTableName="mus_mobile_domain" />
@@ -42,7 +42,7 @@
         <addForeignKeyConstraint baseTableName="mus_mobile_domain" baseColumnNames="app_id" constraintName="mus_mobile_domain_app_id_fk" referencedTableName="mus_mobile_app" referencedColumnNames="id" />
     </changeSet>
 
-    <changeSet id="3" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.5.x/20230622-add-foreign-keys.xml">
+    <changeSet id="3" author="Lubos Racansky" logicalFilePath="mobile-utility-server/1.4x/20230622-add-foreign-keys.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <foreignKeyConstraintExists foreignKeyName="mus_certificate_mobile_domain_id_fk" foreignKeyTableName="mus_certificate" />

@@ -24,7 +24,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="mus_mobile_app_seq"/>
@@ -37,7 +37,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="mus_mobile_domain_seq"/>
@@ -50,7 +50,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="mus_mobile_fingerprint_seq"/>
@@ -63,7 +63,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="mus_mobile_app"/>
@@ -92,7 +92,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="5" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="5" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="mus_mobile_domain"/>
@@ -115,7 +115,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="6" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230227-initial-import.xml">
+    <changeSet id="6" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230227-initial-import.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="mus_mobile_fingerprint"/>

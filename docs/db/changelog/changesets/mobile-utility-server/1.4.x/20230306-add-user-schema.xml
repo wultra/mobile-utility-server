@@ -24,7 +24,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
+    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="mus_user_seq"/>
@@ -37,7 +37,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
+    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="mus_user_authority_seq"/>
@@ -50,7 +50,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
+    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="mus_user"/>
@@ -76,7 +76,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230306-add-user-schema.xml">
+    <changeSet id="4" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230306-add-user-schema.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="mus_user_authority"/>
