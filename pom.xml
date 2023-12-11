@@ -305,6 +305,67 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>internal-repository</id>
+            <activation>
+                <property>
+                    <name>useInternalRepo</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-releases</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </repository>
+                <snapshotRepository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-snapshots</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <repositories>
+                <repository>
+                    <id>jfrog-central</id>
+                    <name>Wultra Artifactory-releases</name>
+                    <url>https://wultra.jfrog.io/artifactory/internal-maven-repository</url>
+                </repository>
+                <repository>
+                    <id>ossrh-snapshots</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
+            <id>public-repository</id>
+            <activation>
+                <property>
+                    <name>!useInternalRepo</name>
+                </property>
+            </activation>
+            <properties>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>
