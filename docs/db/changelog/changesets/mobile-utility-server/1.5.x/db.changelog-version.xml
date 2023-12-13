@@ -22,12 +22,12 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
-    <!-- 1.4x -->
+    <!-- 1.5.x -->
     <include file="20230227-initial-import.xml" relativeToChangelogFile="true" />
     <include file="20230306-add-user-schema.xml" relativeToChangelogFile="true" />
     <include file="20230308-additional-cert-info.xml" relativeToChangelogFile="true"/>
     <include file="20230609-add-application-version.xml" relativeToChangelogFile="true"/>
     <include file="20230622-add-foreign-keys.xml" relativeToChangelogFile="true"/>
-    <include file="20230905-add-tag-1.4.0.xml" relativeToChangelogFile="true" />
+    <include file="20230905-add-tag-1.5.0.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

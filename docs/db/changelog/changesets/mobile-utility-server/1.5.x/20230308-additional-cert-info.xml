@@ -24,7 +24,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
-    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230308-additional-cert-info.xml">
+    <changeSet id="1" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="mus_mobile_fingerprint" columnName="pem"/>
@@ -41,7 +41,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230308-additional-cert-info.xml">
+    <changeSet id="2" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
         <comment>Rename the mus_mobile_fingerprint table to mus_certificate.</comment>
         <renameTable oldTableName="mus_mobile_fingerprint" newTableName="mus_certificate"/>
         <rollback>
@@ -49,7 +49,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.4x/20230308-additional-cert-info.xml">
+    <changeSet id="3" author="Petr Dvorak" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
         <comment>Rename the mus_mobile_fingerprint_seq sequence to mus_certificate_seq.</comment>
         <renameSequence oldSequenceName="mus_mobile_fingerprint_seq" newSequenceName="mus_certificate_seq"/>
         <rollback>
@@ -57,7 +57,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="4" author="Jan Dusil" logicalFilePath="mobile-utility-server/1.4x/20230308-additional-cert-info.xml">
+    <changeSet id="4" author="Jan Dusil" logicalFilePath="mobile-utility-server/1.5.x/20230308-additional-cert-info.xml">
         <preConditions onFail="MARK_RAN">
             <foreignKeyConstraintExists foreignKeyTableName="mus_certificate" foreignKeyName="mus_mobile_fingerprint_mobile_domain_id_fk"/>
         </preConditions>

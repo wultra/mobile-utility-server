@@ -24,6 +24,6 @@
 				   					   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
 
     <!-- mobile-utility-server -->
-    <include file="1.4.x/db.changelog-version.xml" relativeToChangelogFile="true" />
+    <include file="1.5.x/db.changelog-version.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
