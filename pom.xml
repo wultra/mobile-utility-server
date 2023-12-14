@@ -69,6 +69,21 @@
         <logstash.version>7.4</logstash.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- Spring Dependencies -->
         <dependency>
@@ -219,6 +234,7 @@
                             <rules>
                                 <bannedDependencies>
                                     <excludes>
+                                        <exclude>org.apache.tomcat.embed:*:*:*:compile</exclude>
                                         <exclude>org.bouncycastle:bcpkix-jdk15on:*:*:compile</exclude>
                                         <exclude>org.bouncycastle:bcprov-jdk15on:*:*:compile</exclude>
                                         <!-- Force switching to Jakarta EE -->
