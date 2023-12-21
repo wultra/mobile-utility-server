@@ -164,6 +164,12 @@
             <version>${logstash.version}</version>
         </dependency>
 
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
