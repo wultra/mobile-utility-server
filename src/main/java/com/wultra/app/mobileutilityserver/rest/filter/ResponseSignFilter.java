@@ -27,6 +27,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -44,6 +45,7 @@ import java.security.spec.InvalidKeySpecException;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Component
+@Slf4j
 public class ResponseSignFilter extends OncePerRequestFilter {
 
     private static final String PATH_PREFIX = "/app/init";
@@ -70,31 +72,31 @@ public class ResponseSignFilter extends OncePerRequestFilter {
         chain.doFilter(request, responseWrapper);
         final String requestChallenge = request.getHeader(HttpHeaders.REQUEST_CHALLENGE);
         if (HttpHeaders.validChallengeHeader(requestChallenge)) {
-            try {
+            // Prepare the signature base data
+            final byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
+            final byte[] rb = responseWrapper.getContentAsByteArray();
 
-                // Prepare the signature base data
-                final byte[] cb = requestChallenge.getBytes(StandardCharsets.UTF_8);
-                final byte[] rb = responseWrapper.getContentAsByteArray();
+            final byte[] signatureBase = new byte[cb.length + rb.length + 1];
+            System.arraycopy(cb, 0, signatureBase, 0, cb.length);
+            signatureBase[cb.length] = '&';
+            System.arraycopy(rb, 0, signatureBase, cb.length + 1, rb.length);
 
-                final byte[] signatureBase = new byte[cb.length + rb.length + 1];
-                System.arraycopy(cb, 0, signatureBase, 0, cb.length);
-                signatureBase[cb.length] = '&';
-                System.arraycopy(rb, 0, signatureBase, cb.length + 1, rb.length);
+            // Fetch the app private key, check if such app exists
+            final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);
+            final String privateKeyBase64 = mobileAppService.privateKey(appName);
 
-                // Fetch the app private key, check if such app exists
-                final String appName = request.getParameter(QueryParams.QUERY_PARAM_APP_NAME);
-                final String privateKeyBase64 = mobileAppService.privateKey(appName);
-                if (privateKeyBase64 != null) {
+            if (privateKeyBase64 != null) {
+                try {
                     // Compute the signature
                     final String ecdsaSignature = cryptographicOperationsService.computeECDSASignature(signatureBase, privateKeyBase64);
 
                     // Set the request header
                     response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, ecdsaSignature);
+                } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
+                    logger.error("Unable to sign response, appName: {}", appName, ex);
+                    throw new IOException("Unable to sign response, appName: " + appName, ex);
                 }
-            } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
-                throw new IOException(ex);
             }
-
         }
         responseWrapper.copyBodyToResponse();
     }
