@@ -71,8 +71,24 @@ public class AdminService {
 
     private final CertificateConverter certificateConverter;
     private final MobileAppConverter mobileAppConverter;
-
     private final CryptographicOperationsService cryptographicOperationsService;
+    private final CacheService cacheService;
+
+    @Autowired
+    public AdminService(MobileAppRepository mobileAppRepository,
+                        CertificateRepository certificateRepository,
+                        MobileDomainRepository mobileDomainRepository,
+                        CertificateConverter certificateConverter,
+                        MobileAppConverter mobileAppConverter,
+                        CryptographicOperationsService cryptographicOperationsService, CacheService cacheService) {
+        this.mobileAppRepository = mobileAppRepository;
+        this.certificateRepository = certificateRepository;
+        this.mobileDomainRepository = mobileDomainRepository;
+        this.certificateConverter = certificateConverter;
+        this.mobileAppConverter = mobileAppConverter;
+        this.cryptographicOperationsService = cryptographicOperationsService;
+        this.cacheService = cacheService;
+    }
 
     /**
      * Create a new application and generate signing keypair to it
@@ -104,6 +120,8 @@ public class AdminService {
             mobileAppEntity.setSigningPublicKey(publicKeyString);
 
             final MobileAppEntity savedMobileAppEntity = mobileAppRepository.save(mobileAppEntity);
+
+            cacheService.notifyEvictAppCache(name);
 
             return mobileAppConverter.convertMobileApp(savedMobileAppEntity);
         } catch (CryptoProviderException e) {
@@ -168,6 +186,8 @@ public class AdminService {
 
         final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
+        cacheService.notifyEvictCertificateCache(appName);
+
         final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(savedCertificateEntity);
         logger.info("Certificate refreshed: {}", response);
         return response;
@@ -201,7 +221,6 @@ public class AdminService {
 
         final X509Certificate cert = fetchCertificate(domain);
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
-        logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
 
         final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
@@ -230,6 +249,7 @@ public class AdminService {
             if (certificate.getFingerprint().equalsIgnoreCase(fingerprint)) {
                 certificates.remove(certificate);
                 mobileDomainRepository.save(mobileDomainEntity);
+                cacheService.notifyEvictCertificateCache(appName);
                 return;
             }
         }
@@ -237,10 +257,12 @@ public class AdminService {
 
     public void deleteDomain(String appName, String domain) {
         mobileDomainRepository.deleteByAppNameAndDomain(appName, domain);
+        cacheService.notifyEvictCertificateCache(appName);
     }
 
     public void deleteExpiredCertificates() {
         certificateRepository.deleteAllByExpiresBefore(new Date().getTime() / 1000);
+        cacheService.invalidateCertificateCache();
     }
 
     @Transactional(readOnly = true)

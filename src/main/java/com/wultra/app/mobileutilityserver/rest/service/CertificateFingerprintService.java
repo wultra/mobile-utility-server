@@ -20,10 +20,13 @@ package com.wultra.app.mobileutilityserver.rest.service;
 
 import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
+import com.wultra.app.mobileutilityserver.redis.model.CacheBucketName;
 import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.util.List;
  * @author Petr Dvorak, petr@wultra.com
  */
 @Service
+@Slf4j
 public class CertificateFingerprintService {
 
     private final CertificateRepository repo;
@@ -54,7 +58,9 @@ public class CertificateFingerprintService {
      * @return Collection with SSL pinning fingerprints, possibly empty.
      */
     @Transactional
+    @Cacheable(cacheNames = CacheBucketName.CERTIFICATE_FINGERPRINTS, sync = true)
     public List<CertificateFingerprint> findCertificateFingerprintsByAppName(String appName) {
+        logger.info("Fetching certificates for application with name: {}", appName);
         final List<CertificateEntity> fingerprints = repo.findAllByAppName(appName);
         final List<CertificateFingerprint> result = new ArrayList<>(fingerprints.size());
         for (final CertificateEntity f: fingerprints) {

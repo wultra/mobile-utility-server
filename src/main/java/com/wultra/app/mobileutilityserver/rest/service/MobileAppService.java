@@ -17,11 +17,15 @@
  */
 package com.wultra.app.mobileutilityserver.rest.service;
 
+import com.wultra.app.mobileutilityserver.config.CacheConfiguration;
 import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppVersionEntity;
 import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
+import com.wultra.app.mobileutilityserver.redis.model.CacheBucketName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import com.wultra.app.mobileutilityserver.database.repo.MobileAppVersionRepository;
 import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
 import lombok.AllArgsConstructor;
@@ -59,7 +63,9 @@ public class MobileAppService {
      * @param appName App name.
      * @return True in case the app with given name exists, false otherwise.
      */
+    @Cacheable(cacheNames = CacheBucketName.MOBILE_APPS, sync = true)
     public boolean appExists(String appName) {
+        logger.info("Fetching application with name: {}", appName);
         return mobileAppRepository.existsByName(appName);
     }
 
@@ -70,7 +76,9 @@ public class MobileAppService {
      * @return Private key encoded as Base64 representation of the embedded big integer, or null
      * if app with provided name does not exist.
      */
+    @Cacheable(cacheNames = CacheBucketName.PRIVATE_KEYS, sync = true)
     public String privateKey(String appName) {
+        logger.info("Fetching private key for application with name: {}", appName);
         final MobileAppEntity mobileAppEntity = mobileAppRepository.findFirstByName(appName);
         if (mobileAppEntity == null) {
             return null;
