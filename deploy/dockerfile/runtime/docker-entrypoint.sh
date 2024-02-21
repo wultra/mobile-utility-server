@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+set -euo pipefail
 
 liquibase --headless=true --log-level=INFO --changeLogFile=$LB_HOME/db/changelog/db.changelog-master.xml \
   --username=$MOBILE_UTILITY_SERVER_DATASOURCE_USERNAME \
