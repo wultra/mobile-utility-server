@@ -1,6 +1,6 @@
-# Migration from 1.1.x to 1.5.0
+# Migration from 1.1.x to 1.4.0
 
-This guide provides step-by-step instructions for migrating from PowerAuth Mobile Utility Server version 1.1.x to version 1.5.0.
+This guide provides step-by-step instructions for migrating from PowerAuth Mobile Utility Server version 1.1.x to version 1.4.0.
 
 
 ## Prerequisites
@@ -33,7 +33,7 @@ This guide provides step-by-step instructions for migrating from PowerAuth Mobil
    Please take a look at a list of necessary environmental variables listed
    here [env.list.tmp](../deploy/env.list.tmp).
 
-4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.5.0-migration.sql` script located in the sql directory.
+4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.4.0-migration.sql` script located in the sql directory.
 
 5. **Start the PowerAuth MUS Application**: Once all the database changes are successfully applied, restart the
    PowerAuth Mobile Utility Server application.
@@ -43,7 +43,7 @@ It is needed to [Importing Certificate in PEM Format](Configuration.md#importing
 
 7. **Test Certificate Pinning**: Test that the functionality certificate pinning is working.
 
-8. **Execute Cleanup Script**: When you are sure that the application is working, run the `1.5.0-cleanup.sql` script located in the sql directory.
+8. **Execute Cleanup Script**: When you are sure that the application is working, run the `1.4.0-cleanup.sql` script located in the sql directory.
 
 
 ## Database Changes - detailed description of changes above
@@ -86,7 +86,7 @@ DROP SEQUENCE mobile_app_seq CASCADE;
 ### Conclusion
 
 Upon successfully executing the provided SQL commands and scripts, the migration process is complete.
-Ensure to verify and test the updated database to confirm the successful migration from version 1.1.0 to 1.5.0.
+Ensure to verify and test the updated database to confirm the successful migration from version 1.1.0 to 1.4.0.
 
 
 ## API
