@@ -62,7 +62,7 @@
 
         <!-- Wultra dependencies -->
         <powerauth-crypto.version>1.6.0</powerauth-crypto.version>
-        <wultra-core.version>1.8.0</wultra-core.version>
+        <wultra-core.version>1.9.0</wultra-core.version>
 
         <!-- Dependency Versions -->
         <bc.version>1.77</bc.version>
