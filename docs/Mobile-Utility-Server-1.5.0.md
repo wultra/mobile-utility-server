@@ -4,10 +4,7 @@ This guide provides instructions for migrating from PowerAuth Mobile Utility Ser
 
 No migration steps nor database changes are required.
 
-Please note, version `1.4.x` was introduced as a backport of most functionalities from version `1.5.x`, due to specific
-library dependency constraints. This strategic approach resulted in a shift in the versioning sequence, directly
-influencing the migration path.
-
-It is important to mention that Liquibase changesets are tagged as `1.5.0` even in version `1.4.x`. This is because
-retrospectively modifying Liquibase scripts is not considered good practice and might result in mismatches. By
-maintaining consistent tagging, we aim to minimize potential confusion and ensure a clear migration path.
+Please note, due to a backport to the version `1.4.x` database migration to `1.5.x` was shifted and described in the
+[guideline](./Mobile-Utility-Server-1.4.0.md).
+If you are migrating from `1.4.x` there is no other migration needed. If you are migrating from `1.1.x` you need to perform
+migration steps to `1.4.x` first.
