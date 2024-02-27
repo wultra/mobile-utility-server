@@ -2,11 +2,12 @@
 
 <!-- TEMPLATE database -->
 
-The database structure is extremely simple, we provide an example in PostgreSQL to describe it.
+You can download DDL scripts for supported databases:
 
-## Schema Overview
+- [Oracle - Create Database Schema](./sql/oracle/create_schema.sql)
+- [PostgreSQL - Create Database Schema](./sql/postgresql/create_schema.sql)
 
-The following image captures the overview of the tables in the schema:
+See the overall database schema:
 
 <img src="./img/mobile_app.png" width="888" alt="Mobile Utility Server DB Schema"/>
 
@@ -16,18 +17,6 @@ The following image captures the overview of the tables in the schema:
 ### Mobile Applications
 
 Contains information related to various mobile apps.
-
-#### Schema
-
-```sql
-CREATE TABLE mus_mobile_app (
-    id INTEGER PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    display_name VARCHAR(255) NOT NULL,
-    sign_private_key VARCHAR(255) NOT NULL,
-    sign_public_key VARCHAR(255) NOT NULL
-);
-```
 
 #### Columns
 
@@ -45,16 +34,6 @@ CREATE TABLE mus_mobile_app (
 
 Contains information related to pinned domains.
 
-#### Schema
-
-```sql
-CREATE TABLE mus_mobile_domain (
-    id INTEGER PRIMARY KEY,
-    app_id INTEGER NOT NULL,
-    domain VARCHAR(255) NOT NULL
-);
-```
-
 #### Columns
 
 | Column             | Type           | Description                                                 |
@@ -68,18 +47,6 @@ CREATE TABLE mus_mobile_domain (
 ### SSL Certificate 
 
 Table with TLS/SSL certificate and fingerprints that should be pinned in the mobile app.
-
-#### Schema
-
-```sql
-CREATE TABLE mus_certificate (
-    id INTEGER PRIMARY KEY,
-    pem TEXT NOT NULL,
-    fingerprint VARCHAR(255) NOT NULL,
-    expires INTEGER NOT NULL,
-    mobile_domain_id INTEGER NOT NULL
-);
-```
 
 #### Columns
 
@@ -97,17 +64,6 @@ CREATE TABLE mus_certificate (
 
 Table with users for basic HTTP authentication.
 
-#### Schema
-
-```sql
-CREATE TABLE mus_user (
-    id INTEGER PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    enabled BOOLEAN NOT NULL
-);
-```
-
 #### Columns
 
 | Column             | Type           | Description                                                                      |
@@ -123,16 +79,6 @@ CREATE TABLE mus_user (
 
 Table with users authorities.
 
-#### Schema
-
-```sql
-CREATE TABLE mus_user_authority (
-    id INTEGER PRIMARY KEY,
-    user_id INTEGER NOT NULL UNIQUE,
-    authority VARCHAR(255) NOT NULL
-);
-```
-
 #### Columns
 
 | Column      | Type           | Description                                                          |
@@ -147,21 +93,6 @@ CREATE TABLE mus_user_authority (
 ### Mobile Application Version
 
 Table to force or suggest update of mobile application version.
-
-#### Schema
-
-```sql
-create table mus_mobile_app_version
-(
-    id                integer      not null primary key,
-    app_id            integer      not null,
-    platform          varchar(10)  not null,
-    major_os_version  integer,
-    suggested_version varchar(24),
-    required_version  varchar(24),
-    message_key       varchar(255)
-);
-```
 
 #### Columns
 
@@ -182,18 +113,6 @@ create table mus_mobile_app_version
 
 Table with localized texts.
 
-#### Schema
-
-```sql
-create table mus_localized_text
-(
-    message_key varchar(255) not null,
-    language    varchar(2)   not null,
-    text        text         not null,
-    primary key (message_key, language)
-);
-```
-
 #### Columns
 
 | Column        | Type           | Description                                                              |
@@ -211,11 +130,6 @@ create table mus_localized_text
 
 Sequence responsible for mobile app autoincrements.
 
-#### Schema
-
-```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_seq INCREMENT BY 1 START WITH 1 CACHE 20;
-```
 <!-- end -->
 
 <!-- begin database sequence mus_mobile_domain_seq -->
@@ -223,11 +137,6 @@ CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_seq INCREMENT BY 1 START WITH 1 CAC
 
 Sequence responsible for mobile domain autoincrements.
 
-#### Schema
-
-```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_domain_seq INCREMENT BY 1 START WITH 1 CACHE 20;
-```
 <!-- end -->
 
 <!-- begin database sequence mus_certificate_seq -->
@@ -235,11 +144,6 @@ CREATE SEQUENCE IF NOT EXISTS mus_mobile_domain_seq INCREMENT BY 1 START WITH 1 
 
 Sequence responsible for SSL certificates and fingerprints autoincrements.
 
-#### Schema
-
-```sql
-CREATE SEQUENCE IF NOT EXISTS mus_certificates_seq INCREMENT BY 1 START WITH 1 CACHE 20;
-```
 <!-- end -->
 
 <!-- begin database sequence mus_mobile_app_version_seq -->
@@ -247,11 +151,6 @@ CREATE SEQUENCE IF NOT EXISTS mus_certificates_seq INCREMENT BY 1 START WITH 1 C
 
 Sequence responsible for mobile application version autoincrements.
 
-#### Schema
-
-```sql
-CREATE SEQUENCE IF NOT EXISTS mus_mobile_app_version_seq INCREMENT BY 1 START WITH 1 CACHE 20;
-```
 <!-- end -->
 
 
@@ -264,12 +163,6 @@ The tables are relatively small and as a result, do not require indexes. To marg
 
 Foreign index for mapping the fingerprint to domain. 
 
-#### Schema
-```sql
-ALTER TABLE mus_mobile_fingerprint
-    ADD CONSTRAINT mobile_ssl_pinning_app_fk FOREIGN KEY (mobile_domain_id)
-        REFERENCES mus_mobile_domain ON UPDATE CASCADE ON DELETE CASCADE;
-```
 <!-- end -->
 
 <!-- begin database index mus_mobile_domain -->
@@ -277,12 +170,6 @@ ALTER TABLE mus_mobile_fingerprint
 
 Foreign index to map the domain to mobile app.
 
-#### Schema
-```sql
-ALTER TABLE mus_mobile_domain
-    ADD CONSTRAINT mus_mobile_domain_fk FOREIGN KEY (app_id)
-        REFERENCES mus_mobile_app ON UPDATE CASCADE ON DELETE CASCADE;
-```
 <!-- end -->
 
 <!-- begin database index mus_user_authority -->
@@ -290,10 +177,4 @@ ALTER TABLE mus_mobile_domain
 
 Foreign index to map the user authority to the user.
 
-#### Schema
-```sql
-ALTER TABLE mus_user_authority
-    ADD CONSTRAINT mus_user_fk FOREIGN KEY (app_id)
-        REFERENCES mus_user ON UPDATE CASCADE ON DELETE CASCADE;
-```
 <!-- end -->
