@@ -187,3 +187,9 @@ curl --request POST \
   "messageKey": "required-app.internet-banking"
 }'
 ```
+
+
+## Monitoring and Observability
+
+The WAR file includes the `micrometer-registry-prometheus` dependency.
+Discuss its configuration with the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/actuator.html#actuator.metrics).
