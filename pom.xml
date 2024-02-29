@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.6</version>
+        <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.wultra.app</groupId>
     <artifactId>mobile-utility-server</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
     <packaging>war</packaging>
     <name>Mobile Utility Server</name>
     <description>Utility server with various features suitable for mobile apps</description>
@@ -61,16 +61,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Wultra dependencies -->
-        <powerauth-crypto.version>1.6.0</powerauth-crypto.version>
-        <wultra-core.version>1.8.0</wultra-core.version>
+        <powerauth-crypto.version>1.7.0</powerauth-crypto.version>
+        <wultra-core.version>1.9.0</wultra-core.version>
 
         <!-- Dependency Versions -->
         <bc.version>1.77</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
-        <gatling-charts-highcharts.version>3.10.0</gatling-charts-highcharts.version>
+        <gatling-charts-highcharts.version>3.10.4</gatling-charts-highcharts.version>
         <logstash.version>7.4</logstash.version>
-        <!--  TODO (racansky, 2023-12-08) temporarily override the version 1.4.11 from spring boot version because of CVE  -->
-        <logback.version>1.4.14</logback.version>
     </properties>
 
     <dependencyManagement>
@@ -164,6 +162,30 @@
             <version>${logstash.version}</version>
         </dependency>
 
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core-micrometer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+
+        <!-- For run at Apple M1 architecture -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver-dns-native-macos</artifactId>
+            <scope>runtime</scope>
+            <classifier>osx-aarch_64</classifier>
+        </dependency>
+
         <!-- Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -223,7 +245,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.7.0</version>
+                <version>4.8.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

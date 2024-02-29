@@ -1,5 +1,5 @@
 # Docker Image for Build
-FROM maven:3.9.0-ibm-semeru-17-focal
+FROM maven:3.9.6-ibm-semeru-21-jammy
 WORKDIR /workspace
 
 COPY pom.xml .
