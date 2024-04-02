@@ -17,12 +17,6 @@
  */
 package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
-import com.wultra.app.mobileutilityserver.rest.model.errors.ExtendedError;
-import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
-import io.getlime.core.rest.model.base.response.ErrorResponse;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.security.access.AccessDeniedException;
@@ -37,6 +31,14 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.wultra.app.mobileutilityserver.rest.model.errors.ExtendedError;
+import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
+import io.getlime.core.rest.model.base.response.ErrorResponse;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller advice responsible for error handling.
@@ -221,5 +223,19 @@ public class ExceptionHandlingControllerAdvice {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
         return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_AUTHENTICATION", e.getMessage());
+    }
+
+    /**
+     * Exception handler for no resource found.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public @ResponseBody ErrorResponse handleNoResourceFoundException(final NoResourceFoundException e) {
+        logger.warn("Error occurred when calling an API: {}", e.getMessage());
+        logger.debug("Exception detail: ", e);
+        return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
     }
 }
