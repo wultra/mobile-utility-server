@@ -27,6 +27,11 @@ Contains information related to various mobile apps.
 | `display_name`     | `VARCHAR(255)` | Display name of the application, a human readable value, such as `Wultra Demo App`.                                                              |
 | `sign_private_key` | `VARCHAR(255)` | Base64-encoded private key associated with the application. It is used for signing the data on the server side.                                  |
 | `sign_public_key`  | `VARCHAR(255)` | Base64-encoded public key associated with the application. It is used by the client applications when verifying data signed on the server side.  |
+
+#### Sequence
+
+Sequence `mus_mobile_app_seq` responsible for mobile app autoincrements.
+
 <!-- end -->
 
 <!-- begin database table mus_mobile_domain -->
@@ -41,6 +46,15 @@ Contains information related to pinned domains.
 | `id`               | `INTEGER`      | Primary key for the table, automatically incremented value. |
 | `app_id`           | `INTEGER`      | Reference to related mobile app entity.                     |
 | `domain`           | `VARCHAR(255)` | Host name of the domain, such as `mobile.wultra.com`.       |
+
+#### Sequence
+
+Sequence `mus_mobile_domain_seq` responsible for mobile domain autoincrements.
+
+#### Indexes
+
+The tables are relatively small and as a result, do not require indexes. To marginally improve the lookup performance, you can create a foreign index to map the domain to mobile app.
+
 <!-- end -->
 
 <!-- begin database table mus_certificate -->
@@ -57,6 +71,15 @@ Table with TLS/SSL certificate and fingerprints that should be pinned in the mob
 | `fingerprint`      | `VARCHAR(255)` | Value of the certificate fingerprint.                                     |
 | `expires`          | `INTEGER`      | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
 | `mobile_domain_id` | `INTEGER`      | Reference to related application domain in the `mus_mobile_domain` table. |
+
+#### Sequence
+
+Sequence `mus_certificate_seq` responsible for SSL certificates and fingerprints autoincrements.
+
+#### Indexes
+
+The tables are relatively small and as a result, do not require indexes. To marginally improve the lookup performance, you can create a foreign index for mapping the fingerprint to domain.
+
 <!-- end -->
 
 <!-- begin database table mus_user -->
@@ -86,8 +109,12 @@ Table with users authorities.
 | `id`        | `INTEGER`      | Primary key for the table, automatically incremented value.          |
 | `user_id`   | `INTEGER`      | Foreign key column referencing users in `mus_user` table.            |
 | `authority` | `VARCHAR(255)` | Name of authority for the user prefixed with `ROLE_` (`ROLE_ADMIN`). |
-<!-- end -->
 
+#### Indexes
+
+The tables are relatively small and as a result, do not require indexes. To marginally improve the lookup performance, you can create a foreign index to map the user authority to the user.
+
+<!-- end -->
 
 <!-- begin database table mus_mobile_app_version -->
 ### Mobile Application Version
@@ -105,6 +132,11 @@ Table to force or suggest update of mobile application version.
 | `suggested_version` | `VARCHAR(24)`  | If the application version is lower, update is suggested.                                                              |
 | `required_version`  | `VARCHAR(24)`  | If the application version is lower, update is required.                                                               |
 | `message_key`       | `VARCHAR(255)` | Together with language identifies row in `mus_localized_text`                                                          |
+
+#### Sequence
+
+Sequence `mus_mobile_app_version_seq` responsible for mobile application version autoincrements.
+
 <!-- end -->
 
 
@@ -120,61 +152,4 @@ Table with localized texts.
 | `message_key` | `VARCHAR(255)` | Primary composite key for the table.                                     |
 | `language`    | `VARCHAR(2)`   | Primary composite key for the table. ISO 639-1 two-letter language code. |
 | `text`        | `TEXT`         | Localized text.                                                          |
-<!-- end -->
-
-
-## Sequences
-
-<!-- begin database sequence mus_mobile_app_seq -->
-### Mobile App Sequence
-
-Sequence responsible for mobile app autoincrements.
-
-<!-- end -->
-
-<!-- begin database sequence mus_mobile_domain_seq -->
-### Mobile App Domain Sequence
-
-Sequence responsible for mobile domain autoincrements.
-
-<!-- end -->
-
-<!-- begin database sequence mus_certificate_seq -->
-### SSL Certificate Sequence
-
-Sequence responsible for SSL certificates and fingerprints autoincrements.
-
-<!-- end -->
-
-<!-- begin database sequence mus_mobile_app_version_seq -->
-### Mobile Application Version Sequence
-
-Sequence responsible for mobile application version autoincrements.
-
-<!-- end -->
-
-
-## Foreign Indexes
-
-The tables are relatively small and as a result, do not require indexes. To marginally improve the lookup performance, you can create the following foreign indexes.
-
-<!-- begin database index mus_mobile_fingerprint -->
-### Foreign Index for SSL Fingerprint Lookup
-
-Foreign index for mapping the fingerprint to domain. 
-
-<!-- end -->
-
-<!-- begin database index mus_mobile_domain -->
-### Foreign Index for Domain Lookup
-
-Foreign index to map the domain to mobile app.
-
-<!-- end -->
-
-<!-- begin database index mus_user_authority -->
-### Foreign Index for User Authority Lookup
-
-Foreign index to map the user authority to the user.
-
 <!-- end -->
