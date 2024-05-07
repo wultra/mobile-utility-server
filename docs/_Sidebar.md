@@ -9,3 +9,5 @@
 [Configuration](./Configuration.md)
 
 [Public RESTful API](./Public-REST-API.md)
+
+[Admin API](./API-Admin.md)
