@@ -2,13 +2,22 @@
 
 <!-- begin remove -->
 ## Table of Contents
+**Introduction**
 
 - [Overview](./Readme.md)
-- [Deployment](./Deployment.md)
-- [Database Structure](./Database-Structure.md)
-- [Migration Instructions](./Migration-Instructions.md)
 - [Configuration](./Configuration.md)
+- [Deployment](./Deployment.md)
+- [Migration Instructions](./Migration-Instructions.md)
+
+**Reference**
+
+- [Database Structure](./Database-Structure.md)
+
+**API Reference**
+
+- [Admin API](./API-Admin.md)
 - [Public RESTful API](./Public-REST-API.md)
+
 <!-- end -->
 
 The Mobile Utility Server by [Wultra](https://wultra.com) is a utility server with various features required by typical mobile apps.
