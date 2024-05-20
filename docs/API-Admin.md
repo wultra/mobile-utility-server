@@ -113,7 +113,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -158,7 +158,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -223,7 +223,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -298,7 +298,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -399,7 +399,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -471,7 +471,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -517,7 +517,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -550,7 +550,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -608,7 +608,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -661,7 +661,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -748,7 +748,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -824,7 +824,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
@@ -872,7 +872,7 @@ Invalid username or password was provided while calling the service.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "HTTP_401",
+    "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
 }
