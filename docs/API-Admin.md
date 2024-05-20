@@ -7,14 +7,14 @@ certificates, versions, and text resources.
 
 ## Possible Error Codes
 
-| HTTP Status Code | Error Code        | Description                                                                        |
-|------------------|-------------------|------------------------------------------------------------------------------------|
-| `400`            | `APP_EXCEPTION`   | Indicates error happening during app initialization.                               |
-| `400`            | `APP_EXCEPTION`   | Indicates error happening during app initialization.                               |
-| `400`            | `INVALID_REQUEST` | Indicates that the request contains invalid parameters or missing required fields. |
-| `404`            | `NOT_FOUND`       | The specified resource was not found.                                              |
-| `404`            | `APP_NOT_FOUND`   | Indicates that the app with a provided ID was not found                            |
-| `500`            | `INTERNAL_ERROR`  | An internal server error occurred, potentially due to misconfiguration.            |
+| HTTP Status Code | Error Code             | Description                                                                                       |
+|------------------|------------------------|---------------------------------------------------------------------------------------------------|
+| `400`            | `APP_EXCEPTION`        | Indicates an error occurring during app operations like creating an already existing app.         |
+| `400`            | `ERROR_REQUEST`        | Request did not pass a structural validation (mandatory field is null, invalid field type, etc.). |
+| `400`            | `UNKNOWN_ERROR`        | An error occurred when processing the request. Problems with request binding                      |
+| `401`            | `ERROR_AUTHENTICATION` | Unauthorized access attempt. This occurs when invalid credentials are provided.                   |
+| `404`            | `APP_NOT_FOUND`        | Indicates that the app with the provided ID was not found.                                        |
+| `500`            | `INTERNAL_ERROR`       | An internal server error occurred, potentially due to misconfiguration.                           |
 
 ## Services
 
@@ -22,8 +22,7 @@ certificates, versions, and text resources.
 
 ### Create Application
 
-Create a new application entry in the system. This endpoint is used to register a new application with its initial
-configuration and metadata.
+Create a new application with specified name.
 
 #### Request
 
@@ -31,43 +30,49 @@ configuration and metadata.
 
 ```json
 {
-  "name": "Application Name",
-  "description": "Description of the Application",
-  "config": {
-    "setting1": "value1",
-    "setting2": "value2"
-  }
+  "name": "mobile-app",
+  "displayName": "Mobile App"
 }
 ```
 
-| Attribute     | Type     | Description                                         |
-|---------------|----------|-----------------------------------------------------|
-| `name`        | `String` | Name of the application.                            |
-| `description` | `String` | Brief description of the application.               |
-| `config`      | `Object` | Configuration settings specific to the application. |
+| Attribute                                                     | Type     | Description                      |
+|---------------------------------------------------------------|----------|----------------------------------|
+| `name`                                                        | `String` | Name of the application.         |
+| `displayName`<span class="required" title="Required">*</span> | `String` | Display name of the application. |
 
 #### Response 200
 
 ```json
 {
-  "id": "1234",
   "name": "Application Name",
-  "description": "Description of the Application",
-  "status": "ACTIVE",
-  "config": {
-    "setting1": "value1",
-    "setting2": "value2"
-  }
+  "displayName": "Display name of the Application",
+  "publicKey": "pk1",
+  "domains": [
+    {
+      "name": "name1",
+      "certificates": [
+        {
+          "pem": "pem1",
+          "fingerprint": "fingerprint1",
+          "expires": 100
+        }
+      ]
+    }
+  ]
 }
 ```
 
-| Attribute     | Type     | Description                                         |
-|---------------|----------|-----------------------------------------------------|
-| `id`          | `String` | Unique identifier of the application.               |
-| `name`        | `String` | Name of the application.                            |
-| `description` | `String` | Description of the application.                     |
-| `status`      | `String` | Current status of the application (e.g., ACTIVE).   |
-| `config`      | `Object` | Configuration settings specific to the application. |
+| Attribute                              | Type       | Description                                          |
+|----------------------------------------|------------|------------------------------------------------------|
+| `name`                                 | `String`   | Name of the application.                             |
+| `displayName`                          | `String`   | Display name of the application.                     |
+| `publicKey`                            | `String`   | Public key of the application.                       |
+| `domains`                              | `Object[]` | List of domain configurations for the application.   |
+| `domains[].name`                       | `String`   | Name of the domain.                                  |
+| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                 |
+| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                             |
+| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                      |
+| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds. |
 
 #### Response 400
 
@@ -77,8 +82,39 @@ Application creation failed due to invalid input or missing required fields.
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "INVALID_REQUEST",
+    "code": "ERROR_REQUEST",
     "message": "Required fields are missing"
+  }
+}
+```
+
+Application creation failed due to already used app name or error while generating cryptographic keys.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "APP_EXCEPTION",
+    "message": "Application with name already exists: XY / Error while generating cryptographic keys"
+  }
+}
+```
+
+Possible Error states are:
+
+- `ERROR_REQUEST` - Request did not pass a structural validation (mandatory field is null, invalid field type, etc.).
+- `APP_EXCEPTION` - Application with name already exists: XY or Error while generating cryptographic keys.
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -89,8 +125,7 @@ Application creation failed due to invalid input or missing required fields.
 
 ### List Applications
 
-Retrieve a list of all registered applications. This endpoint provides a summary view of each application, including
-basic details.
+Retrieve a list of all registered applications.
 
 #### Response 200
 
@@ -98,27 +133,36 @@ basic details.
 {
   "applications": [
     {
-      "id": "1234",
-      "name": "Application Name",
-      "description": "Description of the Application",
-      "status": "ACTIVE"
+      "name": "mobile-app-1",
+      "displayName": "Mobile App 1"
     },
     {
-      "id": "5678",
-      "name": "Another Application",
-      "description": "Another application description",
-      "status": "INACTIVE"
+      "name": "mobile-app-2",
+      "displayName": "Mobile App 2"
     }
   ]
 }
 ```
 
-| Attribute     | Type     | Description                                       |
-|---------------|----------|---------------------------------------------------|
-| `id`          | `String` | Unique identifier of the application.             |
-| `name`        | `String` | Name of the application.                          |
-| `description` | `String` | Description of the application.                   |
-| `status`      | `String` | Current status of the application (e.g., ACTIVE). |
+| Attribute                    | Type       | Description                      |
+|------------------------------|------------|----------------------------------|
+| `applications`               | `Object[]` | List of registered applications. |
+| `applications[].name`        | `String`   | Name of the application.         |
+| `applications[].displayName` | `String`   | Display name of the application. |
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
+  }
+}
+```
 
 <!-- end -->
 
@@ -141,35 +185,46 @@ including configuration settings.
 
 ```json
 {
-  "id": "1234",
   "name": "Application Name",
-  "description": "Description of the Application",
-  "status": "ACTIVE",
-  "config": {
-    "setting1": "value1",
-    "setting2": "value2"
-  }
+  "displayName": "Display name of the Application",
+  "publicKey": "pk1",
+  "domains": [
+    {
+      "name": "name1",
+      "certificates": [
+        {
+          "pem": "pem1",
+          "fingerprint": "fingerprint1",
+          "expires": 100
+        }
+      ]
+    }
+  ]
 }
 ```
 
-| Attribute     | Type     | Description                                         |
-|---------------|----------|-----------------------------------------------------|
-| `id`          | `String` | Unique identifier of the application.               |
-| `name`        | `String` | Name of the application.                            |
-| `description` | `String` | Description of the application.                     |
-| `status`      | `String` | Current status of the application (e.g., ACTIVE).   |
-| `config`      | `Object` | Configuration settings specific to the application. |
+| Attribute                              | Type       | Description                                          |
+|----------------------------------------|------------|------------------------------------------------------|
+| `name`                                 | `String`   | Name of the application.                             |
+| `displayName`                          | `String`   | Display name of the application.                     |
+| `publicKey`                            | `String`   | Public key of the application.                       |
+| `domains`                              | `Object[]` | List of domain configurations for the application.   |
+| `domains[].name`                       | `String`   | Name of the domain.                                  |
+| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                 |
+| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                             |
+| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                      |
+| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds. |
 
-#### Response 404
+#### Response 401
 
-The specified application was not found in the system.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "NOT_FOUND",
-    "message": "Application not found"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -187,60 +242,96 @@ registration of a new certificate using server-defined parameters.
 
 ##### Path Params
 
-| Param  | Type     | Description                                                        |
-|--------|----------|--------------------------------------------------------------------|
-| `name` | `String` | Name of the application for which the certificate will be created. |
+| Param                                                  | Type     | Description                                                        |
+|--------------------------------------------------------|----------|--------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application for which the certificate will be created. |
 
 ##### Request Body
 
 ```json
 {
-  "certificateType": "RSA",
-  "validityDays": 365
+  "domain": "domain1"
 }
 ```
 
-| Attribute         | Type      | Description                                        |
-|-------------------|-----------|----------------------------------------------------|
-| `certificateType` | `String`  | Type of the certificate to generate (e.g., 'RSA'). |
-| `validityDays`    | `Integer` | Number of days the certificate will be valid.      |
+| Attribute                                                | Type     | Description                                     |
+|----------------------------------------------------------|----------|-------------------------------------------------|
+| `domain`<span class="required" title="Required">*</span> | `String` | The domain from which to fetch the certificate. |
 
 #### Response 200
 
 ```json
 {
-  "name": "Application Name",
-  "certificateId": "cert123",
-  "issuedAt": "2023-05-07T14:48:00Z",
-  "expiresAt": "2024-05-07T14:48:00Z",
-  "certificateType": "RSA"
+  "name": "Domain Name",
+  "pem": "pem1",
+  "fingerprint": "fingerprint1",
+  "expires": 100
 }
 ```
 
-| Attribute         | Type     | Description                                 |
-|-------------------|----------|---------------------------------------------|
-| `name`            | `String` | Name of the application.                    |
-| `certificateId`   | `String` | Unique identifier of the certificate.       |
-| `issuedAt`        | `String` | Timestamp when the certificate was issued.  |
-| `expiresAt`       | `String` | Timestamp when the certificate will expire. |
-| `certificateType` | `String` | Type of the certificate.                    |
+| Attribute                                                     | Type     | Description                                 |
+|---------------------------------------------------------------|----------|---------------------------------------------|
+| `name`<span class="required" title="Required">*</span>        | `String` | Name of the domain.                         |
+| `pem`<span class="required" title="Required">*</span>         | `String` | PEM format of the certificate.              |
+| `fingerprint`<span class="required" title="Required">*</span> | `String` | Fingerprint of the certificate..            |
+| `expires`<span class="required" title="Required">*</span>     | `Long`   | Timestamp when the certificate will expire. |
 
 #### Response 400
 
-Failed to create the certificate due to invalid input or server error.
+Certificate creation failed due to invalid input or missing required fields.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "INVALID_CERTIFICATE_CREATION",
-    "message": "Certificate creation failed due to invalid input"
+    "code": "ERROR_REQUEST",
+    "message": "Required fields are missing"
   }
 }
 ```
 
-<!-- end -->
+#### Response 401
 
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
+  }
+}
+```
+
+#### Response 404
+
+Failed to create the certificate because the requested app was not found.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "APP_NOT_FOUND",
+    "message": "App with a provided ID was not found."
+  }
+}
+```
+
+#### Response 500
+
+Error occurred during app execution.
+
+```json
+{
+  "timestamp": "TIMESTAMP",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/admin/apps/mobile-app22/certificates/auto"
+}
+```
+
+<!-- end -->
 <!-- begin api POST /admin/apps/{name}/certificates/pem -->
 
 ### Create PEM Application Certificate
@@ -252,55 +343,92 @@ associates it with the application.
 
 ##### Path Params
 
-| Param  | Type     | Description                                                        |
-|--------|----------|--------------------------------------------------------------------|
-| `name` | `String` | Name of the application to which the certificate will be attached. |
+| Param                                                  | Type     | Description                                                        |
+|--------------------------------------------------------|----------|--------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application to which the certificate will be attached. |
 
 ##### Request Body
 
 ```json
 {
-  "pemCertificate": "-----BEGIN CERTIFICATE-----\\nMIICdzCCAeCgAwIBAgIB...\\n-----END CERTIFICATE-----",
-  "validityDays": 365
+  "pem": "pem1"
 }
 ```
 
-| Attribute        | Type      | Description                                   |
-|------------------|-----------|-----------------------------------------------|
-| `pemCertificate` | `String`  | PEM encoded certificate string.               |
-| `validityDays`   | `Integer` | Number of days the certificate will be valid. |
+| Attribute                                             | Type     | Description                     |
+|-------------------------------------------------------|----------|---------------------------------|
+| `pem`<span class="required" title="Required">*</span> | `String` | PEM encoded certificate string. |
 
 #### Response 200
 
 ```json
 {
-  "name": "Application Name",
-  "certificateId": "cert456",
-  "issuedAt": "2023-05-07T14:48:00Z",
-  "expiresAt": "2024-05-07T14:48:00Z",
-  "certificateType": "PEM"
+  "name": "Domain Name",
+  "pem": "pem1",
+  "fingerprint": "fingerprint1",
+  "expires": 100
 }
 ```
 
-| Attribute         | Type     | Description                                 |
-|-------------------|----------|---------------------------------------------|
-| `name`            | `String` | Name of the application.                    |
-| `certificateId`   | `String` | Unique identifier of the certificate.       |
-| `issuedAt`        | `String` | Timestamp when the certificate was issued.  |
-| `expiresAt`       | `String` | Timestamp when the certificate will expire. |
-| `certificateType` | `String` | Type of the certificate ('PEM').            |
+| Attribute                                                     | Type     | Description                                 |
+|---------------------------------------------------------------|----------|---------------------------------------------|
+| `name`<span class="required" title="Required">*</span>        | `String` | Name of the domain.                         |
+| `pem`<span class="required" title="Required">*</span>         | `String` | PEM format of the certificate.              |
+| `fingerprint`<span class="required" title="Required">*</span> | `String` | Fingerprint of the certificate..            |
+| `expires`<span class="required" title="Required">*</span>     | `Long`   | Timestamp when the certificate will expire. |
 
 #### Response 400
 
-Failed to create the certificate due to invalid PEM format or server error.
+Certificate creation failed due to invalid input or missing required fields.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "INVALID_PEM_FORMAT",
-    "message": "Invalid PEM format provided"
+    "code": "ERROR_REQUEST",
+    "message": "Required fields are missing"
   }
+}
+```
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
+  }
+}
+```
+
+#### Response 404
+
+Failed to create the certificate because the requested app was not found.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "APP_NOT_FOUND",
+    "message": "App with a provided ID was not found."
+  }
+}
+```
+
+#### Response 500
+
+Error occurred during app execution.
+
+```json
+{
+  "timestamp": "TIMESTAMP",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/admin/apps/mobile-app22/certificates/auto"
 }
 ```
 
@@ -308,46 +436,43 @@ Failed to create the certificate due to invalid PEM format or server error.
 
 <!-- begin api DELETE /admin/apps/{name}/certificates -->
 
-### Delete Certificates
+### Delete Certificate
 
-Delete all certificates associated with a specific application based on domain and fingerprint criteria.
+Delete a certificate associated with a specific application based on domain and fingerprint criteria.
 
 #### Request
 
 ##### Path Params
 
-| Param  | Type     | Description                                                      |
-|--------|----------|------------------------------------------------------------------|
-| `name` | `String` | Name of the application from which certificates will be deleted. |
+| Param                                                  | Type     | Description                                                      |
+|--------------------------------------------------------|----------|------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application from which certificates will be deleted. |
 
 ##### Query Parameters
 
-| Parameter     | Type     | Description                                                         |
-|---------------|----------|---------------------------------------------------------------------|
-| `domain`      | `String` | Domain associated with the certificate.                             |
-| `fingerprint` | `String` | Fingerprint of the certificate to specifically target for deletion. |
+| Parameter                                                     | Type     | Description                                                         |
+|---------------------------------------------------------------|----------|---------------------------------------------------------------------|
+| `domain`<span class="required" title="Required">*</span>      | `String` | Domain associated with the certificate.                             |
+| `fingerprint`<span class="required" title="Required">*</span> | `String` | Fingerprint of the certificate to specifically target for deletion. |
 
 #### Response 200
 
-Indicates that the certificates were successfully deleted.
-
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Certificates deleted successfully"
+  "status": "OK"
 }
 ```
 
-#### Response 400
+#### Response 401
 
-Failed to delete certificates due to invalid domain or fingerprint criteria.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "INVALID_CERTIFICATE_DELETION",
-    "message": "No certificates match the provided criteria"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -358,22 +483,21 @@ Failed to delete certificates due to invalid domain or fingerprint criteria.
 
 ### Delete Domain
 
-Delete a domain associated with a specific application. This endpoint removes the domain linkage, effectively unlisting
-the domain from the application.
+Delete a domain associated with a specific application.
 
 #### Request
 
 ##### Path Params
 
-| Param  | Type     | Description                                                    |
-|--------|----------|----------------------------------------------------------------|
-| `name` | `String` | Name of the application from which the domain will be deleted. |
+| Param                                                  | Type     | Description                                                    |
+|--------------------------------------------------------|----------|----------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application from which the domain will be deleted. |
 
 ##### Query Parameters
 
-| Parameter | Type     | Description                                |
-|-----------|----------|--------------------------------------------|
-| `domain`  | `String` | Domain to be deleted from the application. |
+| Parameter                                                | Type     | Description                                |
+|----------------------------------------------------------|----------|--------------------------------------------|
+| `domain`<span class="required" title="Required">*</span> | `String` | Domain to be deleted from the application. |
 
 #### Response 200
 
@@ -381,21 +505,20 @@ Indicates that the domain was successfully deleted.
 
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Domain deleted successfully"
+  "status": "OK"
 }
 ```
 
-#### Response 400
+#### Response 401
 
-Failed to delete the domain due to it not being found or not being associated with the specified application.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "DOMAIN_NOT_FOUND",
-    "message": "The specified domain does not exist or is not associated with this application"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -415,21 +538,20 @@ Indicates that all expired certificates were successfully removed.
 
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Expired certificates deleted successfully"
+  "status": "OK"
 }
 ```
 
-#### Response 500
+#### Response 401
 
-Failed to remove expired certificates due to an internal server error.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "INTERNAL_SERVER_ERROR",
-    "message": "Failed to delete expired certificates due to a server error"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -447,34 +569,50 @@ version number and status.
 
 ##### Path Parameters
 
-| Param  | Type     | Description                                                  |
-|--------|----------|--------------------------------------------------------------|
-| `name` | `String` | Name of the application for which versions are being listed. |
+| Param                                                  | Type     | Description                                                  |
+|--------------------------------------------------------|----------|--------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application for which versions are being listed. |
 
 #### Response 200
 
 ```json
 {
-  "versions": [
+  "applicationVersions": [
     {
-      "id": "v1",
-      "description": "Initial release",
-      "status": "ACTIVE"
-    },
-    {
-      "id": "v2",
-      "description": "Major update with new features",
-      "status": "DEPRECATED"
+      "id": 1,
+      "platform": "ANDROID",
+      "majorOsVersion": 12,
+      "suggestedVersion": "3.1.2",
+      "requiredVersion": "3.1.2",
+      "messageKey": "update_required"
     }
   ]
 }
 ```
 
-| Attribute     | Type     | Description                                               |
-|---------------|----------|-----------------------------------------------------------|
-| `id`          | `String` | Unique identifier of the version.                         |
-| `description` | `String` | Description of what the version includes.                 |
-| `status`      | `String` | Current status of the version (e.g., ACTIVE, DEPRECATED). |
+| Attribute                                                                          | Type       | Description                                                                   |
+|------------------------------------------------------------------------------------|------------|-------------------------------------------------------------------------------|
+| `applicationVersions`                                                              | `Object[]` | List of app versions.                                                         |
+| `applicationVersions[].id`<span class="required" title="Required">*</span>         | `Long`     | Unique identifier of the application version.                                 |
+| `applicationVersions[].platform`<span class="required" title="Required">*</span>   | `Enum`     | Platform of the application (e.g., ANDROID, IOS).                             |
+| `applicationVersions[].majorOsVersion`                                             | `Integer`  | Major OS version for the application, may be `null` to match all.             |
+| `applicationVersions[].suggestedVersion`                                           | `String`   | Suggested version of the application in SemVer 2.0 format.                    |
+| `applicationVersions[].requiredVersion`                                            | `String`   | Required version of the application in SemVer 2.0 format.                     |
+| `applicationVersions[].messageKey`<span class="required" title="Required">*</span> | `String`   | Key for the message related to the version (e.g., for localization purposes). |
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
+  }
+}
+```
 
 <!-- end -->
 
@@ -482,46 +620,49 @@ version number and status.
 
 ### Application Version Detail
 
-Retrieve detailed information about a specific version of an application. This endpoint provides comprehensive details
-such as the version's description, status, and creation date.
+Retrieve detailed information about a specific version of an application.
 
 #### Request
 
 ##### Path Parameters
 
-| Param  | Type     | Description                                        |
-|--------|----------|----------------------------------------------------|
-| `name` | `String` | Name of the application.                           |
-| `id`   | `String` | Identifier of the version to retrieve details for. |
+| Param                                                  | Type     | Description                                        |
+|--------------------------------------------------------|----------|----------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application.                           |
+| `id` <span class="required" title="Required">*</span>  | `Long`   | Identifier of the version to retrieve details for. |
 
 #### Response 200
 
 ```json
-{
-  "id": "v1",
-  "description": "Initial release",
-  "status": "ACTIVE",
-  "creationDate": "2023-01-01T00:00:00Z"
+    {
+  "id": 1,
+  "platform": "ANDROID",
+  "majorOsVersion": 12,
+  "suggestedVersion": "3.1.2",
+  "requiredVersion": "3.1.2",
+  "messageKey": "update_required"
 }
 ```
 
-| Attribute      | Type     | Description                                               |
-|----------------|----------|-----------------------------------------------------------|
-| `id`           | `String` | Unique identifier of the version.                         |
-| `description`  | `String` | Description of what the version includes.                 |
-| `status`       | `String` | Current status of the version (e.g., ACTIVE, DEPRECATED). |
-| `creationDate` | `String` | ISO 8601 formatted date when the version was created.     |
+| Attribute                                                    | Type      | Description                                                                   |
+|--------------------------------------------------------------|-----------|-------------------------------------------------------------------------------|
+| `id`<span class="required" title="Required">*</span>         | `Long`    | Unique identifier of the application version.                                 |
+| `platform`<span class="required" title="Required">*</span>   | `Enum`    | Platform of the application (e.g., ANDROID, IOS).                             |
+| `majorOsVersion`                                             | `Integer` | Major OS version for the application, may be `null` to match all.             |
+| `suggestedVersion`                                           | `String`  | Suggested version of the application in SemVer 2.0 format.                    |
+| `requiredVersion`                                            | `String`  | Required version of the application in SemVer 2.0 format.                     |
+| `messageKey`<span class="required" title="Required">*</span> | `String`  | Key for the message related to the version (e.g., for localization purposes). |
 
-#### Response 404
+#### Response 401
 
-The specified version was not found for the application.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "VERSION_NOT_FOUND",
-    "message": "The specified version does not exist for this application"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -532,61 +673,83 @@ The specified version was not found for the application.
 
 ### Create Application Version
 
-Add a new version to a specific application. This endpoint allows the registration of a new version with details about
-what it includes and its intended status.
+Add a new version to a specific application.
 
 #### Request
 
 ##### Path Parameters
 
-| Param  | Type     | Description                                    |
-|--------|----------|------------------------------------------------|
-| `name` | `String` | Name of the application to add the version to. |
+| Param                                                  | Type     | Description                                    |
+|--------------------------------------------------------|----------|------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application to add the version to. |
 
 ##### Request Body
 
 ```json
 {
-  "versionId": "v3",
-  "description": "Security updates and minor improvements",
-  "status": "ACTIVE"
+  "platform": "ANDROID",
+  "majorOsVersion": 12,
+  "suggestedVersion": "3.1.2",
+  "requiredVersion": "3.1.2",
+  "messageKey": "update_required"
 }
+
 ```
 
-| Attribute     | Type     | Description                                       |
-|---------------|----------|---------------------------------------------------|
-| `versionId`   | `String` | Identifier for the new version.                   |
-| `description` | `String` | Description of what the version includes.         |
-| `status`      | `String` | Status to set for the new version (e.g., ACTIVE). |
+| Attribute                                                          | Type      | Description                                                                   |
+|--------------------------------------------------------------------|-----------|-------------------------------------------------------------------------------|
+| `platform`<span class="required" title="Required">*</span>         | `Enum`    | Platform of the application (e.g., ANDROID, IOS).                             |
+| `majorOsVersion`                                                   | `Integer` | Major OS version for the application, may be `null` to match all.             |
+| `suggestedVersion`<span class="required" title="Required">*</span> | `String`  | Suggested version of the application in SemVer 2.0 format.                    |
+| `requiredVersion`<span class="required" title="Required">*</span>  | `String`  | Required version of the application in SemVer 2.0 format.                     |
+| `messageKey`                                                       | `String`  | Key for the message related to the version (e.g., for localization purposes). |
 
 #### Response 200
 
 ```json
-{
-  "id": "v3",
-  "description": "Security updates and minor improvements",
-  "status": "ACTIVE",
-  "creationDate": "2023-05-07T14:48:00Z"
+    {
+  "id": 1,
+  "platform": "ANDROID",
+  "majorOsVersion": 12,
+  "suggestedVersion": "3.1.2",
+  "requiredVersion": "3.1.2",
+  "messageKey": "update_required"
 }
 ```
 
-| Attribute      | Type     | Description                                           |
-|----------------|----------|-------------------------------------------------------|
-| `id`           | `String` | Unique identifier of the created version.             |
-| `description`  | `String` | Description of what the version includes.             |
-| `status`       | `String` | Current status of the version (e.g., ACTIVE).         |
-| `creationDate` | `String` | ISO 8601 formatted date when the version was created. |
+| Attribute                                                    | Type      | Description                                                                   |
+|--------------------------------------------------------------|-----------|-------------------------------------------------------------------------------|
+| `id`<span class="required" title="Required">*</span>         | `Long`    | Unique identifier of the application version.                                 |
+| `platform`<span class="required" title="Required">*</span>   | `Enum`    | Platform of the application (e.g., ANDROID, IOS).                             |
+| `majorOsVersion`                                             | `Integer` | Major OS version for the application, may be `null` to match all.             |
+| `suggestedVersion`                                           | `String`  | Suggested version of the application in SemVer 2.0 format.                    |
+| `requiredVersion`                                            | `String`  | Required version of the application in SemVer 2.0 format.                     |
+| `messageKey`<span class="required" title="Required">*</span> | `String`  | Key for the message related to the version (e.g., for localization purposes). |
 
 #### Response 400
 
-Failed to create the version due to invalid input or conflict with existing version identifiers.
+Certificate creation failed due to invalid input or missing required fields.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "VERSION_CREATION_FAILED",
-    "message": "Invalid input or version identifier conflict"
+    "code": "ERROR_REQUEST",
+    "message": "Required fields are missing"
+  }
+}
+```
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -604,10 +767,10 @@ that no critical information is lost.
 
 ##### Path Parameters
 
-| Param  | Type     | Description                          |
-|--------|----------|--------------------------------------|
-| `name` | `String` | Name of the application.             |
-| `id`   | `String` | Identifier of the version to delete. |
+| Param                                                  | Type     | Description                          |
+|--------------------------------------------------------|----------|--------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application.             |
+| `id`<span class="required" title="Required">*</span>   | `String` | Identifier of the version to delete. |
 
 #### Response 200
 
@@ -615,22 +778,7 @@ Indicates that the version was successfully deleted.
 
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Version deleted successfully"
-}
-```
-
-#### Response 404
-
-The specified version was not found and could not be deleted.
-
-```json
-{
-  "status": "ERROR",
-  "responseObject": {
-    "code": "VERSION_NOT_FOUND",
-    "message": "The specified version does not exist"
-  }
+  "status": "OK"
 }
 ```
 
@@ -640,8 +788,7 @@ The specified version was not found and could not be deleted.
 
 ### List Texts
 
-Retrieve a list of all text entries managed within the system. This endpoint provides an overview of each text,
-including key identifiers and language codes.
+Retrieve a list of all text entries managed within the system.
 
 #### Response 200
 
@@ -649,27 +796,39 @@ including key identifiers and language codes.
 {
   "texts": [
     {
-      "key": "welcome_message",
+      "messageKey": "welcome_message",
       "language": "en",
-      "text": "Welcome to our application!",
-      "lastUpdated": "2023-01-01T00:00:00Z"
+      "text": "Welcome to our application!"
     },
     {
-      "key": "farewell_message",
+      "messageKey": "farewell_message",
       "language": "es",
-      "text": "¡Hasta la vista!",
-      "lastUpdated": "2023-01-02T00:00:00Z"
+      "text": "Gracias por visitar nuestra aplicación."
     }
   ]
 }
 ```
 
-| Attribute     | Type     | Description                                             |
-|---------------|----------|---------------------------------------------------------|
-| `key`         | `String` | Unique key identifier for the text.                     |
-| `language`    | `String` | ISO 639-1 two-letter language code.                     |
-| `text`        | `String` | The content of the text.                                |
-| `lastUpdated` | `String` | ISO 8601 formatted date when the text was last updated. |
+| Attribute                                                            | Type       | Description                         |
+|----------------------------------------------------------------------|------------|-------------------------------------|
+| `texts`<span class="required" title="Required">*</span>              | `Object[]` | List of texts.                      |
+| `texts[].messageKey`<span class="required" title="Required">*</span> | `String`   | Unique key identifier for the text. |
+| `texts[].language`<span class="required" title="Required">*</span>   | `String`   | ISO 639-1 two-letter language code. |
+| `texts[].text`<span class="required" title="Required">*</span>       | `String`   | The content of the text.            |
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "HTTP_401",
+    "message": "Unauthorized"
+  }
+}
+```
 
 <!-- end -->
 
@@ -684,39 +843,37 @@ content and the last update timestamp.
 
 ##### Path Parameters
 
-| Param      | Type     | Description                      |
-|------------|----------|----------------------------------|
-| `key`      | `String` | The key identifier for the text. |
-| `language` | `String` | The language code for the text.  |
+| Param                                                      | Type     | Description                      |
+|------------------------------------------------------------|----------|----------------------------------|
+| `key`<span class="required" title="Required">*</span>      | `String` | The key identifier for the text. |
+| `language`<span class="required" title="Required">*</span> | `String` | The language code for the text.  |
 
 #### Response 200
 
 ```json
 {
-  "key": "welcome_message",
+  "messageKey": "welcome_message",
   "language": "en",
-  "text": "Welcome to our application!",
-  "lastUpdated": "2023-01-01T00:00:00Z"
+  "text": "Welcome to our application!"
 }
 ```
 
-| Attribute     | Type     | Description                                             |
-|---------------|----------|---------------------------------------------------------|
-| `key`         | `String` | Unique key identifier for the text.                     |
-| `language`    | `String` | ISO 639-1 two-letter language code.                     |
-| `text`        | `String` | The content of the text.                                |
-| `lastUpdated` | `String` | ISO 8601 formatted date when the text was last updated. |
+| Attribute                                                    | Type     | Description                         |
+|--------------------------------------------------------------|----------|-------------------------------------|
+| `messageKey`<span class="required" title="Required">*</span> | `String` | Unique key identifier for the text. |
+| `language`<span class="required" title="Required">*</span>   | `String` | ISO 639-1 two-letter language code. |
+| `text`<span class="required" title="Required">*</span>       | `String` | The content of the text.            |
 
-#### Response 404
+#### Response 401
 
-The specified text was not found for the given key and language.
+Invalid username or password was provided while calling the service.
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "TEXT_NOT_FOUND",
-    "message": "The specified text does not exist for the provided key and language"
+    "code": "HTTP_401",
+    "message": "Unauthorized"
   }
 }
 ```
@@ -727,7 +884,7 @@ The specified text was not found for the given key and language.
 
 ### Create Text
 
-Add a new text entry to the system. This endpoint allows the creation of text content with a specific key and language.
+Add a new text entry to the system.
 
 #### Request
 
@@ -735,37 +892,42 @@ Add a new text entry to the system. This endpoint allows the creation of text co
 
 ```json
 {
-  "key": "new_message",
+  "messageKey": "new_message",
   "language": "fr",
   "text": "Bienvenue dans notre application!"
 }
 ```
 
-| Attribute  | Type     | Description                                      |
-|------------|----------|--------------------------------------------------|
-| `key`      | `String` | Unique key identifier for the new text.          |
-| `language` | `String` | ISO 639-1 two-letter language code for the text. |
-| `text`     | `String` | The content of the new text.                     |
+| Attribute                                                    | Type     | Description                         | 
+|--------------------------------------------------------------|----------|-------------------------------------|
+| `messageKey`<span class="required" title="Required">*</span> | `String` | Unique key identifier for the text. |
+| `language`<span class="required" title="Required">*</span>   | `String` | ISO 639-1 two-letter language code. |
+| `text`<span class="required" title="Required">*</span>       | `String` | The content of the text.            |
 
 #### Response 200
 
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Text created successfully"
+  "messageKey": "new_message",
+  "language": "fr",
+  "text": "Bienvenue dans notre application!"
 }
 ```
 
-#### Response 400
+| Attribute                                                    | Type     | Description                         |
+|--------------------------------------------------------------|----------|-------------------------------------|
+| `messageKey`<span class="required" title="Required">*</span> | `String` | Unique key identifier for the text. |
+| `language`<span class="required" title="Required">*</span>   | `String` | ISO 639-1 two-letter language code. |
+| `text`<span class="required" title="Required">*</span>       | `String` | The content of the text.            |
 
-Failed to create the text due to invalid input or a duplicate key and language combination.
+#### Response 400
 
 ```json
 {
   "status": "ERROR",
   "responseObject": {
-    "code": "TEXT_CREATION_FAILED",
-    "message": "Duplicate key and language combination or invalid input"
+    "code": "ERROR_REQUEST",
+    "message": "Required fields are missing"
   }
 }
 ```
@@ -775,38 +937,22 @@ Failed to create the text due to invalid input or a duplicate key and language c
 
 ### Delete Text
 
-Remove a specific text entry from the system identified by its key and language. This action is irreversible and ensures
-that the text is permanently deleted from the database.
+Remove a specific text entry from the system identified by its key and language.
 
 #### Request
 
 ##### Path Parameters
 
-| Param      | Type     | Description                      |
-|------------|----------|----------------------------------|
-| `key`      | `String` | The key identifier for the text. |
-| `language` | `String` | The language code for the text.  |
+| Param                                                      | Type     | Description                      |
+|------------------------------------------------------------|----------|----------------------------------|
+| `key`<span class="required" title="Required">*</span>      | `String` | The key identifier for the text. |
+| `language`<span class="required" title="Required">*</span> | `String` | The language code for the text.  |
 
 #### Response 200
 
 ```json
 {
-  "status": "SUCCESS",
-  "message": "Text deleted successfully"
-}
-```
-
-#### Response 404
-
-The specified text was not found for the given key and language and could not be deleted.
-
-```json
-{
-  "status": "ERROR",
-  "responseObject": {
-    "code": "TEXT_NOT_FOUND",
-    "message": "The specified text does not exist for the provided key and language"
-  }
+  "status": "OK"
 }
 ```
 

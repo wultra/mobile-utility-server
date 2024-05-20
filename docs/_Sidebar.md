@@ -1,13 +1,15 @@
-[Overview](./Readme.md)
+**Introduction**
 
-[Deployment](./Deployment.md)
+- [Overview](./Readme.md)
+- [Configuration](./Configuration.md)
+- [Deployment](./Deployment.md)
+- [Migration Instructions](./Migration-Instructions.md)
 
-[Database Structure](./Database-Structure.md)
+**Reference**
 
-[Migration Instructions](./Migration-Instructions.md)
+- [Database Structure](./Database-Structure.md)
 
-[Configuration](./Configuration.md)
+**API Reference**
 
-[Public RESTful API](./Public-REST-API.md)
-
-[Admin API](./API-Admin.md)
+- [Admin API](./API-Admin.md)
+- [Public RESTful API](./Public-REST-API.md)
