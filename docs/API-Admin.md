@@ -37,7 +37,7 @@ Create a new application with specified name.
 
 | Attribute                                                     | Type     | Description                      |
 |---------------------------------------------------------------|----------|----------------------------------|
-| `name`                                                        | `String` | Name of the application.         |
+| `name`<span class="required" title="Required">*</span>        | `String` | Name of the application.         |
 | `displayName`<span class="required" title="Required">*</span> | `String` | Display name of the application. |
 
 #### Response 200
@@ -177,9 +177,9 @@ including configuration settings.
 
 ##### Path Params
 
-| Param  | Type     | Description                                      |
-|--------|----------|--------------------------------------------------|
-| `name` | `String` | Name of the application to retrieve details for. |
+| Param                                                  | Type     | Description                                      |
+|--------------------------------------------------------|----------|--------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application to retrieve details for. |
 
 #### Response 200
 
