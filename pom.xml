@@ -69,6 +69,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.11.3</gatling-charts-highcharts.version>
         <logstash.version>7.4</logstash.version>
+        <embedded-redis.version>0.7.2</embedded-redis.version>
     </properties>
 
     <dependencyManagement>
@@ -99,6 +100,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -211,7 +216,11 @@
             <version>${gatling-charts-highcharts.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>it.ozimov</groupId>
+            <artifactId>embedded-redis</artifactId>
+            <version>${embedded-redis.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
