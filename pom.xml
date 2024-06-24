@@ -67,7 +67,7 @@
         <!-- Dependency Versions -->
         <bc.version>1.78.1</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
-        <gatling-charts-highcharts.version>3.11.3</gatling-charts-highcharts.version>
+        <gatling-charts-highcharts.version>3.11.4</gatling-charts-highcharts.version>
         <logstash.version>7.4</logstash.version>
     </properties>
 
