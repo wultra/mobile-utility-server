@@ -17,22 +17,43 @@
  */
 package com.wultra.app.mobileutilityserver.rest.http;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Base64;
+
 /**
  * Class with constants for HTTP request / response headers.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
+@Slf4j
 public class HttpHeaders {
 
     public static final int MIN_CHALLENGE_HEADER_LENGTH = 16;
+    public static final int MAX_CHALLENGE_HEADER_LENGTH = 32;
 
     public static final String REQUEST_CHALLENGE = "X-Cert-Pinning-Challenge";
     public static final String RESPONSE_SIGNATURE = "X-Cert-Pinning-Signature";
 
     public static boolean validChallengeHeader(String challengeHeader) {
-        return challengeHeader != null
-                && challengeHeader.length() >= HttpHeaders.MIN_CHALLENGE_HEADER_LENGTH
-                && !challengeHeader.isBlank();
+        try {
+            if (challengeHeader == null || challengeHeader.isBlank()) {
+                logger.warn("Missing or blank challenge header: {}", challengeHeader);
+                return false;
+            }
+            final byte[] challengeBytes = Base64.getDecoder().decode(challengeHeader);
+            final int challengeLength = challengeBytes.length;
+            if (challengeLength >= MIN_CHALLENGE_HEADER_LENGTH && challengeLength <= MAX_CHALLENGE_HEADER_LENGTH) {
+                return true;
+            } else {
+                logger.warn("Invalid challenge size, must be between {} and {}, was: {}", MIN_CHALLENGE_HEADER_LENGTH, MAX_CHALLENGE_HEADER_LENGTH, challengeLength);
+                return false;
+            }
+        } catch (IllegalArgumentException ex) {
+            logger.warn("Invalid Base64 value received in the header: {}", challengeHeader);
+            logger.debug("Exception detail: {}", ex.getMessage(), ex);
+            return false;
+        }
     }
 
 }
