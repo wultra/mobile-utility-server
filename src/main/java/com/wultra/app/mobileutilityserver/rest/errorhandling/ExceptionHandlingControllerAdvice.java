@@ -92,9 +92,9 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(InvalidChallengeHeaderException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public @ResponseBody ErrorResponse handleInvalidChallengeHeaderException(InvalidChallengeHeaderException ex) {
-        final String code = "INSUFFICIENT_CHALLENGE";
-        final String message = "Request does not contain sufficiently strong challenge header, 16B is required at least.";
-        logger.error("Request does not contain sufficiently strong challenge header, 16B is required at least: {}", ex.getMessage());
+        final String code = "INVALID_CHALLENGE";
+        final String message = "Request does not contain correct challenge header, a random Base64 encoded challenge with 16B - 32B raw length is required.";
+        logger.error("Request does not contain correct challenge header, a random Base64 encoded challenge with 16B - 32B raw length is required: {}", ex.getMessage());
         logger.debug("Exception detail: ", ex);
         return new ErrorResponse(code, message);
     }
