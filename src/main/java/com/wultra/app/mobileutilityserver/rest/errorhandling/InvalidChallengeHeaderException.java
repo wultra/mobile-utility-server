@@ -19,7 +19,7 @@
 package com.wultra.app.mobileutilityserver.rest.errorhandling;
 
 /**
- * Exception thrown in the case challenge header is not present or is not sufficiently complex.
+ * Exception thrown in the case challenge header is not present or is not adequately complex.
  *
  * @author Petr Dvorak, petr@wultra.com
  */
