@@ -17,9 +17,11 @@
  */
 package com.wultra.app.mobileutilityserver.rest.http;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Base64;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class with constants for HTTP request / response headers.
@@ -35,9 +37,13 @@ public class HttpHeaders {
     public static final String REQUEST_CHALLENGE = "X-Cert-Pinning-Challenge";
     public static final String RESPONSE_SIGNATURE = "X-Cert-Pinning-Signature";
 
+    private HttpHeaders() {
+        throw new IllegalStateException("Should not be instantiated.");
+    }
+
     public static boolean validChallengeHeader(String challengeHeader) {
         try {
-            if (challengeHeader == null || challengeHeader.isBlank()) {
+            if (StringUtils.isEmpty(challengeHeader)) {
                 logger.warn("Missing or blank challenge header: {}", challengeHeader);
                 return false;
             }
