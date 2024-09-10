@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:14
+    env_file: 
+      - deploy/conf/env.list.tmp
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mobile-utility-server:
+    image: mobile-utility-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: 
+      - deploy/conf/env.list.tmp
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
