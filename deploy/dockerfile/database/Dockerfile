@@ -1,5 +1,5 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.2_13-jre
+FROM ibm-semeru-runtimes:open-21.0.4.1_7-jre
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
