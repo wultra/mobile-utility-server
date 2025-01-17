@@ -1,21 +1,16 @@
 ---
-name: Build and deploy docker image
+name: Build and publish docker image
 
 on:
   workflow_dispatch:
-    branches:
-      - 'develop'
-      - 'master'
-      - 'releases/*'
     inputs:
-      push_to_acr:
-        description: Push to ACR?
-        type: boolean
-        default: true
-      push_to_jfrog:
-        description: Push to JFrog?
+      push_to_registry:
         type: boolean
         default: false
+        description: Publish to registry?
+      environment:
+        type: environment
+        description: Select the environment
   pull_request:
     branches:
       - 'develop'
@@ -25,7 +20,7 @@ on:
 jobs:
   build:
     runs-on: 'ubuntu-latest'
-    environment: docker-publish
+    environment: ${{ inputs.environment }}
     env:
       # these are global secrets - for readonly access to artifactory
       INTERNAL_USERNAME: ${{ secrets.JFROG_USERNAME }}
@@ -40,7 +35,7 @@ jobs:
         server-username: INTERNAL_USERNAME
         server-password: INTERNAL_PASSWORD
     - name: Set Timestamp for docker image for development branch
-      if: github.ref == 'refs/heads/develop'
+      if: "!(startsWith(github.ref, 'refs/heads/releases/') || startsWith(github.ref, 'refs/tags/'))"
       run: echo "TIMESTAMP=-$(date +%Y.%m.%d)" >> $GITHUB_ENV
     - name: Get Mobile Utility Server version
       run: |
@@ -55,33 +50,33 @@ jobs:
       uses: docker/setup-buildx-action@v3
       with:
         install: true
-    - name: Log in to JFrog registry
-      if: inputs.push_to_jfrog == true
+    - name: Log in to ACR
+      if: vars.ACR_REGISTRY_URL != ''
       uses: docker/login-action@v3
       with:
-        registry: https://wultra.jfrog.io/
-        username: ${{ vars.JFROG_CONTAINER_REGISTRY_USERNAME }}
-        password: ${{ secrets.JFROG_CONTAINER_REGISTRY_PASSWORD }}
-    - name: Log in to Azure registry
-      if: inputs.push_to_acr == true
-      uses: docker/login-action@v3
-      with:
-        registry: https://powerauth.azurecr.io/
+        registry: ${{ vars.ACR_REGISTRY_URL }}
         username: ${{ vars.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
-    - name: Build and push container image to Azure registry
+    - name: Log in to Distribution registry
+      if: vars.DISTRIBUTION_REGISTRY_URL != ''
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ vars.DISTRIBUTION_REGISTRY_URL }}
+        username: ${{ vars.DISTRIBUTION_USERNAME }}
+        password: ${{ secrets.DISTRIBUTION_PASSWORD }}
+    - name: Build and push container image to registry
       uses: docker/build-push-action@v6
       with:
-        push: ${{ inputs.push_to_acr == true || inputs.push_to_jfrog == true }}
+        push: ${{ inputs.push_to_registry == true }}
         platforms: linux/amd64,linux/arm64
         tags: |
-          ${{ inputs.push_to_acr == true && format('powerauth.azurecr.io/mobile-utility-server:{0}{1}-{2}', env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
-          ${{ inputs.push_to_jfrog == true && format('wultra.jfrog.io/wultra-docker/mobile-utility-server:{0}{1}-{2}', env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
+          ${{ vars.ACR_REGISTRY_URL == true && format('{0}/mobile-utility-server:{1}{2}-{3}', vars.ACR_REPOSITORY, env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
+          ${{ vars.DISTRIBUTION_REGISTRY_URL != '' && format('{0}/mobile-utility-server:{1}{2}-{3}', vars.DISTRIBUTION_REPOSITORY, env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
         file: ./deploy/dockerfile/runtime/Dockerfile
         context: .
     - run: echo '### 🚀 Published images' >> $GITHUB_STEP_SUMMARY
-    - if: inputs.push_to_acr == true
+    - if: inputs.push_to_registry == true && vars.ACR_REGISTRY_URL != ''
       run: |
-        echo 'powerauth.azurecr.io/mobile-utility-server:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}' >> $GITHUB_STEP_SUMMARY
-    - if: inputs.push_to_jfrog == true
-      run: echo 'wultra.jfrog.io/wultra-docker/mobile-utility-server:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}' >> $GITHUB_STEP_SUMMARY
+        echo '${{ vars.ACR_REPOSITORY }}/mobile-utility-server:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}' >> $GITHUB_STEP_SUMMARY
+    - if: inputs.push_to_registry == true && vars.DISTRIBUTION_REGISTRY_URL != ''
+      run: echo '${{ vars.DISTRIBUTION_REPOSITORY }}/mobile-utility-server:${{ env.REVISION }}${{ env.TIMESTAMP }}-${{ github.sha }}' >> $GITHUB_STEP_SUMMARY
