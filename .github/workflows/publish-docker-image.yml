@@ -70,7 +70,7 @@ jobs:
         push: ${{ inputs.push_to_registry == true }}
         platforms: linux/amd64,linux/arm64
         tags: |
-          ${{ vars.ACR_REGISTRY_URL == true && format('{0}/mobile-utility-server:{1}{2}-{3}', vars.ACR_REPOSITORY, env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
+          ${{ vars.ACR_REGISTRY_URL != ''  && format('{0}/mobile-utility-server:{1}{2}-{3}', vars.ACR_REPOSITORY, env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
           ${{ vars.DISTRIBUTION_REGISTRY_URL != '' && format('{0}/mobile-utility-server:{1}{2}-{3}', vars.DISTRIBUTION_REPOSITORY, env.REVISION, env.TIMESTAMP,  github.sha) || '' }}
         file: ./deploy/dockerfile/runtime/Dockerfile
         context: .
