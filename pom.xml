@@ -245,7 +245,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.13.0</version>
+                <version>4.16.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
