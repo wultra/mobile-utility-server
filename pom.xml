@@ -65,7 +65,7 @@
         <wultra-core.version>1.11.1</wultra-core.version>
 
         <!-- Dependency Versions -->
-        <bc.version>1.80</bc.version>
+        <bc.version>1.81</bc.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.14.3</gatling-charts-highcharts.version>
         <logstash.version>8.1</logstash.version>
