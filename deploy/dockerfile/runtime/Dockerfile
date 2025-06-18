@@ -8,6 +8,7 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
     LB_VERSION=4.30.0 \
+    LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
 
@@ -20,7 +21,7 @@ RUN apt-get -y update  \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
-    && [ "184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
+    && [ "$LB_SHA256  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
