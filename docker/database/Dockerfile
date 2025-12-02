@@ -9,7 +9,8 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
     LB_VERSION=4.30.0 \
     LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
-    TZ=UTC
+    TZ=UTC \
+    LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
 
