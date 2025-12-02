@@ -61,8 +61,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Wultra dependencies -->
-        <powerauth-crypto.version>1.10.0</powerauth-crypto.version>
-        <wultra-core.version>1.12.0</wultra-core.version>
+        <powerauth-crypto.version>2.0.0-SNAPSHOT</powerauth-crypto.version>
+        <wultra-core.version>2.0.0-SNAPSHOT</wultra-core.version>
 
         <!-- Dependency Versions -->
         <bc.version>1.82</bc.version>
@@ -135,14 +135,14 @@
 
         <!-- PowerAuth Dependencies -->
         <dependency>
-            <groupId>io.getlime.security</groupId>
+            <groupId>com.wultra.security</groupId>
             <artifactId>powerauth-java-crypto</artifactId>
             <version>${powerauth-crypto.version}</version>
         </dependency>
 
         <!-- Other Dependencies -->
         <dependency>
-            <groupId>io.getlime.core</groupId>
+            <groupId>com.wultra.core</groupId>
             <artifactId>rest-model-base</artifactId>
             <version>${wultra-core.version}</version>
         </dependency>

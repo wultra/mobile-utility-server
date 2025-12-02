@@ -18,12 +18,12 @@
 
 package com.wultra.app.mobileutilityserver.rest.model.errors;
 
-import io.getlime.core.rest.model.base.entity.Error;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wultra.core.rest.model.base.entity.Error;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Error response that contains a list of multiple error causes.

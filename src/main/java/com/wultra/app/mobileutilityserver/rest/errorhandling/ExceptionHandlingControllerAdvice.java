@@ -35,7 +35,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.wultra.app.mobileutilityserver.rest.model.errors.ExtendedError;
 import com.wultra.app.mobileutilityserver.rest.model.errors.Violation;
-import io.getlime.core.rest.model.base.response.ErrorResponse;
+import com.wultra.core.rest.model.base.response.ErrorResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +109,7 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
         final ExtendedError error = new ExtendedError("ERROR_REQUEST", "Invalid method parameter value");
@@ -118,7 +118,7 @@ public class ExceptionHandlingControllerAdvice {
                     new Violation(fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage())
             );
         }
-        return new io.getlime.core.rest.model.base.response.ErrorResponse(error);
+        return new com.wultra.core.rest.model.base.response.ErrorResponse(error);
     }
 
     /**
@@ -129,7 +129,7 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
         final ExtendedError error = new ExtendedError("ERROR_REQUEST", e.getMessage());
@@ -138,7 +138,7 @@ public class ExceptionHandlingControllerAdvice {
                     new Violation(violation.getPropertyPath().toString(), violation.getInvalidValue(), violation.getMessage())
             );
         }
-        return new io.getlime.core.rest.model.base.response.ErrorResponse(error);
+        return new com.wultra.core.rest.model.base.response.ErrorResponse(error);
     }
 
     /**
@@ -149,10 +149,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
     /**
@@ -163,10 +163,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(HttpMediaTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpMediaTypeException(HttpMediaTypeException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpMediaTypeException(HttpMediaTypeException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
     /**
@@ -177,10 +177,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(RequestRejectedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleRequestRejectedException(RequestRejectedException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleRequestRejectedException(RequestRejectedException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
     /**
@@ -191,10 +191,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
     /**
@@ -205,10 +205,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(HttpMessageConversionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", "Unable to map request data. Check the JSON payload.");
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", "Unable to map request data. Check the JSON payload.");
     }
 
     /**
@@ -219,10 +219,10 @@ public class ExceptionHandlingControllerAdvice {
      */
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public @ResponseBody io.getlime.core.rest.model.base.response.ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
+    public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
         logger.warn("Error occurred when calling an API: {}", e.getMessage());
         logger.debug("Exception detail: ", e);
-        return new io.getlime.core.rest.model.base.response.ErrorResponse("ERROR_AUTHENTICATION", e.getMessage());
+        return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_AUTHENTICATION", e.getMessage());
     }
 
     /**
