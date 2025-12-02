@@ -18,24 +18,42 @@
 
 package com.wultra.app.mobileutilityserver.rest.controller.api;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateEncodingException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.model.request.*;
-import com.wultra.app.mobileutilityserver.rest.model.response.*;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateTextRequest;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionListResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.TextDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.TextListResponse;
 import com.wultra.app.mobileutilityserver.rest.service.AdminService;
-import io.getlime.core.rest.model.base.response.Response;
+import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateEncodingException;
 
 /**
  * Controller for administration use cases.

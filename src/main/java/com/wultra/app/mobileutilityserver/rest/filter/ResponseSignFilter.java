@@ -17,27 +17,28 @@
  */
 package com.wultra.app.mobileutilityserver.rest.filter;
 
-import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
-import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
-import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
-import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
-import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import io.getlime.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.spec.InvalidKeySpecException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.spec.InvalidKeySpecException;
+import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
+import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
+import com.wultra.app.mobileutilityserver.rest.service.CryptographicOperationsService;
+import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Filter that signs the response data with a signature that depends on the received challenge.

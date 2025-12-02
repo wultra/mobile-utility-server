@@ -18,28 +18,6 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import com.wultra.app.mobileutilityserver.database.model.*;
-import com.wultra.app.mobileutilityserver.database.repo.*;
-import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
-import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
-import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
-import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
-import com.wultra.app.mobileutilityserver.rest.model.request.*;
-import com.wultra.app.mobileutilityserver.rest.model.response.*;
-import io.getlime.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import jakarta.validation.ConstraintViolationException;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.openssl.PEMParser;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyPair;
@@ -51,6 +29,49 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.openssl.PEMParser;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
+import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
+import com.wultra.app.mobileutilityserver.database.model.MobileAppVersionEntity;
+import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
+import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
+import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
+import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
+import com.wultra.app.mobileutilityserver.database.repo.MobileAppVersionRepository;
+import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
+import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
+import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
+import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateDirectRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
+import com.wultra.app.mobileutilityserver.rest.model.request.CreateTextRequest;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionListResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.TextDetailResponse;
+import com.wultra.app.mobileutilityserver.rest.model.response.TextListResponse;
+import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import jakarta.validation.ConstraintViolationException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Administration related methods.
