@@ -96,7 +96,7 @@ jobs:
     - name: Prepare SBOM files
       run: |
         mkdir -p ./docker/sbom
-        unzip -p ./target/mobile-utility-server-*.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./docker/sbom/mobile-utility-server.cdx.json
+        unzip -p ./target/mobile-utility-server*.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./docker/sbom/mobile-utility-server.cdx.json
     - name: Copy liquibase files
       run: |
         mkdir -p ./docker-init/liquibase/data/
@@ -136,10 +136,18 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v6
       with:
-        push: ${{ inputs.push_to_registry == true }}
+        push: ${{ needs.set-environment.outputs.should_push == 'true' }}
         platforms: linux/amd64,linux/arm64
         tags: ${{ env.TAGS }}
         file: ./docker/runtime/Dockerfile
+        context: .
+    - name: Build and push init container image to registry
+      uses: docker/build-push-action@v6
+      with:
+        push: ${{ needs.set-environment.outputs.should_push == 'true' }}
+        platforms: linux/amd64,linux/arm64
+        tags: ${{ env.INIT_TAGS }}
+        file: ./docker-init/Dockerfile
         context: .
     - name: Resolve image digests
       if: ${{ needs.set-environment.outputs.should_push == 'true' }}
