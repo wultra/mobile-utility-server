@@ -77,7 +77,7 @@ jobs:
         REVISION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "----- Setting tags for nondistribution -----"
         echo "REVISION=$REVISION" >> $GITHUB_ENV
-        IMAGE_VERSION=$REVISIONmobile-utility-server-${{ github.sha }}
+        IMAGE_VERSION=$REVISION${{ env.TIMESTAMP }}-${{ github.sha }}
         IMAGE_NAME=mobile-utility-server:${IMAGE_VERSION}
         INIT_IMAGE_NAME=mobile-utility-server-init:${IMAGE_VERSION}
         echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
