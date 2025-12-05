@@ -49,10 +49,10 @@ STOPSIGNAL SIGQUIT
 # Set non-root PowerAuth user
 USER powerauth
 
-COPY docker/conf/logback/* $LOGBACK_CONF/
+COPY ./docker/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (liquibase)
-COPY docker/runtime/docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 

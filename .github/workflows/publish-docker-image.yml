@@ -139,7 +139,7 @@ jobs:
         push: ${{ needs.set-environment.outputs.should_push == 'true' }}
         platforms: linux/amd64,linux/arm64
         tags: ${{ env.TAGS }}
-        file: ./docker/runtime/Dockerfile
+        file: ./docker/Dockerfile
         context: .
     - name: Build and push init container image to registry
       uses: docker/build-push-action@v6
