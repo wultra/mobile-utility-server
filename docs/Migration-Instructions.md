@@ -2,6 +2,6 @@
 
 This page contains Mobile Utility Server migration instructions.
 
-- [Mobile Utility Server 2.0.0](./Mobile-Utility-Server-2.0.0.md)
+- [Mobile Utility Server 1.11.0](./Mobile-Utility-Server-1.11.0.md)
 - [Mobile Utility Server 1.5.0](./Mobile-Utility-Server-1.5.0.md)
 - [Mobile Utility Server 1.4.0](./Mobile-Utility-Server-1.4.0.md)
