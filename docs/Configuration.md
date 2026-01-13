@@ -10,8 +10,8 @@ The context path `/admin` for administrative purposes is authenticated, but it s
 
 ## Creating First Admin User
 
-When calling admin APIs provided by the Mobile Utility Server, basic HTTP authentication is required.
-This why we need to add users and their passwords in the database.
+When calling admin APIs provided by the Mobile Utility Server, HTTP Basic authentication is required.
+This is why we need to add users and their password hashes in the database.
 
 The first user we need to add is basically the main admin user, let's call the user `system-admin`.
 The first user needs to be inserted in the database.
@@ -129,17 +129,17 @@ Otherwise, compare the given application version (respecting the platform) to co
 
 Let's say, we have an application name `my-testing-app` in current version `3.5.0` and want to suggest clients to update when they have version lower than or equal to `3.3.0`.
 Moreover, we want to force update when the version is lower than or equal to `3.1.0`.
-Configuration `major_os_version=null` means that the rule applies for all operation system versions of the given platform.
-The following configuration force update of application version `2.9.0` because it is lower than the suggested `3.3.0` and even lower than the required `3.1.1`.    
+Configuration `major_os_version=null` means that the rule applies for all operating system versions of the given platform.
+The following configuration forces update of application version `2.9.0` because it is lower than the suggested `3.3.0` and even lower than the required `3.1.1`.    
 
 ```sql
 insert into mus_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
 values (nextval('mus_mobile_app_version_seq'), 1, 'IOS', '3.3.0', '3.1.0', null, 'my-testing-app.message-key');
 ```
 
-In may happen, that it is not possible to update to the new version, because it is using newer API not available in the older operation system.
-In that case, configure a rule for the specific operation system major version (For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29), which overrides the generic one.
-The following configuration return `OK` for application version `2.9.0` if the operation system version is `11.x.x`.
+It may happen, that it is not possible to update to the new version, because it is using newer API not available in the older operation system.
+In that case, configure a rule for the specific operating system major version (For iOS e.g. 12.4.2 it is 12. For Android, it is API level e.g. 29), which overrides the generic one.
+The following configuration returns `OK` for application version `2.9.0` if the operating system version is `11.x.x`.
 
 ```sql
 insert into mus_mobile_app_version(id, app_id, platform, suggested_version, required_version, major_os_version, message_key)
