@@ -71,6 +71,7 @@
         <logstash.version>8.1</logstash.version>
 
         <central.publishing.plugin.version>0.9.0</central.publishing.plugin.version>
+        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -296,6 +297,11 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

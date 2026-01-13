@@ -31,7 +31,7 @@ This guide provides step-by-step instructions for migrating from PowerAuth Mobil
 - If direct update via Liquibase is not possible `liquibase update` command can generate required SQL script.
 
    Please take a look at a list of necessary environmental variables listed
-   here [env.list.tmp](../deploy/env.list.tmp).
+   here [env.list.tmp](../docker/env.list.tmp).
 
 4. **Execute Migration Script**: After applying the Liquibase changes, run the `1.4.0-migration.sql` script located in the sql directory.
 
