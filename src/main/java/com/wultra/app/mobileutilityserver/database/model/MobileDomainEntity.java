@@ -19,6 +19,9 @@
 package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import java.util.ArrayList;
@@ -31,6 +34,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "mus_mobile_domain")
+@Getter
+@Setter
 public class MobileDomainEntity {
 
     @Id
@@ -42,63 +47,15 @@ public class MobileDomainEntity {
     @Column(name = "domain")
     private String domain;
 
+    @Column(name = "ssl_pinning_required")
+    private Boolean sslPinningRequired;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_id")
     private MobileAppEntity app;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval=true)
+    @Setter(AccessLevel.NONE)
     private final List<CertificateEntity> certificates = new ArrayList<>();
-
-    /**
-     * Get ID.
-     * @return ID.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Set ID.
-     * @param id ID.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Get domain common name.
-     * @return Domain common name.
-     */
-    public String getDomain() {
-        return domain;
-    }
-
-    /**
-     * Set domain common name.
-     * @param domain Common name.
-     */
-    public void setDomain(String domain) {
-        this.domain = domain;
-    }
-
-    /**
-     * Get related mobile application.
-     * @return Mobile application.
-     */
-    public MobileAppEntity getApp() {
-        return app;
-    }
-
-    /**
-     * Set related mobile application.
-     * @param app Mobile application.
-     */
-    public void setApp(MobileAppEntity app) {
-        this.app = app;
-    }
-
-    public List<CertificateEntity> getCertificates() {
-        return certificates;
-    }
 }

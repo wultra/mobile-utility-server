@@ -87,3 +87,11 @@ ALTER TABLE mus_mobile_domain ADD CONSTRAINT mus_mobile_domain_app_id_fk FOREIGN
 ALTER TABLE mus_certificate ADD CONSTRAINT mus_certificate_mobile_domain_id_fk FOREIGN KEY (mobile_domain_id) REFERENCES mus_mobile_domain (id);
 
 -- Changeset mobile-utility-server/1.5.x/20230905-add-tag-1.5.0.xml::1::Lubos Racansky
+-- Changeset mobile-utility-server/2.0.x/20260116-ssl-pinning-depth.xml::1::Pavel Sindelar
+-- Add depth column to mus_certificate table
+ALTER TABLE mus_certificate ADD depth INTEGER DEFAULT 0 NOT NULL;
+
+-- Changeset mobile-utility-server/2.0.x/20260116-ssl-pinning-depth.xml::2::Pavel Sindelar
+-- Add ssl_pinning_required column to mus_mobile_domain table
+ALTER TABLE mus_mobile_domain ADD ssl_pinning_required BOOLEAN DEFAULT 1 NOT NULL;
+

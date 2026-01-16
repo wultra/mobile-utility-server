@@ -238,4 +238,18 @@ public class ExceptionHandlingControllerAdvice {
         logger.debug("Exception detail: ", e);
         return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
     }
+
+    /**
+     * Exception handler for domain name - certificate mismatch.
+     *
+     * @param e Exception.
+     * @return Response with error details.
+     */
+    @ExceptionHandler(DomainNameCertificateMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody ErrorResponse handleDomainNameCertificateMismatchException(final DomainNameCertificateMismatchException e) {
+        logger.warn("Provided certificate does not match the domain name: {}", e.getDomainName());
+        logger.debug("Exception detail: ", e);
+        return new ErrorResponse("ERROR_REQUEST", e.getMessage());
+    }
 }

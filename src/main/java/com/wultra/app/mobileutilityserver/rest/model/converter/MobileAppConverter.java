@@ -22,6 +22,7 @@ import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
 import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
+import com.wultra.app.mobileutilityserver.rest.model.entity.DomainWithCertificates;
 import com.wultra.app.mobileutilityserver.rest.model.entity.FullCertificateInfo;
 import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,18 +57,19 @@ public class MobileAppConverter {
         destination.setDisplayName(source.getDisplayName());
         destination.setPublicKey(source.getSigningPublicKey());
         for (MobileDomainEntity mobileDomainEntity : source.getDomains()) {
-            final Domain domain = convertDomain(mobileDomainEntity);
+            final DomainWithCertificates domain = convertDomainWithCertificates(mobileDomainEntity);
             destination.getDomains().add(domain);
         }
         return destination;
     }
 
-    public Domain convertDomain(MobileDomainEntity source) {
+    public DomainWithCertificates convertDomainWithCertificates(MobileDomainEntity source) {
         if (source == null) {
             return null;
         }
-        final Domain destination = new Domain();
+        final DomainWithCertificates destination = new DomainWithCertificates();
         destination.setName(source.getDomain());
+        destination.setSslPinningRequired(source.getSslPinningRequired());
         for (CertificateEntity certificateEntity : source.getCertificates()) {
             final FullCertificateInfo certificateInfo = certificateConverter.convertFrom(certificateEntity);
             destination.getCertificates().add(certificateInfo);
@@ -75,4 +77,17 @@ public class MobileAppConverter {
         return destination;
     }
 
+    /**
+     * Convert mobile domain entity to {@link Domain}.
+     *
+     * @param source mobile domain entity to convert
+     * @return converted domain
+     */
+    public Domain convertDomain(final MobileDomainEntity source) {
+        final Domain destination = new Domain();
+        destination.setName(source.getDomain());
+        destination.setSslPinningRequired(source.getSslPinningRequired());
+
+        return destination;
+    }
 }

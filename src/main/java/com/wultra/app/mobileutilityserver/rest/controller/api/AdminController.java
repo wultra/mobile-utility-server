@@ -21,17 +21,13 @@ package com.wultra.app.mobileutilityserver.rest.controller.api;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
+import java.util.Set;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
 import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
@@ -41,13 +37,6 @@ import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCe
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateTextRequest;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.TextDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.TextListResponse;
 import com.wultra.app.mobileutilityserver.rest.service.AdminService;
 import com.wultra.core.rest.model.base.response.Response;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -96,14 +85,29 @@ public class AdminController {
     }
 
     @Tag(name = TAG_ADMIN_APPLICATION_CERTIFICATE)
+    @PutMapping("apps/{name}/pinning-bypass-domains")
+    public SavePinningBypassDomainsResponse savePinningBypassDomains(
+            final @PathVariable("name") String appName,
+            final @RequestBody() Set<String> domains
+    ) throws AppNotFoundException {
+        return adminService.savePinningBypassDomains(appName, domains);
+    }
+
+    @Tag(name = TAG_ADMIN_APPLICATION_CERTIFICATE)
     @PostMapping("apps/{name}/certificates/auto")
-    public CertificateDetailResponse createApplicationCertificateAuto(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationCertificateRequest request) throws AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException {
+    public CertificateDetailResponse createApplicationCertificateAuto(
+            final @PathVariable("name") String name,
+            final @Valid @RequestBody CreateApplicationCertificateRequest request
+    ) throws AppNotFoundException, IOException, CertificateEncodingException, NoSuchAlgorithmException, DomainNameCertificateMismatchException {
         return adminService.createApplicationCertificate(name, request);
     }
 
     @Tag(name = TAG_ADMIN_APPLICATION_CERTIFICATE)
     @PostMapping("apps/{name}/certificates/pem")
-    public CertificateDetailResponse createApplicationCertificatePem(@PathVariable("name") String name, @Valid @RequestBody CreateApplicationCertificatePemRequest request) throws AppNotFoundException, IOException, NoSuchAlgorithmException {
+    public CertificateDetailResponse createApplicationCertificatePem(
+            final @PathVariable("name") String name,
+            final @Valid @RequestBody CreateApplicationCertificatePemRequest request
+    ) throws AppNotFoundException, IOException, NoSuchAlgorithmException, DomainNameCertificateMismatchException {
         return adminService.createApplicationCertificate(name, request);
     }
 

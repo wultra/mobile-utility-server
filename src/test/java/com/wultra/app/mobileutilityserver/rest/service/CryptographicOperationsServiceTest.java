@@ -17,15 +17,23 @@
  */
 package com.wultra.app.mobileutilityserver.rest.service;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringReader;
 import java.security.Security;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+import static com.wultra.app.mobileutilityserver.utils.Certificates.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test for {@link CryptographicOperationsService}.
@@ -34,46 +42,114 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class CryptographicOperationsServiceTest {
 
+    private final CryptographicOperationsService tested = new CryptographicOperationsService(null, null, null);
+
+    @BeforeAll
+    static void init() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
+
     @Test
     void testCertificateToPem() throws Exception {
-        final String cert = """
-                -----BEGIN CERTIFICATE-----
-                MIIEQTCCAymgAwIBAgIBATANBgkqhkiG9w0BAQUFADCBkzEaMBgGA1UEAxMRTW9u
-                a2V5IE1hY2hpbmUgQ0ExCzAJBgNVBAYTAlVLMREwDwYDVQQIEwhTY290bGFuZDEQ
-                MA4GA1UEBxMHR2xhc2dvdzEcMBoGA1UEChMTbW9ua2V5bWFjaGluZS5jby51azEl
-                MCMGCSqGSIb3DQEJARYWY2FAbW9ua2V5bWFjaGluZS5jby51azAeFw0wNTAzMDYy
-                MzI4MjJaFw0wNjAzMDYyMzI4MjJaMIGvMQswCQYDVQQGEwJVSzERMA8GA1UECBMI
-                U2NvdGxhbmQxEDAOBgNVBAcTB0dsYXNnb3cxGzAZBgNVBAoTEk1vbmtleSBNYWNo
-                aW5lIEx0ZDElMCMGA1UECxMcT3BlbiBTb3VyY2UgRGV2ZWxvcG1lbnQgTGFiLjEU
-                MBIGA1UEAxMLTHVrZSBUYXlsb3IxITAfBgkqhkiG9w0BCQEWEmx1a2VAbW9ua2V5
-                bWFjaGluZTBcMA0GCSqGSIb3DQEBAQUAA0sAMEgCQQDItxZr07mm65ttYH7RMaVo
-                VeMCq4ptfn+GFFEk4+54OkDuh1CHlk87gEc1jx3ZpQPJRTJx31z3YkiAcP+RDzxr
-                AgMBAAGjggFIMIIBRDAJBgNVHRMEAjAAMBEGCWCGSAGG+EIBAQQEAwIHgDALBgNV
-                HQ8EBAMCBeAwHQYDVR0OBBYEFG7mW1czzw4vFcL03+wUvvvPVFY8MIHABgNVHSME
-                gbgwgbWAFKt47K8QG4qbH8exJY8WKPIXmq02oYGZpIGWMIGTMRowGAYDVQQDExFN
-                b25rZXkgTWFjaGluZSBDQTELMAkGA1UEBhMCVUsxETAPBgNVBAgTCFNjb3RsYW5k
-                MRAwDgYDVQQHEwdHbGFzZ293MRwwGgYDVQQKExNtb25rZXltYWNoaW5lLmNvLnVr
-                MSUwIwYJKoZIhvcNAQkBFhZjYUBtb25rZXltYWNoaW5lLmNvLnVrggEAMDUGCWCG
-                SAGG+EIBBAQoFiZodHRwczovL21vbmtleW1hY2hpbmUuY28udWsvY2EtY3JsLnBl
-                bTANBgkqhkiG9w0BAQUFAAOCAQEAZ961bEgm2rOq6QajRLeoljwXDnt0S9BGEWL4
-                PMU2FXDog9aaPwfmZ5fwKaSebwH4HckTp11xwe/D9uBZJQ74Uf80UL9z2eo0GaSR
-                nRB3QPZfRvop0I4oPvwViKt3puLsi9XSSJ1w9yswnIf89iONT7ZyssPg48Bojo8q
-                lcKwXuDRBWciODK/xWhvQbaegGJ1BtXcEHtvNjrUJLwSMDSr+U5oUYdMohG0h1iJ
-                R+JQc49I33o2cTc77wfEWLtVdXAyYY4GSJR6VfgvV40x85ItaNS3HHfT/aXU1x4m
-                W9YQkWlA6t0blGlC+ghTOY1JbgWnEfXMmVgg9a9cWaYQ+NQwqA==
-                -----END CERTIFICATE-----
-                """;
-
-        final ByteArrayInputStream in = new ByteArrayInputStream(cert.getBytes());
+        final ByteArrayInputStream in = new ByteArrayInputStream(GENERIC_CERT.getBytes());
         final CertificateFactory cf = CertificateFactory.getInstance("X.509");
         final X509Certificate x509Certificate = (X509Certificate) cf.generateCertificate(in);
 
-        Security.addProvider(new BouncyCastleProvider());
-
-        final CryptographicOperationsService tested = new CryptographicOperationsService(null, null, null);
-
         final String result = tested.certificateToPem(x509Certificate);
 
-        assertEquals(cert, result);
+        assertEquals(GENERIC_CERT, result);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_cn() throws Exception {
+        testCertificateMatches("domain.com", CN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_wildcardCn() throws Exception {
+        testCertificateMatches("sub.domain.com", WILDCARD_CN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_singleSan() throws Exception {
+        testCertificateMatches("domain.com", SINGLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_multipleSan() throws Exception {
+        testCertificateMatches("domain2.com", MULTIPLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_wildcardSingleSan() throws Exception {
+        testCertificateMatches("sub.domain.com", WILDCARD_SINGLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_wildcardMultipleSan() throws Exception {
+        testCertificateMatches("sub.domain2.com", WILDCARD_MULTIPLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_matchCert_sanOnly() throws Exception {
+        testCertificateMatches("domain.com", SAN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_exactCn() {
+        testCertificateDoesNotMatch("non-matching.com", CN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardCn() {
+        testCertificateDoesNotMatch("sub.non-matching.com", WILDCARD_CN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardCnSubdomainTooDeep() {
+        testCertificateDoesNotMatch("sub.sub.domain.com", WILDCARD_CN_ONLY_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_exactSan() {
+        testCertificateDoesNotMatch("non-matching.com", SINGLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardSan() {
+        testCertificateDoesNotMatch("sub.non-matching.com", WILDCARD_SINGLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardSanSubdomainTooDeep() {
+        testCertificateDoesNotMatch("sub.sub.domain.com", WILDCARD_SINGLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_multipleSan() {
+        testCertificateDoesNotMatch("non-matching.com", MULTIPLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardMultipleSan() {
+        testCertificateDoesNotMatch("sub.non-matching.com", WILDCARD_MULTIPLE_SAN_CERT);
+    }
+
+    @Test
+    void testVerifyHostname_noMatch_wildcardMultipleSanSubdomainTooDeep() {
+        testCertificateDoesNotMatch("sub.sub.domain2.com", WILDCARD_MULTIPLE_SAN_CERT);
+    }
+
+    private void testCertificateMatches(final String domainName, final String certificate) throws Exception {
+        tested.verifyHostname(domainName, getCertificateFromPem(certificate));
+    }
+
+    private void testCertificateDoesNotMatch(final String domainName, final String certificate) {
+        assertThrows(DomainNameCertificateMismatchException.class, () -> tested.verifyHostname(domainName, getCertificateFromPem(certificate)));
+    }
+
+    private X509CertificateHolder getCertificateFromPem(final String pem) throws IOException {
+        final PEMParser pemParser = new PEMParser(new StringReader(pem));
+        return (X509CertificateHolder) pemParser.readObject();
     }
 }
