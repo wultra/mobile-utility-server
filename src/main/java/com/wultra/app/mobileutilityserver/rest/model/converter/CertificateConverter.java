@@ -61,6 +61,7 @@ public class CertificateConverter {
         destination.setName(source.getDomain().getDomain());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
+        destination.setDepth(source.getDepth());
         return destination;
     }
 
