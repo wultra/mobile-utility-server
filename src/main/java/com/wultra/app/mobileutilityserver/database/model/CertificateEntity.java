@@ -19,6 +19,8 @@
 package com.wultra.app.mobileutilityserver.database.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 /**
@@ -28,6 +30,8 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "mus_certificate")
+@Getter
+@Setter
 public class CertificateEntity {
 
     @Id
@@ -45,87 +49,11 @@ public class CertificateEntity {
     @Column(name = "expires")
     private Long expires;
 
+    @Column(name = "depth")
+    private Integer depth;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mobile_domain_id")
     private MobileDomainEntity domain;
 
-    /**
-     * Get ID.
-     * @return ID.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Set ID.
-     * @param id ID.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * Get certificate in PEM format.
-     * @return Certificate in PEM format.
-     */
-    public String getPem() {
-        return pem;
-    }
-
-    /**
-     * Set certificate in PEM format.
-     * @param pem Certificate in PEM format.
-     */
-    public void setPem(String pem) {
-        this.pem = pem;
-    }
-
-    /**
-     * Get domain certificate fingerprint.
-     * @return Certificate fingerprint.
-     */
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    /**
-     * Set domain certificate fingerprint.
-     * @param fingerprint Certificate fingerprint.
-     */
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
-    }
-
-    /**
-     * Get expiration timestamp.
-     * @return Expiration timestamp.
-     */
-    public Long getExpires() {
-        return expires;
-    }
-
-    /**
-     * Set expiration timestamp.
-     * @param expires Expiration timestamp.
-     */
-    public void setExpires(Long expires) {
-        this.expires = expires;
-    }
-
-    /**
-     * Get associated domain.
-     * @return Domain.
-     */
-    public MobileDomainEntity getDomain() {
-        return domain;
-    }
-
-    /**
-     * Set associated domain.
-     * @param domain Domain.
-     */
-    public void setDomain(MobileDomainEntity domain) {
-        this.domain = domain;
-    }
 }

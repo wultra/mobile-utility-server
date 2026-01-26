@@ -54,7 +54,8 @@ Create a new application with specified name.
         {
           "pem": "pem1",
           "fingerprint": "fingerprint1",
-          "expires": 100
+          "expires": 100,
+          "depth": 1
         }
       ]
     }
@@ -62,17 +63,18 @@ Create a new application with specified name.
 }
 ```
 
-| Attribute                              | Type       | Description                                          |
-|----------------------------------------|------------|------------------------------------------------------|
-| `name`                                 | `String`   | Name of the application.                             |
-| `displayName`                          | `String`   | Display name of the application.                     |
-| `publicKey`                            | `String`   | Public key of the application.                       |
-| `domains`                              | `Object[]` | List of domain configurations for the application.   |
-| `domains[].name`                       | `String`   | Name of the domain.                                  |
-| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                 |
-| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                             |
-| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                      |
-| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds. |
+| Attribute                              | Type       | Description                                                       |
+|----------------------------------------|------------|-------------------------------------------------------------------|
+| `name`                                 | `String`   | Name of the application.                                          |
+| `displayName`                          | `String`   | Display name of the application.                                  |
+| `publicKey`                            | `String`   | Public key of the application.                                    |
+| `domains`                              | `Object[]` | List of domain configurations for the application.                |
+| `domains[].name`                       | `String`   | Name of the domain.                                               |
+| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                              |
+| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                                          |
+| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                                   |
+| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds.              |
+| `domains[].certificates[].depth`       | `Integer`  | Depth of the certificate in the certificate chain (0 being leaf). |
 
 #### Response 400
 
@@ -195,7 +197,8 @@ including configuration settings.
         {
           "pem": "pem1",
           "fingerprint": "fingerprint1",
-          "expires": 100
+          "expires": 100,
+          "depth": 1
         }
       ]
     }
@@ -203,17 +206,18 @@ including configuration settings.
 }
 ```
 
-| Attribute                              | Type       | Description                                          |
-|----------------------------------------|------------|------------------------------------------------------|
-| `name`                                 | `String`   | Name of the application.                             |
-| `displayName`                          | `String`   | Display name of the application.                     |
-| `publicKey`                            | `String`   | Public key of the application.                       |
-| `domains`                              | `Object[]` | List of domain configurations for the application.   |
-| `domains[].name`                       | `String`   | Name of the domain.                                  |
-| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                 |
-| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                             |
-| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                      |
-| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds. |
+| Attribute                              | Type       | Description                                                       |
+|----------------------------------------|------------|-------------------------------------------------------------------|
+| `name`                                 | `String`   | Name of the application.                                          |
+| `displayName`                          | `String`   | Display name of the application.                                  |
+| `publicKey`                            | `String`   | Public key of the application.                                    |
+| `domains`                              | `Object[]` | List of domain configurations for the application.                |
+| `domains[].name`                       | `String`   | Name of the domain.                                               |
+| `domains[].certificates`               | `Object[]` | List of certificates for the domain.                              |
+| `domains[].certificates[].pem`         | `String`   | PEM-encoded certificate.                                          |
+| `domains[].certificates[].fingerprint` | `String`   | Fingerprint of the certificate.                                   |
+| `domains[].certificates[].expires`     | `Long`     | Expiration time of the certificate in epoch seconds.              |
+| `domains[].certificates[].depth`       | `Integer`  | Depth of the certificate in the certificate chain (0 being leaf). |
 
 #### Response 401
 
@@ -226,6 +230,110 @@ Invalid username or password was provided while calling the service.
     "code": "ERROR_AUTHENTICATION",
     "message": "Unauthorized"
   }
+}
+```
+
+<!-- end -->
+
+<!-- begin api PUT /admin/apps/{name}/pinning-bypass-domains -->
+
+### Disable SSL Pinning for Domains
+
+Disable SSL pinning for the listed domains. The supplied list must contain all domains for which the SSL pinning should be disabled.
+If the endpoint is called and an existing domain is not listed, SSL pinning will be enabled for it (regardless of whether it was previously disabled).
+If a non-existent domain is listed, it will be ignored.
+
+#### Request
+
+##### Path Params
+
+| Param                                                  | Type     | Description                                                                  |
+|--------------------------------------------------------|----------|------------------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span> | `String` | Name of the application for whose domains the SSL pinning shall be disabled. |
+
+##### Request Body
+
+```json
+[
+  "domain1"
+]
+```
+
+#### Response 200
+
+```json
+{
+  "domains": [
+    {
+      "name": "domain1",
+      "sslPinningRequired": false
+    },
+    {
+      "name": "domain2",
+      "sslPinningRequired": true
+    }
+  ]
+}
+```
+
+| Attribute                     | Type       | Description                                                    |
+|-------------------------------|------------|----------------------------------------------------------------|
+| `domains`                     | `Object[]` | List of all configured domains for given mobile application.   |
+| `domain[].name`               | `String`   | Domain name.                                                   |
+| `domain[].sslPinningRequired` | `Boolean`  | Flag indicating whether SSL pinning is enabled for the domain. |
+
+#### Response 400
+
+Failed to configure SSL pinning for domains due to invalid input.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "ERROR_REQUEST",
+    "message": "Required fields are missing"
+  }
+}
+```
+
+#### Response 401
+
+Invalid username or password was provided while calling the service.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "ERROR_AUTHENTICATION",
+    "message": "Unauthorized"
+  }
+}
+```
+
+#### Response 404
+
+Failed to configure SSL pinning for domains because the requested app was not found.
+
+```json
+{
+  "status": "ERROR",
+  "responseObject": {
+    "code": "APP_NOT_FOUND",
+    "message": "App with a provided ID was not found."
+  }
+}
+```
+
+#### Response 500
+
+Error occurred during app execution.
+
+```json
+{
+  "timestamp": "TIMESTAMP",
+  "status": 500,
+  "error": "Internal Server Error",
+  "path": "/admin/apps/mobile-app22/pinning-bypass-domains"
 }
 ```
 
@@ -265,16 +373,18 @@ registration of a new certificate using server-defined parameters.
   "name": "Domain Name",
   "pem": "pem1",
   "fingerprint": "fingerprint1",
-  "expires": 100
+  "expires": 100,
+  "depth": 0
 }
 ```
 
-| Attribute                                                     | Type     | Description                                 |
-|---------------------------------------------------------------|----------|---------------------------------------------|
-| `name`<span class="required" title="Required">*</span>        | `String` | Name of the domain.                         |
-| `pem`<span class="required" title="Required">*</span>         | `String` | PEM format of the certificate.              |
-| `fingerprint`<span class="required" title="Required">*</span> | `String` | Fingerprint of the certificate..            |
-| `expires`<span class="required" title="Required">*</span>     | `Long`   | Timestamp when the certificate will expire. |
+| Attribute                                                     | Type      | Description                                                                       |
+|---------------------------------------------------------------|-----------|-----------------------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span>        | `String`  | Name of the domain.                                                               |
+| `pem`<span class="required" title="Required">*</span>         | `String`  | PEM format of the certificate.                                                    |
+| `fingerprint`<span class="required" title="Required">*</span> | `String`  | Fingerprint of the certificate..                                                  |
+| `expires`<span class="required" title="Required">*</span>     | `Long`    | Timestamp when the certificate will expire.                                       |
+| `depth`                                                       | `Integer` | Depth of the certificate in the certificate chain - always 0 (leaf) in this case. |
 
 #### Response 400
 
@@ -351,13 +461,17 @@ associates it with the application.
 
 ```json
 {
-  "pem": "pem1"
+  "pem": "pem1",
+  "domain": "domain1",
+  "depth": 1
 }
 ```
 
-| Attribute                                             | Type     | Description                     |
-|-------------------------------------------------------|----------|---------------------------------|
-| `pem`<span class="required" title="Required">*</span> | `String` | PEM encoded certificate string. |
+| Attribute                                                | Type      | Description                                                                                                           |
+|----------------------------------------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------|
+| `pem`<span class="required" title="Required">*</span>    | `String`  | PEM encoded certificate string.                                                                                       |
+| `domain`<span class="required" title="Required">*</span> | `String`  | Domain this certificate belongs to. In case the `depth` is 0, it must match the hostname of the certificate in `pem`. |
+| `depth`                                                  | `Integer` | Depth of the certificate in the certificate chain (0 being leaf). If missing, the value 0 is used.                    |
 
 #### Response 200
 
@@ -366,16 +480,18 @@ associates it with the application.
   "name": "Domain Name",
   "pem": "pem1",
   "fingerprint": "fingerprint1",
-  "expires": 100
+  "expires": 100,
+  "depth": 1
 }
 ```
 
-| Attribute                                                     | Type     | Description                                 |
-|---------------------------------------------------------------|----------|---------------------------------------------|
-| `name`<span class="required" title="Required">*</span>        | `String` | Name of the domain.                         |
-| `pem`<span class="required" title="Required">*</span>         | `String` | PEM format of the certificate.              |
-| `fingerprint`<span class="required" title="Required">*</span> | `String` | Fingerprint of the certificate..            |
-| `expires`<span class="required" title="Required">*</span>     | `Long`   | Timestamp when the certificate will expire. |
+| Attribute                                                     | Type      | Description                                                       |
+|---------------------------------------------------------------|-----------|-------------------------------------------------------------------|
+| `name`<span class="required" title="Required">*</span>        | `String`  | Name of the domain.                                               |
+| `pem`<span class="required" title="Required">*</span>         | `String`  | PEM format of the certificate.                                    |
+| `fingerprint`<span class="required" title="Required">*</span> | `String`  | Fingerprint of the certificate..                                  |
+| `expires`<span class="required" title="Required">*</span>     | `Long`    | Timestamp when the certificate will expire.                       |
+| `depth`                                                       | `Integer` | Depth of the certificate in the certificate chain (0 being leaf). |
 
 #### Response 400
 

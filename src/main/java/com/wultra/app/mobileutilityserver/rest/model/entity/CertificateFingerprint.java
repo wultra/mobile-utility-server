@@ -31,5 +31,6 @@ public class CertificateFingerprint {
     private String name;
     private String fingerprint;
     private long expires;
+    private Integer depth;
     
 }

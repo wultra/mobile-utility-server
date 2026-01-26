@@ -32,5 +32,6 @@ public class CertificateDetailResponse {
     private String pem;
     private String fingerprint;
     private long expires;
+    private Integer depth;
 
 }

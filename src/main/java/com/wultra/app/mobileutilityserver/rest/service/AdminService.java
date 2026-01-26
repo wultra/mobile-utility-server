@@ -25,15 +25,15 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
+import com.wultra.app.mobileutilityserver.rest.model.response.*;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.openssl.PEMParser;
 import org.springframework.stereotype.Service;
@@ -61,13 +61,6 @@ import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCe
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
 import com.wultra.app.mobileutilityserver.rest.model.request.CreateTextRequest;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.ApplicationVersionListResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.CertificateDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.TextDetailResponse;
-import com.wultra.app.mobileutilityserver.rest.model.response.TextListResponse;
 import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -156,6 +149,7 @@ public class AdminService {
         final String pem = request.getPem();
         final String fingerprint = request.getFingerprint();
         final Long expires = request.getExpires();
+        final Integer depth = request.getDepth();
 
         final MobileAppEntity mobileAppEntity = mobileAppRepository.findFirstByName(appName);
         if (mobileAppEntity == null) {
@@ -178,6 +172,7 @@ public class AdminService {
             domainEntity = new MobileDomainEntity();
             domainEntity.setApp(mobileAppEntity);
             domainEntity.setDomain(domain);
+            domainEntity.setSslPinningRequired(true);
             domainEntity = mobileDomainRepository.save(domainEntity);
         }
 
@@ -186,6 +181,7 @@ public class AdminService {
         certificateEntity.setPem(pem);
         certificateEntity.setFingerprint(fingerprint);
         certificateEntity.setExpires(expires);
+        certificateEntity.setDepth(depth);
 
         final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
@@ -194,10 +190,12 @@ public class AdminService {
         return response;
     }
 
-    public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificatePemRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException {
+    public CertificateDetailResponse createApplicationCertificate(final String appName, final CreateApplicationCertificatePemRequest request) throws IOException,
+            NoSuchAlgorithmException, AppNotFoundException, DomainNameCertificateMismatchException {
 
         final String domain = request.getDomain();
         final String pem = request.getPem();
+        final int depth = request.getDepth() != null ? request.getDepth() : 0;
 
         final PEMParser pemParser = new PEMParser(new StringReader(pem));
         final Object pemInfo = pemParser.readObject();
@@ -205,7 +203,12 @@ public class AdminService {
             throw new IOException("PemParser read null, appName: " + appName);
         }
         pemParser.close();
+
         final X509CertificateHolder x509Cert = (X509CertificateHolder) pemInfo;
+        if (depth == 0) {
+            cryptographicOperationsService.verifyHostname(domain, x509Cert);
+        }
+
         final long notAfter = x509Cert.getNotAfter().getTime() / 1000;
 
         final CreateApplicationCertificateDirectRequest innerRequest = new CreateApplicationCertificateDirectRequest();
@@ -213,11 +216,13 @@ public class AdminService {
         innerRequest.setPem(pem);
         innerRequest.setFingerprint(cryptographicOperationsService.computeSHA256Hash(x509Cert.getEncoded()));
         innerRequest.setExpires(notAfter);
+        innerRequest.setDepth(depth);
 
         return this.createApplicationCertificate(appName, innerRequest);
     }
 
-    public CertificateDetailResponse createApplicationCertificate(String appName, CreateApplicationCertificateRequest request) throws IOException, NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException {
+    public CertificateDetailResponse createApplicationCertificate(final String appName, final CreateApplicationCertificateRequest request) throws IOException,
+            NoSuchAlgorithmException, AppNotFoundException, CertificateEncodingException, DomainNameCertificateMismatchException {
         final String domain = request.getDomain();
 
         final X509Certificate cert = fetchCertificate(domain);
@@ -227,6 +232,7 @@ public class AdminService {
         final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
         innerRequest.setPem(certPem);
+        innerRequest.setDepth(0);
 
         return this.createApplicationCertificate(appName, innerRequest);
     }
@@ -405,5 +411,31 @@ public class AdminService {
             case ANDROID -> MobileAppVersionEntity.Platform.ANDROID;
             case IOS -> MobileAppVersionEntity.Platform.IOS;
         };
+    }
+
+    /**
+     * Set the pinning required flag to all domains of the given application. If the domain is present in the supplied set, its pinning required flag is set to false.
+     * If the domain is not present, its flag is set to true.
+     *
+     * @param applicationName      application name
+     * @param pinningBypassDomains domains to set the pinning required flag to false
+     * @return resulting pinning required state of all domains of the given application
+     */
+    public SavePinningBypassDomainsResponse savePinningBypassDomains(final String applicationName, final Set<String> pinningBypassDomains) throws AppNotFoundException {
+        if (!mobileAppRepository.existsByName(applicationName)) {
+            throw new AppNotFoundException(applicationName);
+        }
+
+        final List<MobileDomainEntity> appDomains = mobileDomainRepository.findAllByAppName(applicationName);
+
+        for (final MobileDomainEntity appDomain : appDomains) {
+            final boolean isPinningBypassDomain = pinningBypassDomains.contains(appDomain.getDomain());
+            appDomain.setSslPinningRequired(!isPinningBypassDomain);
+        }
+
+        final List<Domain> resultingDomains = new ArrayList<>();
+        mobileDomainRepository.saveAll(appDomains).forEach(appDomain -> resultingDomains.add(mobileAppConverter.convertDomain(appDomain)));
+
+        return new SavePinningBypassDomainsResponse(Collections.unmodifiableList(resultingDomains));
     }
 }

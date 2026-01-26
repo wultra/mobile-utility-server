@@ -22,6 +22,8 @@ import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository for mobile app domains.
  *
@@ -37,6 +39,14 @@ public interface MobileDomainRepository extends CrudRepository<MobileDomainEntit
      * @return Entity by domain name.
      */
     MobileDomainEntity findFirstByAppNameAndDomain(String appName, String domain);
+
+    /**
+     * Find all domains by app name.
+     *
+     * @param appName app name
+     * @return list of domains for the given app name
+     */
+    List<MobileDomainEntity> findAllByAppName(String appName);
 
     /**
      * Delete domains by domain name.
