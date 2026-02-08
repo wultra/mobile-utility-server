@@ -1,5 +1,5 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.7_6-jre
+FROM ibm-semeru-runtimes:open-21.0.9_10-jre-noble
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
@@ -11,7 +11,10 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC \
-    LQ_ENABLED=true
+    LQ_ENABLED=true \
+    EXTLIB_PATH="/app/extlib" \
+    OJDBC_VERSION="23.8.0.25.04" \
+    MSSQL_JDBC_VERSION="13.2.1.jre11"
 
 ENV PATH=$PATH:$LB_HOME
 
@@ -19,6 +22,9 @@ ENV PATH=$PATH:$LB_HOME
 RUN apt-get -y update  \
     && apt-get -y upgrade \
     && apt-get -y install bash wget \
+    && mkdir -p ${EXTLIB_PATH} \
+    && wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/${OJDBC_VERSION}/ojdbc11-${OJDBC_VERSION}.jar -O ${EXTLIB_PATH}/ojdbc11.jar \
+    && wget --no-verbose https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/${MSSQL_JDBC_VERSION}/mssql-jdbc-${MSSQL_JDBC_VERSION}.jar -O ${EXTLIB_PATH}/mssql-jdbc.jar \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
