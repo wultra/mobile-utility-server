@@ -19,8 +19,6 @@ ENV PATH=$PATH:$LB_HOME
 RUN apt-get -y update  \
     && apt-get -y upgrade \
     && apt-get -y install bash wget \
-    && mkdir -p ${EXTLIB_PATH} \
-    && wget --no-verbose https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/${OJDBC_VERSION}/ojdbc11-${OJDBC_VERSION}.jar -O ${EXTLIB_PATH}/ojdbc11.jar \
 # Install Liquibase, inspired by https://github.com/mobtitude/liquibase/blob/master/Dockerfile
     && set -x \
     && wget -q -O /tmp/liquibase.tar.gz "https://github.com/liquibase/liquibase/releases/download/v$LB_VERSION/liquibase-$LB_VERSION.tar.gz" \
