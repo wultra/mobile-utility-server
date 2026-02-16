@@ -9,4 +9,4 @@ if [ "${LQ_ENABLED}" = true ]; then
     update
 fi
 
-java -Dserver.port=8000 ${JAVA_OPTS:-} -cp "${APP_PATH}:${EXTLIB_PATH}/*" -jar /mobile-utility-server.war
+java -Dserver.port=8000 ${JAVA_OPTS:-} -jar /mobile-utility-server.war
