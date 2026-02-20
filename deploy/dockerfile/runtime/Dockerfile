@@ -8,7 +8,7 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
     LB_VERSION=4.33.0 \
-    LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
+    LB_SHA256=689acfcdc97bad0d4c150d1efab9c851e251b398cb3d6326f75e8aafe40ed578 \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
 # MSSQL and Oracle JDBC drivers are not supported for 1.10.x
