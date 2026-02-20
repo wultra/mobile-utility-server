@@ -1,5 +1,5 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.7_6-jre
+FROM ibm-semeru-runtimes:open-21.0.9_10-jre-noble
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
@@ -7,10 +7,11 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 # LIQUIBASE_ prefix must not be used, because this is only supported in PRO version
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.30.0 \
+    LB_VERSION=4.33.0 \
     LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC
+# MSSQL and Oracle JDBC drivers are not supported for 1.10.x
 
 ENV PATH=$PATH:$LB_HOME
 
@@ -24,6 +25,8 @@ RUN apt-get -y update  \
     && [ "$LB_SHA256  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
+    && rm /usr/local/liquibase/internal/lib/snowflake-jdbc.jar \
+    && rm /usr/local/liquibase/internal/lib/mssql-jdbc.jar \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
 # Uninstall packages which are no longer needed and clean apt caches
     && apt-get -y remove wget gettext-base \
