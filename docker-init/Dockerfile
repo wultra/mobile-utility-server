@@ -5,7 +5,7 @@ LABEL maintainer="Wultra <hello@wultra.com>"
 ENV MSSQL_JDBC_VERSION="13.2.1.jre11" \
     JDBC_DRIVERS_PATH="/liquibase/internal/lib"
 
-COPY docker-init/liquibase/data /liquibase/changelog
+COPY docker-init/liquibase/data /liquibase/
 COPY docker-init/docker-entrypoint.sh /docker-entrypoint.sh
 
 RUN rm /liquibase/internal/lib/snowflake-jdbc.jar
