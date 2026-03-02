@@ -34,7 +34,8 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
-import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import javax.net.ssl.SSLException;
+
 import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -42,6 +43,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
 import com.wultra.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
 import com.wultra.security.powerauth.crypto.lib.generator.KeyGenerator;
 import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -49,8 +51,6 @@ import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoExc
 import com.wultra.security.powerauth.crypto.lib.util.KeyConvertor;
 import com.wultra.security.powerauth.crypto.lib.util.SignatureUtils;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.net.ssl.SSLException;
 
 /**
  * Service with various cryptographic helper utils.
@@ -191,6 +191,7 @@ public class CryptographicOperationsService {
         try {
             verifyHostname(hostname, convertCertificate(certificateHolder));
         } catch (final CertificateException e) {
+            logger.error("Failed to convert certificate to check hostname {}", hostname, e); // always log the security exception
             throw new DomainNameCertificateMismatchException(hostname, "Failed to convert certificate to check hostname <%s>.".formatted(hostname), e);
         }
     }
