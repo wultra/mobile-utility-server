@@ -97,10 +97,6 @@ jobs:
       run: |
         mkdir -p ./docker/sbom
         unzip -p ./target/mobile-utility-server*.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./docker/sbom/mobile-utility-server.cdx.json
-    - name: Copy liquibase files
-      run: |
-        mkdir -p ./docker-init/liquibase/data/
-        cp -r ./docs/db/changelog/ ./docker-init/liquibase/data
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
