@@ -44,6 +44,7 @@ public class CertificateConverter {
         destination.setPem(source.getPem());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
+        destination.setDepth(source.getDepth());
         return destination;
     }
 
@@ -60,6 +61,7 @@ public class CertificateConverter {
         destination.setName(source.getDomain().getDomain());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
+        destination.setDepth(source.getDepth());
         return destination;
     }
 
@@ -77,6 +79,7 @@ public class CertificateConverter {
         destination.setPem(source.getPem());
         destination.setFingerprint(source.getFingerprint());
         destination.setExpires(source.getExpires());
+        destination.setDepth(source.getDepth());
         return destination;
     }
 

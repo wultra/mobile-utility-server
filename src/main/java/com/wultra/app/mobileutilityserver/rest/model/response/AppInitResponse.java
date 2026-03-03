@@ -18,6 +18,7 @@
 package com.wultra.app.mobileutilityserver.rest.model.response;
 
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.DomainsConfig;
 import lombok.Data;
 
 import java.time.Instant;
@@ -34,9 +35,11 @@ public class AppInitResponse {
     private final long timestamp = Instant.now().getEpochSecond();
     private final List<CertificateFingerprint> fingerprints;
     private final VerifyVersionResult verifyVersionResult;
+    private final DomainsConfig domainsConfig;
 
-    public AppInitResponse(final List<CertificateFingerprint> fingerprints, final VerifyVersionResult verifyVersionResult) {
+    public AppInitResponse(final List<CertificateFingerprint> fingerprints, final VerifyVersionResult verifyVersionResult, final DomainsConfig domainsConfig) {
         this.fingerprints = fingerprints;
         this.verifyVersionResult = verifyVersionResult;
+        this.domainsConfig = domainsConfig;
     }
 }

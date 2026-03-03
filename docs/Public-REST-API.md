@@ -111,14 +111,29 @@ In the case of a successful call.
     {
       "name": "test1.wultra.com",
       "fingerprint": "/+zwSJh7....wo7s=",
-      "expires": 1627214400
+      "expires": 1627214400,
+      "depth": 0
     },
     {
       "name": "test2.wultra.com",
       "fingerprint": "fj8iVdqu....vCig=",
-      "expires": 1603108800
+      "expires": 1603108800,
+      "depth": 0
     }
   ],
+  "domainsConfig": {
+    "sslPinningRequiredForUnlisted": true,
+    "domains": [
+      {
+        "name": "test1.wultra.com",
+        "sslPinningRequired": true
+      },
+      {
+        "name": "test2.wultra.com",
+        "sslPinningRequired": false
+      }
+    ]
+  },
   "verifyVersionResult": {
     "update": "NOT_REQUIRED"
   }
@@ -129,15 +144,21 @@ In the case of a successful call.
 |----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `X-Cert-Pinning-Signature` | Base64 value of an encoded response signature. The signature contains the response challenge as well as full response data, and it must be validated on the client side before the client accepts the response. |
 
-| Response Attribute            | Description                                                                                                  |
-|-------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `timestamp`                   | The current timestamp on the server side.                                                                    |
-| `fingerprints`                | Array with the TLS/SSL certificate signatures.                                                               |
-| `fingerprints.name`           | Name of the domain, for example, `test1.wultra.com`.                                                         |
-| `fingerprints.fingerprint`    | The value of the certificate/public key fingerprint.                                                         |
-| `fingerprints.expires`        | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration.                            |
-| `verifyVersionResult.update`  | The update status of the mobile application version. Possible values: `NOT_REQUIRED`, `SUGGESTED`, `FORCED`. |
-| `verifyVersionResult.message` | Optional localized message, should be filled when the update status is `SUGGESTED` or `FORCED`.              |
+| Response Attribute                            | Description                                                                                                  |
+|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `timestamp`                                   | The current timestamp on the server side.                                                                    |
+| `fingerprints`                                | Array with the TLS/SSL certificate signatures.                                                               |
+| `fingerprints.name`                           | Name of the domain, for example, `test1.wultra.com`.                                                         |
+| `fingerprints.fingerprint`                    | The value of the certificate/public key fingerprint.                                                         |
+| `fingerprints.expires`                        | Unix timestamp (seconds since Jan 01, 1970) of the pinned certificate expiration.                            |
+| `fingerprints.depth`                          | Depth of the certificate in the certificate chain (0 being leaf).                                            |
+| `domainsConfig`                               | Object containing domain specific configuration.                                                             |
+| `domainsConfig.sslPinningRequiredForUnlisted` | Specifies whether SSL pinning is enabled for the domains that are not listed under `domainsConfig.domains`.  |
+| `domainsConfig.domains`                       | Array with objects containing configuration specific for individual domains.                                 |
+| `domainsConfig.domains[].name`                | Name of the domain, for example, `test1.wultra.com`.                                                         |
+| `domainsConfig.domains[].sslPinningRequired`  | Flag indicating whether SSL pinning is enabled for given domain.                                             |
+| `verifyVersionResult.update`                  | The update status of the mobile application version. Possible values: `NOT_REQUIRED`, `SUGGESTED`, `FORCED`. |
+| `verifyVersionResult.message`                 | Optional localized message, should be filled when the update status is `SUGGESTED` or `FORCED`.              |
 
 ##### 400 Bad Request
 

@@ -30,4 +30,5 @@ public class FullCertificateInfo {
     private String pem;
     private String fingerprint;
     private long expires;
+    private Integer depth;
 }

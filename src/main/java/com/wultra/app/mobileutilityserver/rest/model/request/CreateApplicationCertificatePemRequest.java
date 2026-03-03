@@ -19,6 +19,7 @@
 package com.wultra.app.mobileutilityserver.rest.model.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -33,5 +34,8 @@ public class CreateApplicationCertificatePemRequest extends CreateApplicationCer
 
     @NotBlank
     private String pem;
+
+    @PositiveOrZero
+    private Integer depth;
 
 }

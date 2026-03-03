@@ -29,10 +29,15 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +50,8 @@ import com.wultra.security.powerauth.crypto.lib.util.KeyConvertor;
 import com.wultra.security.powerauth.crypto.lib.util.SignatureUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.net.ssl.SSLException;
+
 /**
  * Service with various cryptographic helper utils.
  *
@@ -55,6 +62,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CryptographicOperationsService {
 
     private static final String SECURE_RANDOM_ALGORITHM_NAME = "DEFAULT";
+
+    private final JcaX509CertificateConverter certificateConverter = new JcaX509CertificateConverter().setProvider("BC");
+    private final DefaultHostnameVerifier hostnameVerifier = new DefaultHostnameVerifier();
 
     private final KeyGenerator keyGenerator;
     private final KeyConvertor keyConvertor;
@@ -156,5 +166,47 @@ public class CryptographicOperationsService {
         final PrivateKey privateKey = keyConvertor.convertBytesToPrivateKey(Base64.getDecoder().decode(privateKeyBase64));
         final byte[] ecdsaSignature = signatureUtils.computeECDSASignature(signatureBase, privateKey, secureRandom);
         return Base64.getEncoder().encodeToString(ecdsaSignature);
+    }
+
+
+    /**
+     * Convert {@link X509CertificateHolder} to {@link X509Certificate}.
+     *
+     * @param certificateHolder Certificate holder.
+     * @return Converted certificate.
+     * @throws CertificateException In case certificate conversion fails.
+     */
+    public X509Certificate convertCertificate(final X509CertificateHolder certificateHolder) throws CertificateException {
+        return certificateConverter.getCertificate(certificateHolder);
+    }
+
+    /**
+     * Verifies that the provided hostname matches the provided certificate.
+     *
+     * @param hostname          Hostname to verify against the certificate.
+     * @param certificateHolder {@link X509CertificateHolder} containing the certificate to verify the hostname against.
+     * @throws DomainNameCertificateMismatchException In case the hostname does not match the certificate, or if there is an issue converting the certificate.
+     */
+    public void verifyHostname(final String hostname, final X509CertificateHolder certificateHolder) throws DomainNameCertificateMismatchException {
+        try {
+            verifyHostname(hostname, convertCertificate(certificateHolder));
+        } catch (final CertificateException e) {
+            throw new DomainNameCertificateMismatchException(hostname, "Failed to convert certificate to check hostname <%s>.".formatted(hostname), e);
+        }
+    }
+
+    /**
+     * Verifies that the provided hostname matches the provided certificate.
+     *
+     * @param hostname    Hostname to verify against the certificate.
+     * @param certificate {@link X509Certificate} containing the certificate to verify the hostname against.
+     * @throws DomainNameCertificateMismatchException In case the hostname does not match the certificate.
+     */
+    public void verifyHostname(final String hostname, final X509Certificate certificate) throws DomainNameCertificateMismatchException {
+        try {
+            hostnameVerifier.verify(hostname, certificate);
+        } catch (final SSLException e) {
+            throw new DomainNameCertificateMismatchException(hostname, e);
+        }
     }
 }

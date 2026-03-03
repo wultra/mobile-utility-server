@@ -20,9 +20,6 @@ package com.wultra.app.mobileutilityserver.rest.model.entity;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Model class representing domain.
  *
@@ -32,6 +29,6 @@ import java.util.List;
 public class Domain {
 
     private String name;
-    private final List<FullCertificateInfo> certificates = new ArrayList<>();
+    private Boolean sslPinningRequired;
 
 }
