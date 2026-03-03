@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Wultra Mobile Utility Server
+  ~ Copyright (C) 2026  Wultra s.r.o.
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="1" author="Pavel Sindelar" logicalFilePath="mobile-utility-server/2.0.x/20260116-ssl-pinning-depth.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="mus_certificate" columnName="depth"/>
+            </not>
+        </preConditions>
+        <comment>Add depth column to mus_certificate table</comment>
+        <addColumn tableName="mus_certificate">
+            <column name="depth" type="integer" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2" author="Pavel Sindelar" logicalFilePath="mobile-utility-server/2.0.x/20260116-ssl-pinning-depth.xml">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="mus_mobile_domain" columnName="ssl_pinning_required"/>
+            </not>
+        </preConditions>
+        <comment>Add ssl_pinning_required column to mus_mobile_domain table</comment>
+        <addColumn tableName="mus_mobile_domain">
+            <column name="ssl_pinning_required" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

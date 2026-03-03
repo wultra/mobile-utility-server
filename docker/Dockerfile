@@ -1,5 +1,5 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.7_6-jre
+FROM ibm-semeru-runtimes:open-21.0.9_10-jre-noble
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
@@ -10,7 +10,9 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LB_VERSION=4.30.0 \
     LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
-    TZ=UTC
+    TZ=UTC \
+    APP_PATH="/app/mobile-utility-server.war" \
+    LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
 
@@ -38,8 +40,7 @@ RUN apt-get -y update  \
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY deploy/conf/application.properties /application.properties
-COPY target/mobile-utility-server.war /mobile-utility-server.war
+COPY target/mobile-utility-server.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8000
@@ -48,10 +49,10 @@ STOPSIGNAL SIGQUIT
 # Set non-root PowerAuth user
 USER powerauth
 
-COPY deploy/conf/logback/* $LOGBACK_CONF/
+COPY ./docker/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (liquibase)
-COPY deploy/dockerfile/runtime/docker-entrypoint.sh /
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 

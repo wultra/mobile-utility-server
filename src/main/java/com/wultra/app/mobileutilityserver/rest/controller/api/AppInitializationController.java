@@ -23,12 +23,14 @@ import com.wultra.app.mobileutilityserver.rest.errorhandling.PublicKeyNotFoundEx
 import com.wultra.app.mobileutilityserver.rest.http.HttpHeaders;
 import com.wultra.app.mobileutilityserver.rest.http.QueryParams;
 import com.wultra.app.mobileutilityserver.rest.model.entity.CertificateFingerprint;
+import com.wultra.app.mobileutilityserver.rest.model.entity.DomainsConfig;
 import com.wultra.app.mobileutilityserver.rest.model.request.RegexpPatternConstants;
 import com.wultra.app.mobileutilityserver.rest.model.response.AppInitResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.PublicKeyResponse;
 import com.wultra.app.mobileutilityserver.rest.model.response.VerifyVersionResult;
 import com.wultra.app.mobileutilityserver.rest.service.CertificateFingerprintService;
 import com.wultra.app.mobileutilityserver.rest.service.MobileAppService;
+import com.wultra.app.mobileutilityserver.rest.service.MobileDomainService;
 import com.wultra.app.mobileutilityserver.rest.service.VerifyVersionRequest;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -58,16 +60,19 @@ public class AppInitializationController {
 
     private final CertificateFingerprintService certificateFingerprintService;
     private final MobileAppService mobileAppService;
+    private final MobileDomainService mobileDomainService;
     private final boolean versionVerificationEnabled;
 
     @Autowired
     public AppInitializationController(
             final CertificateFingerprintService certificateFingerprintService,
             final MobileAppService mobileAppService,
+            final MobileDomainService mobileDomainService,
             @Value("${mobile-utility-server.features.version-verification.enabled}") final boolean versionVerificationEnabled) {
 
         this.certificateFingerprintService = certificateFingerprintService;
         this.mobileAppService = mobileAppService;
+        this.mobileDomainService = mobileDomainService;
         this.versionVerificationEnabled = versionVerificationEnabled;
     }
 
@@ -116,6 +121,9 @@ public class AppInitializationController {
         // Find the fingerprints
         final List<CertificateFingerprint> fingerprints = certificateFingerprintService.findCertificateFingerprintsByAppName(applicationName);
 
+        // Get domains config
+        final DomainsConfig domainsConfig = mobileDomainService.getDomainsConfig(applicationName);
+
         if (shouldVerifyVersion(applicationVersion, systemVersion, platform)) {
             final VerifyVersionRequest verifyVersionRequest = VerifyVersionRequest.builder()
                     .applicationName(applicationName)
@@ -125,10 +133,10 @@ public class AppInitializationController {
                     .build();
             final VerifyVersionResult verifyVersionResult = mobileAppService.verifyVersion(verifyVersionRequest);
 
-            return new AppInitResponse(fingerprints, verifyVersionResult);
+            return new AppInitResponse(fingerprints, verifyVersionResult, domainsConfig);
         } else {
             logger.debug("Context for verifying version not provided for application name: {}", applicationName);
-            return new AppInitResponse(fingerprints, null);
+            return new AppInitResponse(fingerprints, null, domainsConfig);
         }
     }
 

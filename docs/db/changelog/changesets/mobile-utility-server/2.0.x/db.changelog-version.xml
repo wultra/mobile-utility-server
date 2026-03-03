@@ -2,7 +2,7 @@
 
 <!--
   ~ Wultra Mobile Utility Server
-  ~ Copyright (C) 2023  Wultra s.r.o.
+  ~ Copyright (C) 2026  Wultra s.r.o.
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,9 @@
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-				   					   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.10.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
 
-    <!-- mobile-utility-server -->
-    <include file="1.5.x/db.changelog-version.xml" relativeToChangelogFile="true" />
-    <include file="2.0.x/db.changelog-version.xml" relativeToChangelogFile="true" />
+    <!-- 2.0.x -->
+    <include file="20260116-ssl-pinning-depth.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
