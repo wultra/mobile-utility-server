@@ -4,7 +4,7 @@ KEEP_RUNNING=${KEEP_RUNNING:-false}
 KEEP_RUNNING_PORT=${KEEP_RUNNING_PORT:-666}
 
 liquibase --headless=true --log-level=INFO \
-    --changeLogFile="changelog/db.changelog-master.xml" \
+    --changeLogFile="db.changelog-module.xml" \
     --username="${MOBILE_UTILITY_SERVER_DATASOURCE_USERNAME:-}" \
     --password="${MOBILE_UTILITY_SERVER_DATASOURCE_PASSWORD:-}" \
     --url="${MOBILE_UTILITY_SERVER_DATASOURCE_URL}" \
