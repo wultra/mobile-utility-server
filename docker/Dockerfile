@@ -11,6 +11,7 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
     TZ=UTC \
+    APP_PATH="/app/mobile-utility-server.war" \
     LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
@@ -39,7 +40,7 @@ RUN apt-get -y update  \
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY target/mobile-utility-server.war /mobile-utility-server.war
+COPY target/mobile-utility-server.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8000
