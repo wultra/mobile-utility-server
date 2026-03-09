@@ -130,7 +130,7 @@ jobs:
           echo "EOF"
         } >> $GITHUB_ENV
     - name: Build and push container image to registry
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         push: ${{ needs.set-environment.outputs.should_push == 'true' }}
         platforms: linux/amd64,linux/arm64
@@ -138,7 +138,7 @@ jobs:
         file: ./docker/Dockerfile
         context: .
     - name: Build and push init container image to registry
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         push: ${{ needs.set-environment.outputs.should_push == 'true' }}
         platforms: linux/amd64,linux/arm64
