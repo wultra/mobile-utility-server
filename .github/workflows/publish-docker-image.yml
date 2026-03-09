@@ -75,3 +75,4 @@ jobs:
         APP_CONTEXT: ''
         APP_VERSION: ${{ steps.build-maven.outputs.APP_VERSION }}
         SHOULD_PUSH: ${{ needs.set-environment.outputs.should_push == 'true' }}
+        BUILD_INIT_IMAGE: true
