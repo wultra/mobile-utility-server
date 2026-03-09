@@ -98,7 +98,7 @@ jobs:
         mkdir -p ./docker/sbom
         unzip -p ./target/mobile-utility-server*.war WEB-INF/classes/META-INF/sbom/application.cdx.json > ./docker/sbom/mobile-utility-server.cdx.json
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Log in to ACR
