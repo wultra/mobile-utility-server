@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.set-env.outputs.environment }}
-      should_push: ${{ steps.set-cond.outputs.should_push }}
+      should_push: ${{ steps.set-env.outputs.should_push }}
     steps:
       - name: Set Environment
         uses: wultra/wultra-infrastructure/.github/actions/set-env@issues/add-general-docker-workflow
@@ -39,9 +39,18 @@ jobs:
     needs: set-environment
     environment: ${{ needs.set-environment.outputs.environment }}
     env:
-      # these are global secrets - for readonly access to artifactory
+      # these are global secrets
       INTERNAL_USERNAME: ${{ secrets.JFROG_USERNAME }}
       INTERNAL_PASSWORD: ${{ secrets.JFROG_PASSWORD }}
+      ACR_REGISTRY_URL: ${{ vars.ACR_REGISTRY_URL }}
+      ACR_USERNAME: ${{ vars.ACR_USERNAME }}
+      ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+      DISTRIBUTION_REGISTRY_URL: ${{ vars.DISTRIBUTION_REGISTRY_URL }}
+      DISTRIBUTION_USERNAME: ${{ vars.DISTRIBUTION_USERNAME }}
+      DISTRIBUTION_PASSWORD: ${{ secrets.DISTRIBUTION_PASSWORD }}
+      COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+      COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+      COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
     steps:
     - uses: actions/checkout@v6
 
@@ -66,5 +75,3 @@ jobs:
         APP_CONTEXT: ''
         APP_VERSION: ${{ steps.build-maven.outputs.APP_VERSION }}
         SHOULD_PUSH: ${{ needs.set-environment.outputs.should_push == 'true' }}
-        TAGS: ${{ steps.build-maven.outputs.IMAGE_TAG }}
-        INIT_TAGS: ${{ steps.build-maven.outputs.INIT_IMAGE_TAG }}
