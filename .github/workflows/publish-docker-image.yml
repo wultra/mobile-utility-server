@@ -28,7 +28,7 @@ jobs:
       should_push: ${{ steps.set-cond.outputs.should_push }}
     steps:
       - name: Set Environment
-        uses: wultra/wultra-infrastructure/.github/actions/setup-java@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/set-env@issues/add-general-docker-workflow
         id: set-env
         with:
           PUSH_TO_REGISTRY: ${{ inputs.push_to_registry }}
