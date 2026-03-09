@@ -9,7 +9,7 @@ ENV JAVA_HOME=/opt/java/openjdk \
     LQ_ENABLED=true
 
 # Copy new Liquibase data
-COPY docs/db/changelog/changesets/mobile-utility-server $LB_HOME/db/changelog
+COPY docs/db/changelog/changesets/mobile-utility-server ${LB_HOME}/db/changelog
 
 # Deploy and run applications
 COPY target/mobile-utility-server.war "$APP_PATH"
