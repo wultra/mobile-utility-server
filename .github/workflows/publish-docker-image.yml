@@ -15,7 +15,11 @@ on:
     branches:
       - 'develop'
       - 'releases/*'
-    
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   set-environment:
     runs-on: ubuntu-latest
@@ -50,12 +54,6 @@ jobs:
 
     - name: Build Maven project
       uses: wultra/wultra-infrastructure/.github/actions/build-maven-docker@issues/add-general-docker-workflow
-      with:
-        APP_TO_BUILD: mobile-utility-server
-        APP_CONTEXT: ''
-
-    - name: Build Maven project
-      uses: wultra/wultra-infrastructure/.github/actions/build-maven-docker@issues/add-general-docker-workflow
       id: build-maven
       with:
         APP_TO_BUILD: mobile-utility-server
@@ -66,6 +64,7 @@ jobs:
       with:
         APP_TO_BUILD: mobile-utility-server
         APP_CONTEXT: ''
+        APP_VERSION: ${{ steps.build-maven.outputs.APP_VERSION }}
         SHOULD_PUSH: ${{ needs.set-environment.outputs.should_push == 'true' }}
         TAGS: ${{ steps.build-maven.outputs.IMAGE_TAG }}
         INIT_TAGS: ${{ steps.build-maven.outputs.INIT_IMAGE_TAG }}
