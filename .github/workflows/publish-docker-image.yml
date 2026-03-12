@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.set-env.outputs.environment }}
-      should_push: ${{ steps.set-env.outputs.should_push }}
+      should_push: ${{ steps.set-env.outputs.push_to_registry }}
     steps:
       - name: Set Environment
         uses: wultra/wultra-infrastructure/.github/actions/set-env@issues/add-general-docker-workflow
