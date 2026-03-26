@@ -33,7 +33,7 @@ jobs:
       should_push: ${{ steps.set-env.outputs.should_push }}
     steps:
       - name: Set Environment
-        uses: wultra/wultra-infrastructure/.github/actions/set-env@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/set-env@develop
         id: set-env
         with:
           push_to_registry: ${{ inputs.push_to_registry }}
@@ -60,28 +60,29 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Setup Java
-        uses: wultra/wultra-infrastructure/.github/actions/setup-java@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/setup-java@develop
 
       - name: Install Cosign
         if: ${{ needs.set-environment.outputs.should_push == 'true' }}
-        uses: wultra/wultra-infrastructure/.github/actions/install-cosign@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/install-cosign@develop
 
       - name: Build Maven project
-        uses: wultra/wultra-infrastructure/.github/actions/build-maven@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/build-maven@develop
         id: build-maven
         with:
-          app_to_build: mobile-utility-server
-          module_folder_path: ''
+          project_path: ''
+          generate_sbom: 'true'
+          output_name: 'mobile-utility-server'
 
       - name: Resolve Docker tags
-        uses: wultra/wultra-infrastructure/.github/actions/resolve-docker-tags@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/resolve-docker-tags@develop
         id: resolve-docker-tags
         with:
           app_to_build: mobile-utility-server
           app_version: ${{ steps.build-maven.outputs.app_version }}
 
       - name: Build and push Docker image
-        uses: wultra/wultra-infrastructure/.github/actions/build-and-push-docker@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/build-and-push-docker@develop
         with:
           dockerfile_folder_path: './docker'
           should_push: ${{ needs.set-environment.outputs.should_push }}
@@ -89,7 +90,7 @@ jobs:
           has_sbom: true
 
       - name: Build and push Docker image
-        uses: wultra/wultra-infrastructure/.github/actions/build-and-push-docker@issues/add-general-docker-workflow
+        uses: wultra/wultra-infrastructure/.github/actions/build-and-push-docker@develop
         with:
           dockerfile_folder_path: './docker-init'
           should_push: ${{ needs.set-environment.outputs.should_push }}
