@@ -69,7 +69,7 @@ Table with TLS/SSL certificate and fingerprints that should be pinned in the mob
 | `id`               | `INTEGER`      | Primary key for the table, automatically incremented value.               |
 | `pem`              | `TEXT`         | Original certificate value in PEM format.                                 |
 | `fingerprint`      | `VARCHAR(255)` | Value of the certificate fingerprint.                                     |
-| `expires`          | `INTEGER`      | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
+| `expires`          | `BIGINT`       | Unix timestamp (seconds since Jan 1, 1970) of the certificate expiration. |
 | `mobile_domain_id` | `INTEGER`      | Reference to related application domain in the `mus_mobile_domain` table. |
 
 #### Sequence
