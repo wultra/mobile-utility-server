@@ -37,7 +37,6 @@ RUN apt-get -y update  \
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY deploy/conf/application.properties /application.properties
 COPY target/mobile-utility-server.war /mobile-utility-server.war
 
 # Docker configuration
