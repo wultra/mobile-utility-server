@@ -1,0 +1,15 @@
+# Migration from 2.0.x to 2.1.0
+
+This guide provides instructions for migrating from PowerAuth Mobile Utility Server version `2.0.x` to version `2.1.0`.
+
+## Database Changes
+
+For convenience, you can use liquibase for your database migration.
+
+For manual changes, use SQL scripts:
+- [PostgreSQL script](sql/postgresql/2.1.0-migration.sql)
+- [Oracle script](sql/oracle/2.1.0-migration.sql)
+
+### Table mus_certificate
+
+The type of the `expires` column has been changed from `integer` to `bigint` (Postgres) / `NUMBER(38,0)` (Oracle).
