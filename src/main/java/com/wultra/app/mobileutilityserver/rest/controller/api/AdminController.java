@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
 import com.wultra.app.mobileutilityserver.rest.model.response.*;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -88,7 +89,7 @@ public class AdminController {
     @PutMapping("apps/{name}/pinning-bypass-domains")
     public SavePinningBypassDomainsResponse savePinningBypassDomains(
             final @PathVariable("name") String appName,
-            final @RequestBody() Set<String> domains
+            final @RequestBody Set<@NotBlank String> domains
     ) throws AppNotFoundException {
         return adminService.savePinningBypassDomains(appName, domains);
     }
