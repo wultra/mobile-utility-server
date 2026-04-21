@@ -415,8 +415,9 @@ public class AdminService {
     }
 
     /**
-     * Set the pinning required flag to all domains of the given application. If the domain is present in the supplied set, its pinning required flag is set to false.
-     * If the domain is not present, its flag is set to true. Supplied domains that do not exist yet are created with pinning required flag set to false.
+     * Sets the pinning required flag to all domains of the given application. If the domain exists and is present in the supplied set,
+     * its pinning required flag is set to false. If the domain exists and is not present, its flag is set to true. Supplied domains
+     * that do not exist yet are created with the pinning required flag set to false.
      *
      * @param applicationName      application name
      * @param pinningBypassDomains domains to set the pinning required flag to false

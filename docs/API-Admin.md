@@ -241,7 +241,7 @@ Invalid username or password was provided while calling the service.
 
 Disable SSL pinning for the listed domains. The supplied list must contain all domains for which the SSL pinning should be disabled.
 If the endpoint is called and an existing domain is not listed, SSL pinning will be enabled for it (regardless of whether it was previously disabled).
-If a non-existent domain is listed, it will be ignored.
+If a non-existent domain is listed, it will be created with SSL pinning disabled.
 
 #### Request
 
