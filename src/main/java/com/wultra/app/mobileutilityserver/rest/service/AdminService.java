@@ -26,6 +26,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocket;
@@ -414,23 +415,43 @@ public class AdminService {
     }
 
     /**
-     * Set the pinning required flag to all domains of the given application. If the domain is present in the supplied set, its pinning required flag is set to false.
-     * If the domain is not present, its flag is set to true.
+     * Sets the pinning required flag to all domains of the given application. If the domain exists and is present in the supplied set,
+     * its pinning required flag is set to false. If the domain exists and is not present, its flag is set to true. Supplied domains
+     * that do not exist yet are created with the pinning required flag set to false.
      *
      * @param applicationName      application name
      * @param pinningBypassDomains domains to set the pinning required flag to false
      * @return resulting pinning required state of all domains of the given application
      */
     public SavePinningBypassDomainsResponse savePinningBypassDomains(final String applicationName, final Set<String> pinningBypassDomains) throws AppNotFoundException {
-        if (!mobileAppRepository.existsByName(applicationName)) {
+        final MobileAppEntity app = mobileAppRepository.findFirstByName(applicationName);
+        if (app == null) {
             throw new AppNotFoundException(applicationName);
         }
 
-        final List<MobileDomainEntity> appDomains = mobileDomainRepository.findAllByAppName(applicationName);
+        final List<MobileDomainEntity> appDomains = app.getDomains();
 
+        final Set<String> existingDomainNames = appDomains.stream()
+                .map(MobileDomainEntity::getDomain)
+                .collect(Collectors.toSet());
+
+        // set pinning required flag to the existing domains
         for (final MobileDomainEntity appDomain : appDomains) {
             final boolean isPinningBypassDomain = pinningBypassDomains.contains(appDomain.getDomain());
             appDomain.setSslPinningRequired(!isPinningBypassDomain);
+        }
+
+        final Set<String> newBypassDomainNames = new HashSet<>(pinningBypassDomains);
+        newBypassDomainNames.removeAll(existingDomainNames);
+
+        // create bypass domains that do not exist yet
+        for (final String newBypassDomainName : newBypassDomainNames) {
+            final MobileDomainEntity newBypassDomain = new MobileDomainEntity();
+            newBypassDomain.setDomain(newBypassDomainName);
+            newBypassDomain.setSslPinningRequired(false);
+            newBypassDomain.setApp(app);
+
+            appDomains.add(newBypassDomain);
         }
 
         final List<Domain> resultingDomains = new ArrayList<>();

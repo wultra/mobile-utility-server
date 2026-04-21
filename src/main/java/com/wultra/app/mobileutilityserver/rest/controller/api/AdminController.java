@@ -25,6 +25,8 @@ import java.util.Set;
 
 import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
 import com.wultra.app.mobileutilityserver.rest.model.response.*;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -84,11 +86,19 @@ public class AdminController {
         return adminService.applicationDetail(name);
     }
 
+    @Operation(
+            summary = "Define pinning bypass domains for given app",
+            description = """
+                    Sets the pinning required flag to all domains of the given application. If the domain exists and is present in the supplied set,
+                    its pinning required flag is set to false. If the domain exists and is not present, its flag is set to true. Supplied domains
+                    that do not exist yet are created with the pinning required flag set to false.
+                    """
+    )
     @Tag(name = TAG_ADMIN_APPLICATION_CERTIFICATE)
     @PutMapping("apps/{name}/pinning-bypass-domains")
     public SavePinningBypassDomainsResponse savePinningBypassDomains(
             final @PathVariable("name") String appName,
-            final @RequestBody() Set<String> domains
+            final @Valid @RequestBody Set<@NotBlank String> domains
     ) throws AppNotFoundException {
         return adminService.savePinningBypassDomains(appName, domains);
     }

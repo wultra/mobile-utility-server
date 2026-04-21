@@ -95,10 +95,10 @@ class AdminServiceTest {
         final SavePinningBypassDomainsResponse result = tested.savePinningBypassDomains("test-app", Set.of("example.com", "non-existent.com"));
 
         final Map<String, Domain> resultDomains = result.domains().stream().collect(Collectors.toMap(Domain::getName, Function.identity()));
-        assertEquals(2, resultDomains.size());
+        assertEquals(3, resultDomains.size());
         assertFalse(resultDomains.get("example.com").getSslPinningRequired());
         assertTrue(resultDomains.get("test.com").getSslPinningRequired());
-        assertNull(resultDomains.get("non-existent.com"));
+        assertFalse(resultDomains.get("non-existent.com").getSslPinningRequired());
     }
 
     @Test
@@ -115,7 +115,10 @@ class AdminServiceTest {
     void testSavePinningBypassDomains_noDomainsInDb() throws AppNotFoundException {
         final SavePinningBypassDomainsResponse result = tested.savePinningBypassDomains("empty-app", Set.of("example.com"));
 
-        assertEquals(0, result.domains().size());
+        assertEquals(1, result.domains().size());
+        final Domain resultDomain = result.domains().get(0);
+        assertFalse(resultDomain.getSslPinningRequired());
+        assertEquals("example.com", resultDomain.getName());
     }
 
     @Test
