@@ -3,6 +3,7 @@
 - [Overview](./Readme.md)
 - [Configuration](./Configuration.md)
 - [Deployment](./Deployment.md)
+- [Artifact Signing](./Artifact-Signing.md)
 - [Migration Instructions](./Migration-Instructions.md)
 
 **API Reference**
