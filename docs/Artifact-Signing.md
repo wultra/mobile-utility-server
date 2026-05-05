@@ -1,6 +1,6 @@
 # Artifact Signing
 
-All Mobile Utility Server images are signed using [Cosign](https://github.com/sigstore/cosign). Each image also has an attached Software Bill of Materials (SBOM) in [CycloneDX](https://cyclonedx.org/) format, expect the init image.
+All Mobile Utility Server Docker images are signed using [Cosign](https://github.com/sigstore/cosign). Each image also has an attached Software Bill of Materials (SBOM) in [CycloneDX](https://cyclonedx.org/) format, expect the init image.
 
 ## Verify the Docker Image Signature
 
