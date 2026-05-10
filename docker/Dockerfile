@@ -37,6 +37,7 @@ RUN apt-get -y update  \
 COPY docs/db/changelog $LB_HOME/db/changelog
 
 # Deploy and run applications
+COPY deploy/conf/application.properties /application.properties
 COPY target/mobile-utility-server.war /mobile-utility-server.war
 
 # Docker configuration
@@ -51,5 +52,3 @@ COPY deploy/conf/logback/* $LOGBACK_CONF/
 # Define entry point with mandatory commands (liquibase)
 COPY deploy/dockerfile/runtime/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-
