@@ -69,6 +69,7 @@
         <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
         <gatling-charts-highcharts.version>3.14.3</gatling-charts-highcharts.version>
         <logstash.version>8.1</logstash.version>
+        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -284,6 +285,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx-maven-plugin.version}</version>
+                <configuration>
+                    <skipNotDeployed>false</skipNotDeployed>
+                </configuration>
             </plugin>
         </plugins>
     </build>
