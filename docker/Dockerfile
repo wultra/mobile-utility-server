@@ -40,7 +40,7 @@ RUN apt-get -y update  \
 COPY docs/db/changelog/changesets/mobile-utility-server $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY target/mobile-utility-server.war "${APP_PATH}"
+COPY target/mobile-utility-server*.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8000
