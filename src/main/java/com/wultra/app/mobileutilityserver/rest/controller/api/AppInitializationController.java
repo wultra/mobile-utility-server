@@ -46,6 +46,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Controller with generic information needed for app initialization.
  *
@@ -135,7 +137,7 @@ public class AppInitializationController {
 
             return new AppInitResponse(fingerprints, verifyVersionResult, domainsConfig);
         } else {
-            logger.debug("Context for verifying version not provided for application name: {}", applicationName);
+            logger.debug("Context for verifying version not provided", kv("applicationName", applicationName));
             return new AppInitResponse(fingerprints, null, domainsConfig);
         }
     }

@@ -40,6 +40,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Filter that signs the response data with a signature that depends on the received challenge.
  *
@@ -86,7 +88,7 @@ public class ResponseSignFilter extends OncePerRequestFilter {
                     // Set the request header
                     response.setHeader(HttpHeaders.RESPONSE_SIGNATURE, ecdsaSignature);
                 } catch (InvalidKeySpecException | CryptoProviderException | InvalidKeyException | GenericCryptoException ex) {
-                    logger.error("Unable to sign response, appName: {}", appName, ex);
+                    logger.error("Unable to sign response", kv("appName", appName), ex);
                     throw new IOException("Unable to sign response, appName: " + appName, ex);
                 }
             }

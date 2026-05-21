@@ -62,7 +62,7 @@
 
         <!-- Wultra dependencies -->
         <powerauth-crypto.version>2.0.1</powerauth-crypto.version>
-        <wultra-core.version>2.1.0</wultra-core.version>
+        <wultra-core.version>2.2.0-SNAPSHOT</wultra-core.version>
 
         <!-- Dependency Versions -->
         <bc.version>1.83</bc.version>
@@ -169,6 +169,11 @@
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wultra.core</groupId>
+            <artifactId>logging-support</artifactId>
+            <version>${wultra-core.version}</version>
         </dependency>
 
         <!-- Monitoring -->

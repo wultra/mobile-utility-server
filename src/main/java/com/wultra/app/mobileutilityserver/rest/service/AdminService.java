@@ -40,6 +40,8 @@ import org.bouncycastle.openssl.PEMParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
 import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
 import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
@@ -162,7 +164,7 @@ public class AdminService {
             for (CertificateEntity cert : certificateEntityOptional) {
                 if (fingerprint.equalsIgnoreCase(cert.getFingerprint())) {
                     final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(cert);
-                    logger.info("Certificate up-to-date: {}", response);
+                    logger.info("", kv("action", "addOrRefreshCertificate"), kv("state", "noChange"), kv("appName", appName), kv("domain", domain));
                     return response;
                 }
             }
@@ -187,7 +189,7 @@ public class AdminService {
         final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
         final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(savedCertificateEntity);
-        logger.info("Certificate refreshed: {}", response);
+        logger.info("", kv("action", "addOrRefreshCertificate"), kv("state", "succeeded"), kv("appName", appName), kv("domain", domain));
         return response;
     }
 
@@ -228,7 +230,7 @@ public class AdminService {
 
         final X509Certificate cert = fetchCertificate(domain);
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
-        logger.info("Certificate read for app: {}, domain: {}\n{}", appName, domain, certPem);
+        logger.info("", kv("action", "createCertificate"), kv("state", "initiated"), kv("appName", appName), kv("domain", domain));
 
         final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
@@ -273,19 +275,19 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public ApplicationVersionListResponse applicationVersionList(final String applicationName) {
-        logger.debug("Looking for application versions name: {}", applicationName);
+        logger.debug("Looking for application versions", kv("applicationName", applicationName));
         return convertVersions(mobileAppVersionRepository.findByApplicationName(applicationName));
     }
 
     @Transactional(readOnly = true)
     public ApplicationVersionDetailResponse applicationVersionDetail(final String applicationName, final Long id) {
-        logger.debug("Looking for application version name: {}, ID: {}", applicationName, id);
+        logger.debug("Looking for application version", kv("applicationName", applicationName), kv("id", id));
         return convert(mobileAppVersionRepository.findById(id)
                 .orElseThrow(() -> new ConstraintViolationException("Version not found, ID: " + id, Collections.emptySet())));
     }
 
     public ApplicationVersionDetailResponse createApplicationVersion(final String applicationName, final CreateApplicationVersionRequest request) {
-        logger.debug("Creating application version for name: {}", applicationName);
+        logger.debug("Creating application version", kv("applicationName", applicationName));
         validateCreateApplicationVersion(applicationName, request);
 
         final MobileAppVersionEntity entity = convert(request);
@@ -320,7 +322,7 @@ public class AdminService {
     }
 
     public void deleteApplicationVersion(final String applicationName, final Long id) {
-        logger.debug("Deleting application version name: {}, ID: {}", applicationName, id);
+        logger.debug("Deleting application version", kv("applicationName", applicationName), kv("id", id));
         mobileAppVersionRepository.deleteById(id);
     }
 
@@ -332,20 +334,20 @@ public class AdminService {
     @Transactional(readOnly = true)
     public TextDetailResponse textDetail(final String key, final String language) {
         final var id = new LocalizedTextEntity.LocalizedTextId(key, language);
-        logger.debug("Looking for text ID: {}", id);
+        logger.debug("Looking for text", kv("id", id));
         return convert(localizedTextRepository.findById(id)
                 .orElseThrow(() -> new ConstraintViolationException("Text not found, ID: " + id, Collections.emptySet())));
     }
 
     public TextDetailResponse createText(final CreateTextRequest request) {
-        logger.debug("Creating text key: {}, language: {}", request.getMessageKey(), request.getLanguage());
+        logger.debug("Creating text", kv("key", request.getMessageKey()), kv("language", request.getLanguage()));
         final var result = localizedTextRepository.save(convert(request));
         return convert(result);
     }
 
     public void deleteText(final String key, final String language) {
         final var id = new LocalizedTextEntity.LocalizedTextId(key, language);
-        logger.debug("Deleting text ID: {}", id);
+        logger.debug("Deleting text", kv("id", id));
         localizedTextRepository.deleteById(id);
     }
 

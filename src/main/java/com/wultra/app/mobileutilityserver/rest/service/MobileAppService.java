@@ -33,6 +33,8 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -105,7 +107,7 @@ public class MobileAppService {
         final int majorSystemVersion = new DefaultArtifactVersion(request.getSystemVersion()).getMajorVersion();
         final Optional<MobileAppVersionEntity> applicationVersion = findApplicationVersion(applicationName, platform, majorSystemVersion);
         if (applicationVersion.isEmpty()) {
-            logger.info("Application name: {}, platform: {} is not configured, returning OK", applicationName, platform);
+            logger.info("Application version not configured, returning OK", kv("applicationName", applicationName), kv("platform", platform));
             return VerifyVersionResult.ok();
         }
 
@@ -123,10 +125,10 @@ public class MobileAppService {
         final Optional<MobileAppVersionEntity> applicationVersion = findFailSafe(() ->
                 mobileAppVersionRepository.findFirstByApplicationNameAndPlatformAndMajorOsVersion(applicationName, platform, majorSystemVersion));
         if (applicationVersion.isPresent()) {
-            logger.debug("Found exact match for applicationName: {}, platform: {} and majorSystemVersion: {}", applicationName, platform, majorSystemVersion);
+            logger.debug("Found exact match for application version", kv("applicationName", applicationName), kv("platform", platform), kv("majorSystemVersion", majorSystemVersion));
             return applicationVersion;
         }
-        logger.debug("Looking for applicationName: {} and platform: {} without specific majorSystemVersion.", applicationName, platform);
+        logger.debug("Looking for application version without specific majorSystemVersion", kv("applicationName", applicationName), kv("platform", platform));
         return findFailSafe(() -> mobileAppVersionRepository.findFirstByApplicationNameAndPlatform(applicationName, platform));
     }
 
@@ -135,8 +137,7 @@ public class MobileAppService {
             return supplier.get();
         } catch (IncorrectResultSizeDataAccessException e) {
             // should be validated by admin API, but fail-safe routine, because unique index not working due to nullable major OS version
-            logger.warn("Misconfigured application versions, got more results: {}", e.getMessage());
-            logger.debug("Misconfigured application versions, got more results", e);
+            logger.warn("Misconfigured application versions, got more results", e);
             return Optional.empty();
         }
     }
@@ -174,7 +175,7 @@ public class MobileAppService {
             return localizedText.get().getText();
         }
 
-        logger.debug("Localized text key: {} not found for locale: {}, falling back to EN", key, locale);
+        logger.debug("Localized text key not found for locale, falling back to EN", kv("key", key), kv("locale", locale));
         return localizedTextRepository.findByMessageKeyAndLocale(key, Locale.ENGLISH)
                 .map(LocalizedTextEntity::getText)
                 .orElse(null);
