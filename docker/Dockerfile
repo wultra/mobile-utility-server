@@ -7,11 +7,12 @@ LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 # LIQUIBASE_ prefix must not be used, because this is only supported in PRO version
 ENV JAVA_HOME=/opt/java/openjdk \
     LB_HOME=/usr/local/liquibase \
-    LB_VERSION=4.33.0 \
-    LB_SHA256=689acfcdc97bad0d4c150d1efab9c851e251b398cb3d6326f75e8aafe40ed578 \
+    LB_VERSION=4.30.0 \
+    LB_SHA256=184ffd609518091da42d6cd75e883b4f6ff1763cce8883e95fc99f7f05ca262d \
     LOGBACK_CONF=/opt/logback/conf \
-    TZ=UTC
-# MSSQL and Oracle JDBC drivers are not supported for 1.10.x
+    TZ=UTC \
+    APP_PATH="/app/mobile-utility-server.war" \
+    LQ_ENABLED=true
 
 ENV PATH=$PATH:$LB_HOME
 
@@ -25,8 +26,6 @@ RUN apt-get -y update  \
     && [ "$LB_SHA256  /tmp/liquibase.tar.gz" = "$(sha256sum /tmp/liquibase.tar.gz)" ] \
     && mkdir -p "$LB_HOME" \
     && tar -xzf /tmp/liquibase.tar.gz -C "$LB_HOME" \
-    && rm /usr/local/liquibase/internal/lib/snowflake-jdbc.jar \
-    && rm /usr/local/liquibase/internal/lib/mssql-jdbc.jar \
     && rm -rf "$LB_HOME/sdk" "$LB_HOME/examples" \
 # Uninstall packages which are no longer needed and clean apt caches
     && apt-get -y remove wget gettext-base \
@@ -38,11 +37,10 @@ RUN apt-get -y update  \
     && groupadd -r powerauth && useradd -r -g powerauth -s /sbin/nologin powerauth
 
 # Copy new Liquibase data
-COPY docs/db/changelog $LB_HOME/db/changelog
+COPY docs/db/changelog/changesets/mobile-utility-server $LB_HOME/db/changelog
 
 # Deploy and run applications
-COPY deploy/conf/application.properties /application.properties
-COPY target/mobile-utility-server.war /mobile-utility-server.war
+COPY target/mobile-utility-server*.war "${APP_PATH}"
 
 # Docker configuration
 EXPOSE 8000
@@ -51,10 +49,8 @@ STOPSIGNAL SIGQUIT
 # Set non-root PowerAuth user
 USER powerauth
 
-COPY deploy/conf/logback/* $LOGBACK_CONF/
+COPY ./docker/conf/logback/* $LOGBACK_CONF/
 
 # Define entry point with mandatory commands (liquibase)
-COPY deploy/dockerfile/runtime/docker-entrypoint.sh /
+COPY ./docker/docker-entrypoint.sh /docker-entrypoint.sh
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-
