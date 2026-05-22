@@ -40,6 +40,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Controller advice responsible for error handling.
  *
@@ -54,8 +56,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody ErrorResponse handleMissingRequestHeaderException(ServletRequestBindingException ex) {
         final String code = "UNKNOWN_ERROR";
         final String message = "An error occurred when processing the request.";
-        logger.error("Unknown error happened: {}", ex.getMessage());
-        logger.debug("Exception detail: ", ex);
+        logger.error("Unknown error happened", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -64,8 +65,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody ErrorResponse handlePublicKeyNotFoundException(PublicKeyNotFoundException ex) {
         final String code = "PUBLIC_KEY_NOT_FOUND";
         final String message = "Public key for the provided app name was not found.";
-        logger.warn("Public key for the provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
-        logger.debug("Exception detail: ", ex);
+        logger.warn("Public key for provided app name was not found", kv("appName", ex.getAppName()), ex);
         return new ErrorResponse(code, message);
     }
 
@@ -74,8 +74,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody ErrorResponse handleAppException(AppException ex) {
         final String code = "APP_EXCEPTION";
         final String message = ex.getMessage();
-        logger.warn("Problem occurred while working with applications: {}", ex.getMessage());
-        logger.debug("Exception detail: ", ex);
+        logger.warn("Problem occurred while working with applications", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -84,8 +83,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody ErrorResponse handleAppNotFoundException(AppNotFoundException ex) {
         final String code = "APP_NOT_FOUND";
         final String message = "App with a provided ID was not found.";
-        logger.warn("Application for a provided app name: {} was not found: {}", ex.getAppName(), ex.getMessage());
-        logger.debug("Exception detail: ", ex);
+        logger.warn("Application for provided app name was not found", kv("appName", ex.getAppName()), ex);
         return new ErrorResponse(code, message);
     }
 
@@ -94,8 +92,7 @@ public class ExceptionHandlingControllerAdvice {
     public @ResponseBody ErrorResponse handleInvalidChallengeHeaderException(InvalidChallengeHeaderException ex) {
         final String code = "INVALID_CHALLENGE";
         final String message = "Request does not contain correct challenge header, a random Base64 encoded challenge with 16B - 32B raw length is required.";
-        logger.error("Request does not contain correct challenge header, a random Base64 encoded challenge with 16B - 32B raw length is required: {}", ex.getMessage());
-        logger.debug("Exception detail: ", ex);
+        logger.error("Request does not contain correct challenge header", ex);
         return new ErrorResponse(code, message);
     }
 
@@ -110,8 +107,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         final ExtendedError error = new ExtendedError("ERROR_REQUEST", "Invalid method parameter value");
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             error.getViolations().add(
@@ -130,8 +126,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleConstraintViolationException(ConstraintViolationException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         final ExtendedError error = new ExtendedError("ERROR_REQUEST", e.getMessage());
         for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
             error.getViolations().add(
@@ -150,8 +145,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
@@ -164,8 +158,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(HttpMediaTypeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpMediaTypeException(HttpMediaTypeException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
@@ -178,8 +171,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(RequestRejectedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleRequestRejectedException(RequestRejectedException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
@@ -192,8 +184,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 
@@ -206,8 +197,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(HttpMessageConversionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleHttpMessageConversionException(HttpMessageConversionException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_REQUEST", "Unable to map request data. Check the JSON payload.");
     }
 
@@ -220,8 +210,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public @ResponseBody com.wultra.core.rest.model.base.response.ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new com.wultra.core.rest.model.base.response.ErrorResponse("ERROR_AUTHENTICATION", e.getMessage());
     }
 
@@ -234,8 +223,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(NoResourceFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public @ResponseBody ErrorResponse handleNoResourceFoundException(final NoResourceFoundException e) {
-        logger.warn("Error occurred when calling an API: {}", e.getMessage());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Error occurred when calling an API", e);
         return new ErrorResponse("ERROR_NOT_FOUND", "Resource not found.");
     }
 
@@ -248,8 +236,7 @@ public class ExceptionHandlingControllerAdvice {
     @ExceptionHandler(DomainNameCertificateMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody ErrorResponse handleDomainNameCertificateMismatchException(final DomainNameCertificateMismatchException e) {
-        logger.warn("Provided certificate does not match the domain name: {}", e.getDomainName());
-        logger.debug("Exception detail: ", e);
+        logger.warn("Provided certificate does not match the domain name", kv("domainName", e.getDomainName()), e);
         return new ErrorResponse("ERROR_REQUEST", e.getMessage());
     }
 }

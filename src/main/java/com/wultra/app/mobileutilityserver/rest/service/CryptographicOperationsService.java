@@ -42,6 +42,8 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.wultra.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
 import com.wultra.security.powerauth.crypto.lib.generator.KeyGenerator;
 import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
@@ -91,8 +93,7 @@ public class CryptographicOperationsService {
         try {
             return SecureRandom.getInstance(SECURE_RANDOM_ALGORITHM_NAME, PowerAuthConfiguration.CRYPTO_PROVIDER_NAME);
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            logger.warn("Unable to register strong random number generator: {}", e.getMessage());
-            logger.debug("Exception details: ", e);
+            logger.warn("Unable to register strong random number generator", e);
             return new SecureRandom();
         }
     }

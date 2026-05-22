@@ -23,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * Class with constants for HTTP request / response headers.
  *
@@ -44,7 +46,7 @@ public class HttpHeaders {
     public static boolean validChallengeHeader(String challengeHeader) {
         try {
             if (StringUtils.isEmpty(challengeHeader)) {
-                logger.warn("Missing or blank challenge header: {}", challengeHeader);
+                logger.warn("Missing or blank challenge header", kv("challengeHeader", challengeHeader));
                 return false;
             }
             final byte[] challengeBytes = Base64.getDecoder().decode(challengeHeader);
@@ -56,8 +58,7 @@ public class HttpHeaders {
                 return false;
             }
         } catch (IllegalArgumentException ex) {
-            logger.warn("Invalid Base64 value received in the header: {}", challengeHeader);
-            logger.debug("Exception detail: {}", ex.getMessage(), ex);
+            logger.warn("Invalid Base64 value received in the challenge header", kv("challengeHeader", challengeHeader), ex);
             return false;
         }
     }
