@@ -1,7 +1,7 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.9_10-jre-noble
+FROM ibm-semeru-runtimes:open-jdk-25.0.3.0-jre-noble
 
-LABEL maintainer="Petr Dvořák <petr@wultra.com>"
+LABEL maintainer="Wultra <hello@wultra.com>"
 
 # Prepare environment variables
 # LIQUIBASE_ prefix must not be used, because this is only supported in PRO version
