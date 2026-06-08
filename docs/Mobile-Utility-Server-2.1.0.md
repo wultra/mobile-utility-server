@@ -13,3 +13,11 @@ For manual changes, use SQL scripts:
 ### Table mus_certificate
 
 The type of the `expires` column has been changed from `integer` to `bigint` (Postgres) / `NUMBER(38,0)` (Oracle).
+
+
+## Dependency Updates
+
+
+### Spring Boot 4 and Jackson 3
+
+PowerAuth Cloud has been migrated to Spring Boot 4 and Jackson 3.
