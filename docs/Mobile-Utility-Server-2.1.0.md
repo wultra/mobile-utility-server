@@ -20,4 +20,4 @@ The type of the `expires` column has been changed from `integer` to `bigint` (Po
 
 ### Spring Boot 4 and Jackson 3
 
-PowerAuth Cloud has been migrated to Spring Boot 4 and Jackson 3.
+Mobile Utility Server has been migrated to Spring Boot 4 and Jackson 3.
