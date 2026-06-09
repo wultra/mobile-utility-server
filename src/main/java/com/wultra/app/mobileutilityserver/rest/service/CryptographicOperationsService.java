@@ -113,6 +113,7 @@ public class CryptographicOperationsService {
      * Convert private key to Base64 encoded string.
      * @param privateKey Private key to be encoded.
      * @return Base64 encoded value of the private key.
+     * @throws GenericCryptoException In case the private key is not valid.
      */
     public String convertPrivateKeyToBase64(PrivateKey privateKey) throws GenericCryptoException {
         return Base64.getEncoder().encodeToString(keyConvertor.convertPrivateKeyToBytes(privateKey));
@@ -122,7 +123,8 @@ public class CryptographicOperationsService {
      * Convert public key to Base64 encoded string.
      * @param publicKey Public key to be encoded.
      * @return Base64 encoded value of the public key.
-     * @throws CryptoProviderException In case the public key is not valid.
+     * @throws CryptoProviderException When crypto provider is incorrectly initialized.
+     * @throws GenericCryptoException When public key is invalid.
      */
     public String convertPublicKeyToBase64(PublicKey publicKey) throws CryptoProviderException, GenericCryptoException {
         return Base64.getEncoder().encodeToString(keyConvertor.convertPublicKeyToBytes(EcCurve.P256, publicKey));
