@@ -18,23 +18,15 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.util.Base64;
-
 import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import com.wultra.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
+import com.wultra.security.powerauth.crypto.lib.enums.EcCurve;
+import com.wultra.security.powerauth.crypto.lib.generator.KeyGenerator;
+import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
+import com.wultra.security.powerauth.crypto.lib.util.KeyConvertor;
+import com.wultra.security.powerauth.crypto.lib.util.SignatureUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.ssl.DefaultHostnameVerifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -42,17 +34,15 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
-import com.wultra.security.powerauth.crypto.lib.config.PowerAuthConfiguration;
-import com.wultra.security.powerauth.crypto.lib.generator.KeyGenerator;
-import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
-import com.wultra.security.powerauth.crypto.lib.util.KeyConvertor;
-import com.wultra.security.powerauth.crypto.lib.util.SignatureUtils;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.net.ssl.SSLException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.security.*;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 
 /**
  * Service with various cryptographic helper utils.
@@ -124,7 +114,7 @@ public class CryptographicOperationsService {
      * @param privateKey Private key to be encoded.
      * @return Base64 encoded value of the private key.
      */
-    public String convertPrivateKeyToBase64(PrivateKey privateKey) {
+    public String convertPrivateKeyToBase64(PrivateKey privateKey) throws GenericCryptoException {
         return Base64.getEncoder().encodeToString(keyConvertor.convertPrivateKeyToBytes(privateKey));
     }
 
@@ -134,8 +124,8 @@ public class CryptographicOperationsService {
      * @return Base64 encoded value of the public key.
      * @throws CryptoProviderException In case the public key is not valid.
      */
-    public String convertPublicKeyToBase64(PublicKey publicKey) throws CryptoProviderException {
-        return Base64.getEncoder().encodeToString(keyConvertor.convertPublicKeyToBytes(publicKey));
+    public String convertPublicKeyToBase64(PublicKey publicKey) throws CryptoProviderException, GenericCryptoException {
+        return Base64.getEncoder().encodeToString(keyConvertor.convertPublicKeyToBytes(EcCurve.P256, publicKey));
     }
 
     /**

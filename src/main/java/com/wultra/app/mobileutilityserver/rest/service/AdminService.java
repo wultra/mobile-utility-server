@@ -18,6 +18,31 @@
 
 package com.wultra.app.mobileutilityserver.rest.service;
 
+import com.wultra.app.mobileutilityserver.database.model.*;
+import com.wultra.app.mobileutilityserver.database.repo.*;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
+import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
+import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
+import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
+import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
+import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
+import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
+import com.wultra.app.mobileutilityserver.rest.model.request.*;
+import com.wultra.app.mobileutilityserver.rest.model.response.*;
+import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
+import com.wultra.security.powerauth.crypto.lib.model.exception.GenericCryptoException;
+import jakarta.validation.ConstraintViolationException;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.openssl.PEMParser;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyPair;
@@ -28,46 +53,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-
-import com.wultra.app.mobileutilityserver.rest.errorhandling.DomainNameCertificateMismatchException;
-import com.wultra.app.mobileutilityserver.rest.model.entity.Domain;
-import com.wultra.app.mobileutilityserver.rest.model.response.*;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.openssl.PEMParser;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import static net.logstash.logback.argument.StructuredArguments.kv;
-
-import com.wultra.app.mobileutilityserver.database.model.CertificateEntity;
-import com.wultra.app.mobileutilityserver.database.model.LocalizedTextEntity;
-import com.wultra.app.mobileutilityserver.database.model.MobileAppEntity;
-import com.wultra.app.mobileutilityserver.database.model.MobileAppVersionEntity;
-import com.wultra.app.mobileutilityserver.database.model.MobileDomainEntity;
-import com.wultra.app.mobileutilityserver.database.repo.CertificateRepository;
-import com.wultra.app.mobileutilityserver.database.repo.LocalizedTextRepository;
-import com.wultra.app.mobileutilityserver.database.repo.MobileAppRepository;
-import com.wultra.app.mobileutilityserver.database.repo.MobileAppVersionRepository;
-import com.wultra.app.mobileutilityserver.database.repo.MobileDomainRepository;
-import com.wultra.app.mobileutilityserver.rest.errorhandling.AppException;
-import com.wultra.app.mobileutilityserver.rest.errorhandling.AppNotFoundException;
-import com.wultra.app.mobileutilityserver.rest.model.converter.CertificateConverter;
-import com.wultra.app.mobileutilityserver.rest.model.converter.MobileAppConverter;
-import com.wultra.app.mobileutilityserver.rest.model.entity.MobileApplication;
-import com.wultra.app.mobileutilityserver.rest.model.enums.Platform;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateDirectRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificatePemRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationCertificateRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateApplicationVersionRequest;
-import com.wultra.app.mobileutilityserver.rest.model.request.CreateTextRequest;
-import com.wultra.security.powerauth.crypto.lib.model.exception.CryptoProviderException;
-import jakarta.validation.ConstraintViolationException;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Administration related methods.
@@ -123,7 +109,7 @@ public class AdminService {
             final MobileAppEntity savedMobileAppEntity = mobileAppRepository.save(mobileAppEntity);
 
             return mobileAppConverter.convertMobileApp(savedMobileAppEntity);
-        } catch (CryptoProviderException e) {
+        } catch (CryptoProviderException | GenericCryptoException e) {
             throw new AppException("Error while generating cryptographic keys", e);
         }
     }
