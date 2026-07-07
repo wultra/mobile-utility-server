@@ -150,7 +150,7 @@ public class AdminService {
             for (CertificateEntity cert : certificateEntityOptional) {
                 if (fingerprint.equalsIgnoreCase(cert.getFingerprint())) {
                     final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(cert);
-                    logger.info("", kv("action", "addOrRefreshCertificate"), kv("state", "noChange"), kv("appName", appName), kv("domain", domain));
+                    logger.info("Add or refresh certificate no change", kv("action", "addOrRefreshCertificate"), kv("state", "noChange"), kv("appName", appName), kv("domain", domain));
                     return response;
                 }
             }
@@ -175,7 +175,7 @@ public class AdminService {
         final CertificateEntity savedCertificateEntity = certificateRepository.save(certificateEntity);
 
         final CertificateDetailResponse response = certificateConverter.convertCertificateDetailResponse(savedCertificateEntity);
-        logger.info("", kv("action", "addOrRefreshCertificate"), kv("state", "succeeded"), kv("appName", appName), kv("domain", domain));
+        logger.info("Add or refresh certificate succeeded", kv("action", "addOrRefreshCertificate"), kv("state", "succeeded"), kv("appName", appName), kv("domain", domain));
         return response;
     }
 
@@ -216,7 +216,7 @@ public class AdminService {
 
         final X509Certificate cert = fetchCertificate(domain);
         final String certPem = cryptographicOperationsService.certificateToPem(cert);
-        logger.info("", kv("action", "createCertificate"), kv("state", "initiated"), kv("appName", appName), kv("domain", domain));
+        logger.info("Create certificate initiated", kv("action", "createCertificate"), kv("state", "initiated"), kv("appName", appName), kv("domain", domain));
 
         final CreateApplicationCertificatePemRequest innerRequest = new CreateApplicationCertificatePemRequest();
         innerRequest.setDomain(domain);
