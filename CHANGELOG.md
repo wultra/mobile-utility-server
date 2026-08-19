@@ -11,5 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgraded Docker base image to `ibm-semeru-runtimes:open-jdk-25.0.3.0-jre-noble` (OpenJDK 25) [(#504)](https://github.com/wultra/mobile-utility-server/issues/504)
 - Migrated to Spring Boot 4 and Jackson 3 [(#503)](https://github.com/wultra/mobile-utility-server/issues/503)
+- Removed ENV variable override for `spring.jpa.hibernate.ddl-auto` in `application.properties` [(#512)](https://github.com/wultra/mobile-utility-server/issues/512)
 
 [unreleased]: https://github.com/wultra/mobile-utility-server/compare/2.0.0...HEAD
