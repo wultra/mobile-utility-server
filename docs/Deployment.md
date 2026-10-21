@@ -31,6 +31,22 @@ spring.jpa.hibernate.ddl-auto=${MOBILE_UTILITY_SERVER_JPA_DDL_AUTO:none}
 
 The application also supports any Spring Boot configuration properties.
 
+## Logging
+
+By default, Mobile Utility Server logs in a human-readable, plain-text format to the console. Structured key-value data attached to log messages (e.g. action or state information) is included as well, appended at the end of each log line using the `%sa` conversion word.
+
+If you customize `logging.pattern.console`, keep `%sa` right after `%msg` (or `%m`), for example:
+
+```properties
+logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%sa%n%ex
+```
+
+<!-- begin box warning -->
+If you customize `logging.pattern.console` and omit `%sa`, structured log data will be silently dropped from the console output.
+<!-- end -->
+
+If you prefer structured JSON logs (for example for log aggregation tools), set the `MOBILE_UTILITY_SERVER_LOGGING` environment variable to `/opt/logback/conf/mus-logback.xml` in the Docker image.
+
 ## Running in Docker
 
 You can easily deploy the development version of application to your Docker container by running the following commands:
