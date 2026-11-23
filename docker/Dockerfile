@@ -1,5 +1,5 @@
 # Docker Image for Runtime
-FROM ibm-semeru-runtimes:open-21.0.9_10-jre-noble
+FROM ibm-semeru-runtimes:open-21.0.13.0-jre-noble@sha256:96486d49cf679d6a139b44b05281c9a02048ea20029278bc1fd51678dd6bfa0f
 
 LABEL maintainer="Petr Dvořák <petr@wultra.com>"
 
